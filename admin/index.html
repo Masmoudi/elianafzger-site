@@ -1368,14 +1368,15 @@
               <div class="ck-s"><div class="ck-n">${filled.length}/${unlocked.length}</div><div class="ck-l">Sections live</div></div>
               <div class="ck-s"><div class="ck-n">${esc(tier)}</div><div class="ck-l">Your plan</div></div>
             </div>
-            <button class="ck-prev${heroImg ? ' has-img' : ''}" id="ckPrev">${heroImg ? `<img class="ck-prev-img" src="${heroImg.replace(/'/g,'%27')}" alt="">` : ''}<div class="ck-prev-inner"><div class="ck-prev-name">${esc(CLIENT_NAME || "Your site")}<span>.</span></div><div class="ck-prev-url">${esc((SITE_URL||"").replace(/^https?:\/\//,""))} — live ↗</div></div><span class="ck-prevtag">Your site</span></button>
-            <div class="ck-actions"><a class="btn btn-primary" id="ckVisit" href="${esc(SITE_URL)}" target="_blank" rel="noopener">View my site ↗</a><button class="btn" id="ckCopy">Copy link</button></div>
+            <div class="ck-visitors" id="ckStats"><div class="ck-vis-h">Visitors</div><div class="ck-vis-loading">Loading…</div></div>
+            <div class="ck-siterow">
+              <div class="ck-siterow-l"><span class="ck-siterow-name">${esc(CLIENT_NAME || "Your site")}<span>.</span></span><span class="ck-siterow-url">${esc((SITE_URL||"").replace(/^https?:\/\//,""))} — live ↗</span></div>
+              <div class="ck-actions"><a class="btn btn-primary" id="ckVisit" href="${esc(SITE_URL)}" target="_blank" rel="noopener">View my site ↗</a><button class="btn" id="ckCopy">Copy link</button></div>
+            </div>
             <div class="ck-book">
               <div class="ck-book-h">Share with bookers</div>
               <div class="ck-book-b"><button class="btn" id="ckBooker">Copy booker link</button>${codeBtn}${qrBtn}</div>
             </div>
-            ${todo.length ? `<div class="ck-todo"><b>Finish your Deckit:</b> ${todo.map(k => `<a data-key="${k}">${esc(SCHEMA[k].label)}</a>`).join(' · ')}</div>` : `<div class="ck-todo">✓ Everything in your plan is filled in.</div>`}
-            <div class="ck-visitors" id="ckStats"><div class="ck-vis-h">Visitors</div><div class="ck-vis-loading">Loading…</div></div>
           </div>
         </div>`;
 
@@ -1386,7 +1387,7 @@
       }));
       $$('.ck-todo a').forEach(a => a.addEventListener('click', () => openCollection(a.dataset.key)));
 
-      // ---- Visitors card (first-party analytics from the worker) ----
+      // ---- Visitors dashboard (first-party analytics from the worker) ----
       (async function loadStats(){
         const box = document.getElementById('ckStats'); if (!box) return;
         try {
@@ -1397,12 +1398,24 @@
           if (!r.ok) { box.style.display = 'none'; return; }
           const d = await r.json();
           const daily = d.daily || [];
+          const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+          const flag = cc => { try { if(!cc || cc.length!==2 || cc==='XX') return '\U0001F310'; return cc.toUpperCase().replace(/./g, c => String.fromCodePoint(127397 + c.charCodeAt(0))); } catch(e){ return '\U0001F310'; } };
           const max = Math.max(1, ...daily.map(x => x.views || 0));
-          const bars = daily.map(x => `<span title="${x.date}: ${x.views}" style="height:${Math.max(3, Math.round((x.views / max) * 100))}%"></span>`).join('');
+          const W=560,H=90,n=daily.length||1,bw=W/n;
+          const bars = daily.map((x,i)=>{ const h=Math.max(2,Math.round((x.views/max)*(H-6))); return `<rect x="${(i*bw+1).toFixed(1)}" y="${(H-h).toFixed(1)}" width="${Math.max(1,bw-2).toFixed(1)}" height="${h}" rx="1"><title>${x.date}: ${x.views}</title></rect>`; }).join('');
+          const chart = `<svg class="ck-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${bars}</svg>`;
+          const listHTML=(arr,label,fmt)=>{ if(!arr||!arr.length) return `<div class="ck-vis-col"><div class="ck-vis-ct">${label}</div><div class="ck-vis-empty">\u2014</div></div>`; const mx=Math.max(1,...arr.map(a=>a.count)); return `<div class="ck-vis-col"><div class="ck-vis-ct">${label}</div>`+arr.map(a=>`<div class="ck-row"><span class="ck-row-n">${fmt(a.name)}</span><span class="ck-row-bar"><i style="width:${Math.round(a.count/mx*100)}%"></i></span><span class="ck-row-c">${a.count}</span></div>`).join('')+`</div>`; };
+          const sources = listHTML(d.sources,'Top sources', nm => esc(nm==='direct'?'Direct / typed':nm));
+          const countries = listHTML(d.countries,'Top countries', nm => flag(nm)+' '+esc(nm==='XX'?'Unknown':nm));
+          const devs=d.devices||[]; const dt=devs.reduce((a,b)=>a+b.count,0)||1;
+          const colors={mobile:'var(--accent,#8e2820)',desktop:'#6b7280',tablet:'#9ca3af'};
+          let off=0; const segs=devs.map(v=>{ const dash=(v.count/dt)*100; const s=`<circle r="16" cx="21" cy="21" fill="transparent" stroke="${colors[v.name]||'#888'}" stroke-width="10" stroke-dasharray="${(dash*1.005).toFixed(2)} 100" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 21 21)"/>`; off+=dash; return s; }).join('');
+          const donut = devs.length ? `<div class="ck-vis-col"><div class="ck-vis-ct">Devices</div><div class="ck-donut-wrap"><svg viewBox="0 0 42 42" class="ck-donut">${segs}</svg><div class="ck-donut-leg">${devs.map(v=>`<span><i style="background:${colors[v.name]||'#888'}"></i>${esc(v.name)} \u00b7 ${Math.round(v.count/dt*100)}%</span>`).join('')}</div></div></div>` : '';
           box.innerHTML =
-            `<div class="ck-vis-h">Visitors <span class="ck-vis-sub">page views · no cookies</span></div>`
+            `<div class="ck-vis-h">Visitors <span class="ck-vis-sub">page views \u00b7 privacy-first \u00b7 no cookies</span></div>`
             + `<div class="ck-vis-nums"><div><b>${d.last7||0}</b><span>last 7 days</span></div><div><b>${d.last30||0}</b><span>last 30 days</span></div><div><b>${d.total||0}</b><span>all time</span></div></div>`
-            + (daily.length ? `<div class="ck-vis-spark">${bars}</div>` : `<div class="ck-vis-empty">No visits yet — stats appear as people view your site.</div>`);
+            + (daily.some(x=>x.views) ? `<div class="ck-chart-wrap">${chart}<div class="ck-chart-x"><span>30 days ago</span><span>today</span></div></div>` : `<div class="ck-vis-empty">No visits yet \u2014 your chart fills in as people view your site.</div>`)
+            + `<div class="ck-vis-grid">${sources}${countries}${donut}</div>`;
         } catch (e) { box.style.display = 'none'; }
       })();
       const copy = (txt, msg) => { navigator.clipboard.writeText(txt).then(() => toast(msg, 'success')).catch(() => toast('Copy failed', 'error')); };
@@ -2475,17 +2488,36 @@
   </div>
 </div>
 <style>
-  .ck-visitors{ margin-top:16px; padding:16px 18px; border:1px solid rgba(150,150,150,.22); border-radius:10px; }
-  .ck-vis-h{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; opacity:.7; margin-bottom:14px; display:flex; gap:10px; align-items:baseline; }
-  .ck-vis-sub{ font-size:10px; letter-spacing:.06em; text-transform:none; opacity:.7; }
-  .ck-vis-loading, .ck-vis-empty{ font-size:13px; opacity:.6; }
-  .ck-vis-nums{ display:flex; gap:28px; margin-bottom:14px; flex-wrap:wrap; }
+  .ck-visitors{ margin-top:16px; padding:18px 20px; border:1px solid rgba(150,150,150,.22); border-radius:10px; }
+  .ck-vis-h{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; opacity:.75; margin-bottom:16px; display:flex; gap:10px; align-items:baseline; }
+  .ck-vis-sub{ font-size:10px; letter-spacing:.05em; text-transform:none; opacity:.6; }
+  .ck-vis-loading, .ck-vis-empty{ font-size:13px; opacity:.55; padding:8px 0; }
+  .ck-vis-nums{ display:flex; gap:34px; margin-bottom:18px; flex-wrap:wrap; }
   .ck-vis-nums > div{ display:flex; flex-direction:column; }
-  .ck-vis-nums b{ font-size:24px; font-weight:700; line-height:1; }
+  .ck-vis-nums b{ font-size:26px; font-weight:700; line-height:1; }
   .ck-vis-nums span{ font-size:11px; opacity:.6; margin-top:5px; }
-  .ck-vis-spark{ display:flex; align-items:flex-end; gap:2px; height:46px; }
-  .ck-vis-spark span{ flex:1; background:var(--accent,#8e2820); opacity:.5; border-radius:1px 1px 0 0; min-height:3px; transition:opacity .15s; }
-  .ck-vis-spark span:hover{ opacity:1; }
+  .ck-chart-wrap{ margin-bottom:20px; }
+  .ck-chart{ width:100%; height:90px; display:block; }
+  .ck-chart rect{ fill:var(--accent,#8e2820); opacity:.5; transition:opacity .15s; }
+  .ck-chart rect:hover{ opacity:1; }
+  .ck-chart-x{ display:flex; justify-content:space-between; font-size:10px; opacity:.5; margin-top:6px; letter-spacing:.05em; }
+  .ck-vis-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:26px; }
+  .ck-vis-ct{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; opacity:.6; margin-bottom:12px; }
+  .ck-row{ display:flex; align-items:center; gap:10px; margin-bottom:8px; font-size:13px; }
+  .ck-row-n{ flex:0 0 42%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ck-row-bar{ flex:1; height:6px; background:rgba(150,150,150,.15); border-radius:3px; overflow:hidden; }
+  .ck-row-bar i{ display:block; height:100%; background:var(--accent,#8e2820); opacity:.65; border-radius:3px; }
+  .ck-row-c{ flex:0 0 auto; opacity:.7; font-variant-numeric:tabular-nums; min-width:28px; text-align:right; }
+  .ck-donut-wrap{ display:flex; align-items:center; gap:16px; }
+  .ck-donut{ width:78px; height:78px; flex:0 0 auto; }
+  .ck-donut-leg{ display:flex; flex-direction:column; gap:6px; font-size:12px; }
+  .ck-donut-leg span{ display:flex; align-items:center; gap:8px; text-transform:capitalize; }
+  .ck-donut-leg i{ width:10px; height:10px; border-radius:2px; display:inline-block; }
+  .ck-siterow{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; padding:14px 16px; border:1px solid var(--line,rgba(150,150,150,.22)); border-radius:12px; }
+  .ck-siterow-l{ display:flex; flex-direction:column; min-width:0; }
+  .ck-siterow-name{ font-size:16px; font-weight:700; letter-spacing:-.01em; color:var(--fg); } .ck-siterow-name span{ color:var(--accent); }
+  .ck-siterow-url{ font-size:12px; color:var(--fg-dim); margin-top:1px; }
+  .ck-siterow .ck-actions{ display:flex; gap:8px; flex-shrink:0; }
 </style>
 </body>
 </html>

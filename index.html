@@ -1341,7 +1341,7 @@
 </script>
 
 <!-- Deckit analytics beacon (first-party, no cookie) -->
-<script>(function(){try{var d=JSON.stringify({site:'elia',p:location.pathname});var u='https://deckit-media-uploader.nadimmasmoudi93.workers.dev/hit';if(navigator.sendBeacon){navigator.sendBeacon(u,new Blob([d],{type:'text/plain'}));}else{fetch(u,{method:'POST',headers:{'Content-Type':'text/plain'},body:d,keepalive:true}).catch(function(){});}}catch(e){}})();</script>
+<script>(function(){try{var rf='';try{if(document.referrer){var _h=new URL(document.referrer).host;if(_h&&_h!==location.host)rf=_h;}}catch(e){}var d=JSON.stringify({site:'elia',p:location.pathname,r:rf});var u='https://deckit-media-uploader.nadimmasmoudi93.workers.dev/hit';if(navigator.sendBeacon){navigator.sendBeacon(u,new Blob([d],{type:'text/plain'}));}else{fetch(u,{method:'POST',headers:{'Content-Type':'text/plain'},body:d,keepalive:true}).catch(function(){});}}catch(e){}})();</script>
 <a id="dk-admin-link" href="/admin/" aria-label="Open Studio">Admin &#8594;</a>
 <style>#dk-admin-link{position:fixed;top:14px;right:18px;z-index:90;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);opacity:0;pointer-events:none;transition:opacity .2s;text-decoration:none;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(6px);padding:6px 11px;border:1px solid var(--line);border-radius:999px;}#dk-admin-link:hover{color:var(--fg);border-color:var(--accent);}</style>
 <script>try{var _l=Object.keys(localStorage).some(function(k){return /gotrue|netlify.?identity/i.test(k)&&localStorage.getItem(k);});if(_l){var a=document.getElementById('dk-admin-link');if(a){a.style.opacity='.75';a.style.pointerEvents='auto';}}}catch(e){}</script>
