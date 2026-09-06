@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<!-- Deckit — forward password-recovery / invite links to the Studio -->
+<script>if(location.hash&&/(?:recovery|invite|confirmation|email_change)_token=/.test(location.hash)){location.replace("/admin/"+location.hash);}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Elia Nafzger — DJ & Producer · London · Minimal / House</title>
+<meta name="description" content="Elia Nafzger — London-based DJ and producer. Raw, considered, honest sets driven by instinct and a passion for digging. Co-founder of Body2Body. Bookings & press kit." />
+<meta name="keywords" content="Elia Nafzger, DJ, producer, London, minimal, house, deep house, digging, underground, Body2Body, Sunwaves, Fabric, booking, EPK, press kit" />
+<meta property="og:title" content="Elia Nafzger — DJ & Producer · London" />
+<meta property="og:description" content="London-based DJ and producer. Raw, considered, honest — always digging. Co-founder of Body2Body." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://elianafzger.com" />
+<meta property="og:image" content="https://elianafzger.com/hero.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Elia Nafzger — DJ & Producer" />
+<meta name="twitter:description" content="London-based DJ and producer. Raw, considered, honest. Co-founder of Body2Body." />
+<meta name="twitter:image" content="https://elianafzger.com/hero.jpg" />
+<meta name="theme-color" content="#0e0d0c" />
+<link rel="canonical" href="https://elianafzger.com/" />
+<meta name="google-site-verification" content="lQXuj520ufeiovO0bYNJ9hr4BMEraeamRw61rtxy-Bs" />
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="%230e0d0c"/><text x="16" y="24" font-family="system-ui,-apple-system,BlinkMacSystemFont,Helvetica,sans-serif" font-weight="700" font-size="22" fill="%23efece4" text-anchor="middle" letter-spacing="-1.2">E</text></svg>'>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<noscript><style>section.block { opacity: 1 !important; transform: none !important; } .enter{display:none!important}</style></noscript>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Elia Nafzger",
+  "url": "https://elianafzger.com",
+  "image": "https://elianafzger.com/hero.jpg",
+  "sameAs": [
+    "https://soundcloud.com/elianafzger",
+    "https://www.instagram.com/elia_nafzger/",
+    "https://elianafzgermusic.bandcamp.com"
+  ],
+  "jobTitle": "DJ / Producer",
+  "description": "London-based DJ and producer driven by instinct, intention and a passion for digging. Raw, considered, honest. Co-founder of Body2Body.",
+  "address": { "@type": "PostalAddress", "addressLocality": "London", "addressCountry": "UK" },
+  "knowsAbout": ["Minimal", "House", "Deep house", "Underground electronic music"],
+  "memberOf": { "@type": "Organization", "name": "Body2Body", "description": "Independent record label, est. 2026" }
+}
+</script>
+
+<style>
+  :root {
+    --bg: #0e0d0c;
+    --fg: #efece4;
+    --fg-dim: #b8b3a8;
+    --muted: #6b665e;
+    --line: rgba(239, 236, 228, 0.08);
+    --line-strong: rgba(239, 236, 228, 0.16);
+    --accent: #efece4;       /* near-mono: the pop is off-white */
+    --accent-dim: #8a857b;   /* warm grey — counters, separators */
+    --deckit-red: #a5352a;   /* nod to Deckit brand red — used once, top-right */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--fg); color: var(--bg); }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' /></filter><rect width='100%25' height='100%25' filter='url(%23n)' /></svg>");
+    mix-blend-mode: overlay;
+  }
+
+  /* ============= ENTER SPLASH OVERLAY (Deckit signature) ============= */
+  .enter { position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; padding:24px; opacity:1; visibility:visible; transition:opacity 0.8s ease, visibility 0.8s; cursor:pointer; overflow:hidden; }
+  .enter.is-hidden { opacity:0; visibility:hidden; pointer-events:none; }
+  .enter-inner { display:flex; flex-direction:column; align-items:center; text-align:center; gap:32px; max-width:720px; width:100%; }
+  .enter-eyebrow { font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--muted); display:inline-flex; align-items:center; gap:10px; font-weight:500; }
+  .enter-eyebrow-dot { width:7px; height:7px; border-radius:50%; background:#8e2820; display:inline-block; flex-shrink:0; }
+  .enter-name { font-family:'Bricolage Grotesque',-apple-system,BlinkMacSystemFont,sans-serif; font-weight:600; font-size:clamp(52px,8.5vw,120px); line-height:0.95; letter-spacing:-0.04em; color:var(--fg); margin:0; }
+  .enter-name .enter-name-text { display:inline; }
+  .enter-name .enter-name-dot { color:#8e2820; display:inline-block; opacity:0; transition:opacity 0.35s ease; }
+  .enter-name .enter-name-dot.is-visible { opacity:1; }
+  .enter-btn { font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; letter-spacing:0.28em; text-transform:uppercase; color:var(--fg); background:transparent; border:1px solid var(--line-strong); padding:13px 28px; cursor:pointer; font-weight:500; transition:background 0.35s ease,color 0.35s ease,border-color 0.35s ease; }
+  .enter-btn:hover, .enter-btn:focus-visible { background:var(--fg); color:var(--bg); border-color:var(--fg); outline:none; }
+  @media (prefers-reduced-motion: reduce){ .enter-name .enter-name-dot { opacity:1; transition:none; } .enter { transition-duration:0.01s; } }
+  @media (max-width:560px){ .enter-inner { gap:26px; } .enter-btn { padding:12px 24px; font-size:10.5px; } }
+
+  /* ============= HERO (split) ============= */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 52% 48%;
+    overflow: hidden;
+  }
+
+  .hero-content {
+    grid-column: 1;
+    align-self: end;
+    padding: 0 56px 88px;
+    z-index: 3;
+    max-width: 680px;
+    width: 100%;
+  }
+
+  .hero-media {
+    position: relative;
+    grid-column: 2;
+    overflow: hidden;
+    background: #141312;
+  }
+
+  .hero-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 54% 38%;
+    display: block;
+    filter: contrast(1.05) brightness(0.98);
+  }
+
+  /* seam: fade image into charcoal on its left edge */
+  .hero-media::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 200px;
+    background: linear-gradient(90deg, var(--bg) 0%, rgba(14,13,12,0) 100%);
+    z-index: 2;
+  }
+  /* subtle bottom scrim */
+  .hero-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(14,13,12,0.12) 0%, rgba(14,13,12,0) 30%, rgba(14,13,12,0.45) 100%);
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    font-weight: 400;
+    margin-bottom: 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--deckit-red); display:inline-block; }
+
+  h1.hero-title {
+    font-family: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 800;
+    font-size: clamp(60px, 8.4vw, 128px);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: var(--fg);
+    margin-bottom: 30px;
+  }
+  h1.hero-title span { display: block; }
+
+  .hero-tagline {
+    font-size: clamp(16px, 1.4vw, 20px);
+    line-height: 1.5;
+    color: var(--fg-dim);
+    max-width: 500px;
+    margin-bottom: 38px;
+    font-weight: 300;
+    letter-spacing: -0.005em;
+  }
+
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 14px 26px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid rgba(239, 236, 228, 0.28);
+    background: transparent;
+    color: var(--fg);
+    transition: all 0.25s ease;
+    text-decoration: none;
+    border-radius: 1px;
+  }
+  .btn-primary { background: transparent; color: var(--fg); border-color: rgba(239, 236, 228, 0.55); }
+  /* hover fill only on real hover devices — prevents the button staying "white/clicked" after a tap on mobile */
+  @media (hover: hover) {
+    .btn:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+    .btn-primary:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  }
+
+  .hero-socials { margin-top: 30px; animation: fadeUp 0.9s ease-out both; animation-delay: 0.75s; }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 26px;
+    left: 56px;
+    z-index: 3;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+    opacity: 0.7;
+  }
+
+  /* ============= BLUR-IN STATEMENT ============= */
+  .blurband { padding: clamp(90px,14vh,150px) 24px; text-align: center; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg); overflow: hidden; }
+  .blurband p { max-width: 940px; margin: 0 auto; font-family:'Bricolage Grotesque',sans-serif; font-weight: 300; font-size: clamp(28px,4.6vw,60px); line-height: 1.22; letter-spacing: -0.02em; color: var(--fg); }
+  .blurband .w {
+    display: inline-block; margin-right: 0.3em;
+    opacity: 0; filter: blur(var(--blur,14px)) brightness(0.6);
+    transform: translateY(20px) scale(var(--scale,0.94));
+    transition-property: opacity, filter, transform;
+    transition-timing-function: cubic-bezier(0.25,0.46,0.45,0.94);
+    transition-duration: 2s; transition-delay: 0s;
+    will-change: filter, transform, opacity;
+    text-shadow: 0 0 40px rgba(239,236,228,0.35);
+  }
+  .blurband.in .w { opacity: 1; filter: blur(0) brightness(1); transform: translateY(0) scale(1); text-shadow: 0 2px 8px rgba(239,236,228,0.08); }
+  .blurband .w.em { color: var(--deckit-red); }
+  @media (prefers-reduced-motion: reduce){ .blurband .w { opacity:1; filter:none; transform:none; transition:none; } }
+
+  /* ============= LAYOUT ============= */
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 48px; }
+
+  section.block {
+    padding: 116px 0;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 1.2s cubic-bezier(0.22, 0.61, 0.36, 1), transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  section.block.is-visible { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    section.block { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .mix-wave span { animation: none !important; }
+  }
+
+  /* Eyebrow — numbered index */
+  .eyebrow {
+    font-family: 'Bricolage Grotesque', -apple-system, sans-serif;
+    font-size: clamp(21px, 2.3vw, 27px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    font-weight: 600;
+    margin-bottom: 38px;
+    display: inline-flex;
+    align-items: center;
+    gap: 13px;
+  }
+  body { counter-reset: sec; }
+  .eyebrow::before {
+    counter-increment: sec;
+    content: counter(sec, decimal-leading-zero);
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent-dim);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+
+  .sub-eyebrow {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+    margin: 56px 0 18px;
+  }
+
+  /* ============= LISTEN / RELEASES ============= */
+  .mixes { display: flex; flex-direction: column; }
+
+  .mix {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 26px 0;
+    border-top: 1px solid var(--line);
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.25s ease;
+  }
+  .mix:last-of-type { border-bottom: 1px solid var(--line); }
+  .mix:hover { border-top-color: var(--line-strong); }
+  .mix:hover + .mix { border-top-color: var(--line-strong); }
+
+  .mix-play {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 54px; height: 54px;
+    border: 1px solid rgba(239, 236, 228, 0.22);
+    border-radius: 50%; color: var(--fg); flex-shrink: 0;
+    transition: all 0.3s ease; background: transparent;
+  }
+  .mix-play svg { width: 13px; height: 13px; margin-left: 2px; }
+  .mix:hover .mix-play { background: var(--fg); border-color: var(--fg); color: var(--bg); transform: scale(1.06); }
+
+  .mix-content { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .mix-title {
+    font-family: 'Bricolage Grotesque', -apple-system, sans-serif;
+    font-weight: 500;
+    font-size: clamp(20px, 2vw, 26px);
+    line-height: 1.2; color: var(--fg); letter-spacing: -0.015em;
+    transition: color 0.25s ease;
+  }
+  .mix-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px; letter-spacing: 0.04em; color: var(--fg-dim);
+    text-transform: uppercase; font-weight: 400;
+  }
+
+  .mix-wave { display: flex; align-items: center; gap: 3px; height: 36px; width: 140px; flex-shrink: 0; }
+  .mix-wave span {
+    flex: 1; height: var(--h, 50%); background: var(--fg-dim); border-radius: 1px;
+    opacity: 0.32; transform-origin: center; transition: background 0.4s ease;
+    animation: wavePassive 5s ease-in-out infinite;
+  }
+  .mix-wave span:nth-child(1){animation-delay:0s}.mix-wave span:nth-child(2){animation-delay:.12s}.mix-wave span:nth-child(3){animation-delay:.24s}.mix-wave span:nth-child(4){animation-delay:.36s}.mix-wave span:nth-child(5){animation-delay:.48s}.mix-wave span:nth-child(6){animation-delay:.6s}.mix-wave span:nth-child(7){animation-delay:.72s}.mix-wave span:nth-child(8){animation-delay:.84s}.mix-wave span:nth-child(9){animation-delay:.96s}.mix-wave span:nth-child(10){animation-delay:1.08s}.mix-wave span:nth-child(11){animation-delay:1.2s}.mix-wave span:nth-child(12){animation-delay:1.32s}
+  .mix:hover .mix-wave span { background: var(--fg); opacity: 0.9; animation: waveBeat 1.6s ease-in-out infinite; }
+  @keyframes wavePassive { 0%,100%{opacity:.3;transform:scaleY(.94)} 50%{opacity:.5;transform:scaleY(1)} }
+  @keyframes waveBeat { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(.42)} }
+
+  .mix-archive {
+    display: inline-block; margin-top: 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--fg-dim); font-weight: 400;
+    border-bottom: 1px solid var(--line-strong); padding-bottom: 4px;
+    transition: color 0.25s ease, border-color 0.25s ease; align-self: flex-start;
+  }
+  .mix-archive:hover { color: var(--fg); border-color: var(--fg); }
+
+  .mix-tag {
+    display: inline-flex; align-items: center; height: 22px; padding: 0 9px;
+    border: 1px solid var(--line-strong); color: var(--fg-dim); border-radius: 1px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; flex-shrink: 0; transition: color .25s ease, border-color .25s ease;
+  }
+  .mix:hover .mix-tag { color: var(--fg); border-color: var(--fg); }
+
+  .labels-line {
+    margin-top: 30px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted); line-height: 1.9;
+  }
+  .labels-line .sep { color: var(--line-strong); margin: 0 8px; }
+
+  /* ============= RELEASES (cover cards — B&W → colour on hover) ============= */
+  .releases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .release-card { position: relative; display: block; color: inherit; text-decoration: none; border: 1px solid var(--line); background: #141312; overflow: hidden; transition: border-color .3s ease, transform .3s ease; }
+  .release-card:hover { border-color: var(--line-strong); transform: translateY(-4px); }
+  .rc-cover { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #141312; }
+  .rc-cover img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1) contrast(1.06) brightness(0.94); transition: filter .5s ease, transform .6s cubic-bezier(0.22,0.61,0.36,1); }
+  .release-card:hover .rc-cover img { filter: grayscale(0) contrast(1.02); transform: scale(1.04); }
+  .rc-num { position: absolute; top: 12px; left: 12px; z-index: 2; font-family:'IBM Plex Mono',monospace; font-size: 10px; letter-spacing: 0.14em; color: var(--fg); background: rgba(14,13,12,0.6); backdrop-filter: blur(3px); padding: 4px 8px; border-radius: 1px; }
+  .rc-arrow { position: absolute; top: 12px; right: 12px; z-index: 2; font-family:'IBM Plex Mono',monospace; font-size: 12px; color: var(--fg); opacity: 0; transform: translate(-4px,4px); transition: opacity .3s ease, transform .3s ease; }
+  .release-card:hover .rc-arrow { opacity: 1; transform: translate(0,0); }
+  .rc-meta { padding: 16px 16px 18px; border-top: 1px solid var(--line); }
+  .rc-title { font-family:'Bricolage Grotesque',sans-serif; font-weight: 600; font-size: 17px; line-height: 1.2; letter-spacing: -0.015em; color: var(--fg); margin-bottom: 6px; }
+  .rc-label { font-family:'IBM Plex Mono',monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  @media (max-width: 720px) { .releases-grid { grid-template-columns: 1fr 1fr; gap: 14px; } }
+  @media (max-width: 460px) { .releases-grid { grid-template-columns: 1fr; } }
+  /* touch devices have no hover to reveal colour → show covers in colour directly */
+  @media (hover: none) { .rc-cover img { filter: grayscale(0) contrast(1.02); } }
+
+  /* ============= BIO ============= */
+  .bio-text { font-size: clamp(18px, 1.5vw, 22px); line-height: 1.62; color: var(--fg); max-width: 820px; font-weight: 300; letter-spacing: -0.005em; }
+  .bio-text em { font-style: normal; font-weight: 500; color: var(--fg); }
+  .bio-text p + p { margin-top: 1.1em; }
+
+  /* ============= BODY2BODY ============= */
+  .b2b { font-size: clamp(18px, 1.5vw, 22px); line-height: 1.6; color: var(--fg); max-width: 820px; font-weight: 300; letter-spacing: -0.005em; }
+  .b2b em { font-style: normal; font-weight: 500; color: var(--fg); }
+  .b2b a.inline { color: var(--fg); border-bottom: 1px solid var(--line-strong); padding-bottom: 1px; transition: border-color .25s ease; }
+  .b2b a.inline:hover { border-color: var(--fg); }
+  .tracklist { margin-top: 30px; display: flex; flex-direction: column; max-width: 560px; }
+  .track-row { display: grid; grid-template-columns: 42px 1fr auto 18px; gap: 18px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--line); text-decoration: none; color: inherit; position: relative; transition: padding-left .35s cubic-bezier(0.22,0.61,0.36,1), border-color .25s ease; }
+  .track-row:last-child { border-bottom: 1px solid var(--line); }
+  a.track-row:hover { border-top-color: var(--line-strong); padding-left: 14px; }
+  a.track-row:hover + .track-row { border-top-color: var(--line-strong); }
+  .track-pos { font-family:'IBM Plex Mono',monospace; font-size: 11px; color: var(--accent-dim); letter-spacing: 0.1em; }
+  .track-name { font-size: 16px; color: var(--fg); font-weight: 400; transition: color .25s ease; }
+  .track-artist { font-family:'IBM Plex Mono',monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; transition: color .25s ease; }
+  .track-go { font-family:'IBM Plex Mono',monospace; font-size: 12px; color: var(--muted); opacity: 0; transform: translateX(-4px); transition: opacity .25s ease, transform .25s ease; }
+  a.track-row:hover .track-go { opacity: 1; transform: translateX(0); }
+  a.track-row:hover .track-artist { color: var(--fg-dim); }
+
+  /* ============= LIVE (tag chips) ============= */
+  .tags { display: flex; flex-wrap: wrap; gap: 10px; max-width: 880px; }
+  .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--fg-dim); border: 1px solid var(--line-strong); border-radius: 1px;
+    padding: 9px 15px; white-space: nowrap;
+    transition: color .25s ease, border-color .25s ease, transform .25s ease;
+  }
+  .tag:hover { color: var(--fg); border-color: var(--fg-dim); transform: translateY(-2px); }
+  .tag .amp { color: var(--muted); }
+  @media (max-width: 820px) { .tag { font-size: 11px; padding: 8px 12px; } .tags { gap: 8px; } }
+  /* shared line-ups — flowing text with a travelling light sweep */
+  .linetext { font-size: clamp(18px,1.9vw,25px); line-height: 1.7; color: var(--muted); max-width: 880px; font-weight: 400; letter-spacing: -0.012em; }
+  .linetext .la { display: inline-block; color: var(--muted); animation: sweep 7s ease-in-out infinite; }
+  .linetext .sep { color: var(--line-strong); margin: 0 11px; }
+  @keyframes sweep { 0%,100% { color: var(--muted); } 5% { color: var(--fg); } 15% { color: var(--muted); } }
+  @media (prefers-reduced-motion: reduce) { .linetext .la { animation: none; color: var(--fg-dim); } }
+
+  /* ============= GIGS ============= */
+  .dates { display:flex; flex-direction:column; max-width:760px; }
+  .date-row { display:grid; grid-template-columns:120px 1fr auto; gap:24px; align-items:baseline; padding:20px 0; border-top:1px solid var(--line); }
+  .date-row:last-child { border-bottom:1px solid var(--line); }
+  .date-when { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--fg-dim); font-weight:400; }
+  .date-venue { font-size:clamp(18px,1.5vw,22px); font-weight:500; color:var(--fg); letter-spacing:-0.005em; }
+  .date-city { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--fg-dim); font-weight:400; white-space:nowrap; }
+  .dates-loading { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); font-weight:400; padding:26px 0; }
+  .dates-empty { font-family:'Bricolage Grotesque',sans-serif; font-size:15px; color:var(--fg-dim); font-weight:300; padding:24px 0; line-height:1.55; }
+  .dates-note { margin-top:22px; font-size:14px; color:var(--fg-dim); font-weight:300; max-width:540px; }
+  .dates-note a { color:var(--fg); border-bottom:1px solid var(--line-strong); padding-bottom:1px; transition:color .25s ease,border-color .25s ease; }
+  .dates-note a:hover { color:var(--fg); border-color:var(--fg); }
+  @media (max-width:540px){ .date-row{ grid-template-columns:90px 1fr; gap:14px; } .date-city{ grid-column:2/3; margin-top:2px; } }
+
+  /* ============= PRESS ============= */
+  .press-locked { max-width: 560px; }
+  .press-info { font-size: clamp(17px, 1.4vw, 20px); line-height: 1.55; color: var(--fg-dim); margin-bottom: 28px; font-weight: 300; }
+  .press-form { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .press-form input {
+    flex: 1; min-width: 200px; padding: 14px 18px; background: transparent;
+    border: 1px solid rgba(239, 236, 228, 0.25); color: var(--fg);
+    font-family: 'IBM Plex Mono', monospace; font-size: 14px; letter-spacing: 0.02em;
+    transition: border-color 0.2s ease; outline: none; border-radius: 1px;
+  }
+  .press-form input::placeholder { color: var(--muted); }
+  .press-form input:focus { border-color: var(--fg); }
+  .press-form button {
+    padding: 14px 26px; background: var(--fg); color: var(--bg); border: 1px solid var(--fg);
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; cursor: pointer; transition: all 0.25s ease; border-radius: 1px; white-space: nowrap;
+  }
+  .press-form button:hover { background: transparent; color: var(--fg); }
+  .press-error { font-size: 13px; color: var(--fg-dim); margin-bottom: 12px; min-height: 18px; letter-spacing: 0.02em; }
+  .press-hint { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; font-weight: 400; margin-top: 8px; }
+  .press-hint a { color: var(--fg-dim); border-bottom: 1px solid var(--line-strong); padding-bottom: 1px; transition: color 0.25s ease, border-color 0.25s ease; cursor: pointer; }
+  .press-hint a:hover { color: var(--fg); border-color: var(--fg); }
+
+  .press { display: flex; flex-direction: column; max-width: 820px; }
+  .press-row { display: flex; justify-content: space-between; align-items: baseline; padding: 26px 0; border-top: 1px solid var(--line); text-decoration: none; color: inherit; transition: color 0.25s ease; }
+  .press-row:last-of-type { border-bottom: 1px solid var(--line); }
+  .press-row:hover { color: var(--fg); }
+  .press-row-l { display: flex; flex-direction: column; gap: 6px; }
+  .press-title { font-size: clamp(20px, 1.6vw, 24px); font-weight: 500; letter-spacing: -0.005em; }
+  .press-meta { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-dim); font-weight: 400; }
+  .press-action { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-dim); font-weight: 400; white-space: nowrap; transition: transform 0.3s ease, color 0.25s ease; }
+  .press-row:hover .press-action { transform: translateX(4px); color: var(--fg); }
+
+  /* ============= CONTACT ============= */
+  .contact { display: flex; flex-direction: column; max-width: 820px; }
+  .contact-row { display: flex; justify-content: space-between; align-items: baseline; padding: 22px 0; border-top: 1px solid var(--line); text-decoration: none; color: inherit; font: inherit; background: none; border-left: none; border-right: none; border-bottom: none; width: 100%; text-align: left; transition: color 0.25s ease; }
+  .contact-row:last-of-type { border-bottom: 1px solid var(--line); }
+  .contact-row:hover { color: var(--fg); }
+  .contact-label { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-dim); font-weight: 400; flex-shrink: 0; width: 130px; }
+  .contact-value { font-size: clamp(18px, 1.5vw, 22px); font-weight: 500; color: var(--fg); letter-spacing: -0.005em; flex: 1; text-align: right; word-break: break-word; transition: color 0.25s ease; }
+  .contact-row:hover .contact-value { color: var(--fg); }
+
+  /* ============= SOCIAL ICONS ============= */
+  .socials { display: inline-flex; align-items: center; gap: 12px; }
+  .social-icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid rgba(239, 236, 228, 0.2); background: transparent; color: var(--fg-dim); border-radius: 50%; transition: all 0.25s ease; text-decoration: none; padding: 0; cursor: pointer; }
+  .social-icon:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); transform: translateY(-2px); }
+  .social-icon svg { width: 17px; height: 17px; display: block; }
+
+  /* ============= FOOTER ============= */
+  footer { padding: 80px 48px 24px; max-width: 1080px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .footer-l { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 400; display: flex; gap: 28px; flex-wrap: wrap; }
+
+  /* ============= SITE CREDIT (Deckit) ============= */
+  .site-credit { max-width: 1080px; margin: 28px auto 0; padding: 22px 48px 44px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 400; text-align: right; border-top: 1px solid var(--line); }
+  .site-credit a { color: var(--fg-dim); border-bottom: 1px dotted rgba(239, 236, 228, 0.18); padding-bottom: 1px; transition: color 0.25s ease, border-color 0.25s ease; }
+  .site-credit a:hover { color: var(--fg); border-color: var(--fg); }
+  .site-credit .arrow { display: inline-block; margin-left: 4px; transition: transform 0.25s ease; }
+  .site-credit a:hover .arrow { transform: translate(2px, -2px); }
+
+  /* ============= TOAST ============= */
+  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); padding: 14px 22px; background: var(--fg); color: var(--bg); font-family:'IBM Plex Mono',monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 1000; box-shadow: 0 12px 36px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; max-width: calc(100vw - 32px); }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast-email { font-weight: 500; word-break: break-all; }
+
+  /* ============= ENTRANCE ============= */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-eyebrow, h1.hero-title, .hero-tagline, .hero-ctas { animation: fadeUp 0.9s ease-out both; }
+  .hero-eyebrow { animation-delay: 0.15s; }
+  h1.hero-title { animation-delay: 0.25s; }
+  .hero-tagline { animation-delay: 0.45s; }
+  .hero-ctas { animation-delay: 0.6s; }
+
+  /* ============= RESPONSIVE ============= */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; grid-template-rows: 46vh auto; min-height: 100vh; }
+    .hero-media { grid-column: 1; grid-row: 1; }
+    .hero-media::before { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 180px; background: linear-gradient(0deg, var(--bg) 0%, rgba(14,13,12,0) 100%); }
+    .hero-content { grid-column: 1; grid-row: 2; align-self: start; padding: 36px 24px 60px; max-width: none; margin-left: 0; }
+    .hero-scroll { display: none; }
+  }
+
+  @media (max-width: 820px) {
+    h1.hero-title { font-size: clamp(52px, 15vw, 96px); margin-bottom: 24px; }
+    .hero-tagline { margin-bottom: 30px; font-size: 16px; }
+    .hero-ctas { width: 100%; }
+    .hero-ctas .btn { flex: 1; justify-content: center; }
+
+    .wrap { padding: 0 24px; }
+    section.block { padding: 80px 0; }
+    .eyebrow { margin-bottom: 28px; }
+
+    .mix { gap: 18px; padding: 22px 0; }
+    .mix-play { width: 46px; height: 46px; }
+    .mix-play svg { width: 11px; height: 11px; }
+    .mix-wave { display: none; }
+    .mix-title { font-size: 18px; }
+    .mix-meta { font-size: 11px; }
+
+    .track-row { grid-template-columns: 34px 1fr auto 16px; gap: 12px; }
+    .track-artist { font-size: 10px; }
+
+    .press-row { padding: 20px 0; flex-direction: column; align-items: flex-start; gap: 10px; }
+    .contact-row { padding: 20px 0; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .contact-label { width: auto; font-size: 11px; }
+    .contact-value { text-align: left; font-size: 19px; }
+
+    footer { padding: 60px 24px 20px; flex-direction: column; align-items: flex-start; gap: 24px; }
+    .footer-l { gap: 14px; }
+    .social-icon { width: 38px; height: 38px; }
+    .site-credit { padding: 18px 24px 32px; text-align: left; margin-top: 24px; font-size: 10px; }
+    .toast { font-size: 10px; padding: 12px 18px; }
+  }
+
+  @media (max-width: 460px) {
+    .hero-ctas { flex-direction: column; }
+    .hero-ctas .btn { width: 100%; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- =================== ENTER SPLASH (Deckit signature) =================== -->
+<div class="enter" id="enterOverlay" role="dialog" aria-modal="true" aria-label="Welcome — enter site">
+  <div class="enter-inner">
+    <span class="enter-eyebrow"><span class="enter-eyebrow-dot" aria-hidden="true"></span><span>Elia — EPK</span></span>
+    <h1 class="enter-name" aria-label="Elia Nafzger."><span class="enter-name-text" aria-hidden="true"></span><span class="enter-name-dot" aria-hidden="true">.</span></h1>
+    <button type="button" class="enter-btn" id="enterBtn">Enter</button>
+  </div>
+</div>
+
+<!-- =================== HERO =================== -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-eyebrow">DJ &amp; Producer — London</span>
+    <h1 class="hero-title"><span>Elia</span><span>Nafzger</span></h1>
+    <p class="hero-tagline">London-based DJ and producer. Sets built on instinct, intention and a passion for digging — raw, considered, honest.</p>
+    <div class="hero-ctas">
+      <a href="#press" class="btn btn-primary">Press kit</a>
+      <a href="#mixes" class="btn">Mixes</a>
+      <a href="#releases" class="btn">Productions</a>
+    </div>
+
+    <div class="hero-socials socials">
+      <a href="https://soundcloud.com/elianafzger" target="_blank" rel="noopener" class="social-icon" aria-label="SoundCloud">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 14 V11"/><path d="M7 16 V9"/><path d="M10 17 V7"/><path d="M13 17 V7"/><path d="M16 15 V9"/><path d="M19 14 V11"/>
+        </svg>
+      </a>
+      <a href="https://www.instagram.com/elia_nafzger/" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <a href="https://elianafzgermusic.bandcamp.com" target="_blank" rel="noopener" class="social-icon" aria-label="Bandcamp">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 15.5 L9 8.5 L21 8.5 L15 15.5 Z"/></svg>
+      </a>
+      <a href="mailto:i@toitoimusik.com" class="social-icon" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 7 L12 13 L21 7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-media">
+    <img src="hero.jpg" alt="Elia Nafzger" onerror="this.style.display='none'" />
+  </div>
+
+  <span class="hero-scroll">scroll</span>
+</section>
+
+<!-- =================== BLUR-IN STATEMENT =================== -->
+<div class="blurband" id="blurband">
+  <p data-text="Minimal, house and deep house — raw, hypnotic and honest."></p>
+</div>
+
+<!-- =================== BIO =================== -->
+<section class="block" id="bio">
+  <div class="wrap">
+    <span class="eyebrow">Bio</span>
+    <div class="bio-text">
+      <p>Elia Nafzger is a London-based DJ and producer driven by <em>instinct</em>, <em>intention</em> and a passion for digging. Growing up surrounded by music left a mark — there's a genuine reverence for sound in everything he does, and it shows in his sets.</p>
+      <p>He's played Sunwaves, Fabric, Unmute, Trotamundo Festival, Bucharest's Guesthouse and NOD, and rooms in Miami, New York and Berlin. No two nights the same, but always in tune with the room and where it needs to go. He's shared lineups with Zip, Foehn &amp; Jerome, Rhadoo, Fumiya Tanaka, Dyed Soundorom, Sonja Moonear, bobby, Lola Haro and many more.</p>
+      <p>His releases on Pressure Trax, Analogue, OOZ, Playedby and Below Surface carry the same spirit — <em>raw, considered, and honest</em>. In 2026 he co-founded Body2Body, a new label rooted in the same ethos, with Body Moves 001 marking its first step. In the studio or behind the decks, he's always searching, always digging, finding ways to make it all feel alive.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== MIXES =================== -->
+<section class="block" id="mixes">
+  <div class="wrap">
+    <span class="eyebrow">Mixes</span>
+    <div class="mixes">
+
+      <a class="mix" href="https://soundcloud.com/nightclubberro/elia-nafzger-nightclubber" target="_blank" rel="noopener">
+        <span class="mix-play" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 1.5 L13 8 L3 14.5 Z"/></svg></span>
+        <div class="mix-content">
+          <span class="mix-title">Nightclubber Podcast 219</span>
+          <span class="mix-meta">Nightclubber · 2026 · SoundCloud</span>
+        </div>
+        <span class="mix-wave" aria-hidden="true"><span style="--h:30%"></span><span style="--h:62%"></span><span style="--h:42%"></span><span style="--h:78%"></span><span style="--h:50%"></span><span style="--h:88%"></span><span style="--h:58%"></span><span style="--h:35%"></span><span style="--h:70%"></span><span style="--h:45%"></span><span style="--h:68%"></span><span style="--h:40%"></span></span>
+      </a>
+
+      <a class="mix" href="https://soundcloud.com/meoko/meoko-podcast-series-elia-nafzger-recorded-at-sw35" target="_blank" rel="noopener">
+        <span class="mix-play" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 1.5 L13 8 L3 14.5 Z"/></svg></span>
+        <div class="mix-content">
+          <span class="mix-title">MEOKO Podcast — Recorded at SW35</span>
+          <span class="mix-meta">MEOKO · Sunwaves 35 · SoundCloud</span>
+        </div>
+        <span class="mix-wave" aria-hidden="true"><span style="--h:42%"></span><span style="--h:72%"></span><span style="--h:52%"></span><span style="--h:88%"></span><span style="--h:64%"></span><span style="--h:34%"></span><span style="--h:74%"></span><span style="--h:56%"></span><span style="--h:46%"></span><span style="--h:80%"></span><span style="--h:55%"></span><span style="--h:68%"></span></span>
+      </a>
+
+      <a class="mix" href="https://soundcloud.com/meoko/elia-nafzger-sunwaves-32-rec" target="_blank" rel="noopener">
+        <span class="mix-play" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 1.5 L13 8 L3 14.5 Z"/></svg></span>
+        <div class="mix-content">
+          <span class="mix-title">MEOKO Podcast — Sunwaves 32</span>
+          <span class="mix-meta">MEOKO · 2024 · SoundCloud</span>
+        </div>
+        <span class="mix-wave" aria-hidden="true"><span style="--h:38%"></span><span style="--h:56%"></span><span style="--h:72%"></span><span style="--h:44%"></span><span style="--h:84%"></span><span style="--h:50%"></span><span style="--h:36%"></span><span style="--h:66%"></span><span style="--h:78%"></span><span style="--h:48%"></span><span style="--h:60%"></span><span style="--h:42%"></span></span>
+      </a>
+
+      <a class="mix" href="https://soundcloud.com/clubguesthousero/gh-024-elia-nafzger" target="_blank" rel="noopener">
+        <span class="mix-play" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 1.5 L13 8 L3 14.5 Z"/></svg></span>
+        <div class="mix-content">
+          <span class="mix-title">GH 024 — Club Guesthouse</span>
+          <span class="mix-meta">Guesthouse · Bucharest · SoundCloud</span>
+        </div>
+        <span class="mix-wave" aria-hidden="true"><span style="--h:34%"></span><span style="--h:60%"></span><span style="--h:48%"></span><span style="--h:82%"></span><span style="--h:56%"></span><span style="--h:40%"></span><span style="--h:70%"></span><span style="--h:52%"></span><span style="--h:44%"></span><span style="--h:76%"></span><span style="--h:58%"></span><span style="--h:46%"></span></span>
+      </a>
+
+      <a class="mix-archive" href="https://soundcloud.com/elianafzger" target="_blank" rel="noopener">More on SoundCloud — @elianafzger →</a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== RELEASES =================== -->
+<section class="block" id="releases">
+  <div class="wrap">
+    <span class="eyebrow">Productions</span>
+    <div class="releases-grid">
+
+      <a class="release-card" href="https://elianafzgermusic.bandcamp.com/album/elia-nafzger-long-summer-ep" target="_blank" rel="noopener">
+        <div class="rc-cover">
+          <span class="rc-num">01</span>
+          <span class="rc-arrow" aria-hidden="true">Bandcamp ↗</span>
+          <img src="https://f4.bcbits.com/img/a2397647260_16.jpg" alt="Long Summer EP artwork" loading="lazy" onerror="this.style.display='none'" />
+        </div>
+        <div class="rc-meta">
+          <div class="rc-title">Long Summer EP</div>
+          <div class="rc-label">Elia Nafzger · 2026</div>
+        </div>
+      </a>
+
+      <a class="release-card" href="https://pressuretraxx.bandcamp.com/album/elia-nafzger-brain-print-ep-pt-x-files-008" target="_blank" rel="noopener">
+        <div class="rc-cover">
+          <span class="rc-num">02</span>
+          <span class="rc-arrow" aria-hidden="true">Bandcamp ↗</span>
+          <img src="https://f4.bcbits.com/img/a3872216524_16.jpg" alt="Brain Print EP artwork" loading="lazy" onerror="this.style.display='none'" />
+        </div>
+        <div class="rc-meta">
+          <div class="rc-title">Brain Print EP — PT X-Files 008</div>
+          <div class="rc-label">Pressure Traxx · 2025</div>
+        </div>
+      </a>
+
+      <a class="release-card" href="https://playedbywav.bandcamp.com/album/elia-nafzger-outplay01d" target="_blank" rel="noopener">
+        <div class="rc-cover">
+          <span class="rc-num">03</span>
+          <span class="rc-arrow" aria-hidden="true">Bandcamp ↗</span>
+          <img src="https://f4.bcbits.com/img/a3931849202_16.jpg" alt="Outplay01D artwork" loading="lazy" onerror="this.style.display='none'" />
+        </div>
+        <div class="rc-meta">
+          <div class="rc-title">Outplay01D</div>
+          <div class="rc-label">Playedby.wav · 2024</div>
+        </div>
+      </a>
+
+      <a class="release-card" href="https://www.deejay.de/Elia_Nafzger_Last_Chance_EP_ANQE002_Vinyl__1140888" target="_blank" rel="noopener">
+        <div class="rc-cover">
+          <span class="rc-num">04</span>
+          <span class="rc-arrow" aria-hidden="true">Deejay ↗</span>
+          <img src="https://www.deejay.de/images/xl/8/8/1140888.jpg" alt="Last Chance EP artwork" loading="lazy" onerror="this.style.display='none'" />
+        </div>
+        <div class="rc-meta">
+          <div class="rc-title">Last Chance EP</div>
+          <div class="rc-label">analoque records · 2025</div>
+        </div>
+      </a>
+
+      <a class="release-card" href="https://www.deejay.de/Elia_Nafzger_Music_Makes_Me_High_EP_UNDERPLAY04_Vinyl__1218671" target="_blank" rel="noopener">
+        <div class="rc-cover">
+          <span class="rc-num">05</span>
+          <span class="rc-arrow" aria-hidden="true">Deejay ↗</span>
+          <img src="https://www.deejay.de/images/xl/7/1/1218671.jpg" alt="Music Makes Me High EP artwork" loading="lazy" onerror="this.style.display='none'" />
+        </div>
+        <div class="rc-meta">
+          <div class="rc-title">Music Makes Me High EP</div>
+          <div class="rc-label">Underplay · Playedby</div>
+        </div>
+      </a>
+    </div>
+    <p class="labels-line">
+      Pressure Trax<span class="sep">/</span>Analogue<span class="sep">/</span>OOZ<span class="sep">/</span>Playedby<span class="sep">/</span>Below Surface<span class="sep">/</span>Body2Body
+    </p>
+  </div>
+</section>
+
+<!-- =================== BODY2BODY =================== -->
+<section class="block" id="body2body">
+  <div class="wrap">
+    <span class="eyebrow">Body2Body</span>
+    <div class="b2b">
+      <p>Records / Est. 2026. A label co-founded by <em>Elia Nafzger</em>, Nikizi and Axel Pineau — three friends bound by the same mentality and a shared obsession with sound. A space to release music on their own terms, with no filters and no formulas. <a class="inline" href="https://www.deejay.de/Various_Body_Moves_01_B2B001_Vinyl__1220858" target="_blank" rel="noopener">Body Moves 001</a> is the first step. There's plenty more to come.</p>
+      <div class="tracklist">
+        <a class="track-row" href="https://www.deejay.de/Various_Body_Moves_01_B2B001_Vinyl__1220858" target="_blank" rel="noopener"><span class="track-pos">A1</span><span class="track-name">Disco Sour</span><span class="track-artist">Nikizi</span><span class="track-go" aria-hidden="true">↗</span></a>
+        <a class="track-row" href="https://www.deejay.de/Various_Body_Moves_01_B2B001_Vinyl__1220858" target="_blank" rel="noopener"><span class="track-pos">A2</span><span class="track-name">Arrived Early</span><span class="track-artist">Axel</span><span class="track-go" aria-hidden="true">↗</span></a>
+        <a class="track-row" href="https://www.deejay.de/Various_Body_Moves_01_B2B001_Vinyl__1220858" target="_blank" rel="noopener"><span class="track-pos">B1</span><span class="track-name">Overtaken</span><span class="track-artist">Elia Nafzger</span><span class="track-go" aria-hidden="true">↗</span></a>
+        <a class="track-row" href="https://www.deejay.de/Various_Body_Moves_01_B2B001_Vinyl__1220858" target="_blank" rel="noopener"><span class="track-pos">B2</span><span class="track-name">Deeper</span><span class="track-artist">Oclock</span><span class="track-go" aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== LIVE =================== -->
+<section class="block" id="live">
+  <div class="wrap">
+    <span class="eyebrow">Selected appearances</span>
+    <div class="tags">
+      <span class="tag">Sunwaves</span><span class="tag">Fabric</span><span class="tag">Unmute</span><span class="tag">Trotamundo Festival</span><span class="tag">Guesthouse</span><span class="tag">NOD</span>
+    </div>
+    <span class="sub-eyebrow">Shared line-ups with</span>
+    <p class="linetext">
+      <span class="la" style="animation-delay:0s">Zip</span><span class="sep">·</span><span class="la" style="animation-delay:.45s">Foehn &amp; Jerome</span><span class="sep">·</span><span class="la" style="animation-delay:.9s">Rhadoo</span><span class="sep">·</span><span class="la" style="animation-delay:1.35s">Fumiya Tanaka</span><span class="sep">·</span><span class="la" style="animation-delay:1.8s">Dyed Soundorom</span><span class="sep">·</span><span class="la" style="animation-delay:2.25s">Sonja Moonear</span><span class="sep">·</span><span class="la" style="animation-delay:2.7s">bobby</span><span class="sep">·</span><span class="la" style="animation-delay:3.15s">Lola Haro</span>
+    </p>
+  </div>
+</section>
+
+<!-- =================== UPCOMING GIGS — auto-synced from Google Calendar =================== -->
+<!--
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LIVE : CALENDAR_ID d'Elia branché (voir <script> en bas). Les gigs se mettent à jour
+  automatiquement depuis son Google Calendar public. Rien à toucher côté site.
+  Pré-requis déjà faits : agenda public + référents API (elianafzger.com/*, www.*).
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-->
+<section class="block" id="gigs">
+  <div class="wrap">
+    <span class="eyebrow">Upcoming gigs</span>
+    <div class="dates" id="dates-container">
+      <p class="dates-loading">Loading...</p>
+    </div>
+    <p class="dates-note" id="dates-note">For booking inquiries — <a href="mailto:i@toitoimusik.com">email booking</a>.</p>
+  </div>
+</section>
+
+<!-- =================== BOOKING (Deckit form → worker) =================== -->
+<section class="block" id="booking">
+  <div class="wrap">
+    <span class="eyebrow">Booking</span>
+    <div class="bk">
+      <div class="bk-col">
+        <p class="bk-lead">Short bio, press kit and photos — everything a booker needs, one click away.</p>
+        <button type="button" class="pk-btn" id="bk-copybio">Copy short bio</button>
+        <a class="pk-btn pk-zip" href="https://pub-c6bf98a8fcaf4d52a4b90e6e1f210f1e.r2.dev/elia/elia-press-photos-shb6whal.zip">&#8595; Press kit — ZIP</a>
+      </div>
+      <form class="bk-form" id="bk-form">
+        <span class="bk-form-title">Booking request</span>
+        <div class="bk-row">
+          <label>Your name<input type="text" name="name" placeholder="Name / promoter" required /></label>
+          <label>Your email<input type="email" name="email" placeholder="you@email.com" required /></label>
+        </div>
+        <div class="bk-row">
+          <label>Date<input type="text" name="date" placeholder="e.g. 14 Nov 2026" /></label>
+          <label>City<input type="text" name="city" placeholder="City" /></label>
+        </div>
+        <div class="bk-row">
+          <label>Venue / event<input type="text" name="venue" placeholder="Venue or festival" /></label>
+          <label>Budget<input type="text" name="budget" placeholder="Optional" /></label>
+        </div>
+        <label>Message<textarea name="msg" rows="3" placeholder="Context, set length, line-up…"></textarea></label>
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none" />
+        <button type="submit" class="pk-btn pk-zip" id="bk-send">Send request →</button>
+        <p class="bk-status" id="bk-status" role="status" aria-live="polite" style="display:none;margin:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PRESS KIT =================== -->
+<section class="block" id="press">
+  <div class="wrap">
+    <span class="eyebrow">Press kit</span>
+
+    <div class="press-locked" id="press-locked">
+      <p class="press-info">High-resolution press photos and live videos available for promoters and press. Enter your access code to download.</p>
+      <div class="press-form">
+        <input type="text" id="press-code" placeholder="Access code" autocomplete="off" autocapitalize="off" spellcheck="false" />
+        <button id="press-unlock" type="button">Unlock</button>
+      </div>
+      <p class="press-error" id="press-error"></p>
+      <p class="press-hint">No code yet? <a href="mailto:i@toitoimusik.com">Email booking</a></p>
+    </div>
+
+    <div class="press" id="press-unlocked" style="display:none">
+      <a href="https://pub-c6bf98a8fcaf4d52a4b90e6e1f210f1e.r2.dev/elia/elia-press-photos-shb6whal.zip" class="press-row">
+        <div class="press-row-l">
+          <span class="press-title">Press photos</span>
+          <span class="press-meta">High resolution · .zip</span>
+        </div>
+        <span class="press-action">Download ↓</span>
+      </a>
+      <a href="https://pub-c6bf98a8fcaf4d52a4b90e6e1f210f1e.r2.dev/elia/elia-press-videos-shb6whal.zip" class="press-row">
+        <div class="press-row-l">
+          <span class="press-title">Press videos</span>
+          <span class="press-meta">Live clips · 1080p · .zip</span>
+        </div>
+        <span class="press-action">Download ↓</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== CONTACT =================== -->
+<section class="block" id="contact">
+  <div class="wrap">
+    <span class="eyebrow">Contact</span>
+    <div class="contact">
+      <a class="contact-row" href="mailto:i@toitoimusik.com">
+        <span class="contact-label">Booking</span>
+        <span class="contact-value">i@toitoimusik.com</span>
+      </a>
+      <a class="contact-row" href="https://www.instagram.com/elia_nafzger/" target="_blank" rel="noopener">
+        <span class="contact-label">Instagram</span>
+        <span class="contact-value">@elia_nafzger</span>
+      </a>
+      <a class="contact-row" href="https://soundcloud.com/elianafzger" target="_blank" rel="noopener">
+        <span class="contact-label">SoundCloud</span>
+        <span class="contact-value">@elianafzger</span>
+      </a>
+      <a class="contact-row" href="https://elianafzgermusic.bandcamp.com" target="_blank" rel="noopener">
+        <span class="contact-label">Bandcamp</span>
+        <span class="contact-value">elianafzgermusic</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- =================== FOOTER =================== -->
+<footer>
+  <div class="footer-l">
+    <span>Elia Nafzger · 2026</span>
+    <span>London — Worldwide</span>
+  </div>
+  <div class="socials">
+    <a href="https://soundcloud.com/elianafzger" target="_blank" rel="noopener" class="social-icon" aria-label="SoundCloud">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 14 V11"/><path d="M7 16 V9"/><path d="M10 17 V7"/><path d="M13 17 V7"/><path d="M16 15 V9"/><path d="M19 14 V11"/>
+      </svg>
+    </a>
+    <a href="https://www.instagram.com/elia_nafzger/" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/>
+      </svg>
+    </a>
+    <a href="https://elianafzgermusic.bandcamp.com" target="_blank" rel="noopener" class="social-icon" aria-label="Bandcamp">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 15.5 L9 8.5 L21 8.5 L15 15.5 Z"/></svg>
+    </a>
+    <a href="mailto:i@toitoimusik.com" class="social-icon" aria-label="Email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 7 L12 13 L21 7"/>
+      </svg>
+    </a>
+  </div>
+</footer>
+
+<!-- =================== SITE CREDIT — Deckit -->
+<div class="site-credit">
+  Site &amp; creative direction by <a href="https://deckit.art" target="_blank" rel="noopener">deckit.art<span class="arrow">↗</span></a>
+</div>
+
+<div class="toast" id="toast">
+  <span>Email copied · <span class="toast-email">i@toitoimusik.com</span></span>
+</div>
+
+<script>
+  // ============= ENTER SPLASH =============
+  // ============= ENTER SPLASH LOGIC (Deckit signature) =============
+  (function() {
+    var overlay = document.getElementById('enterOverlay');
+    if (!overlay) return;
+    var btn = document.getElementById('enterBtn');
+    var textEl = overlay.querySelector('.enter-name-text');
+    var dotEl = overlay.querySelector('.enter-name-dot');
+    var word = 'Elia Nafzger';
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var typeTimer = null;
+    var prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    var runType = function() {
+      if (typeTimer) { clearTimeout(typeTimer); typeTimer = null; }
+      if (!textEl) return;
+      textEl.textContent = '';
+      if (dotEl) dotEl.classList.remove('is-visible');
+      var i = 0;
+      var step = function() {
+        if (i < word.length) { textEl.textContent += word.charAt(i); i++; typeTimer = setTimeout(step, 95); }
+        else { typeTimer = null; if (dotEl) setTimeout(function(){ dotEl.classList.add('is-visible'); }, 80); }
+      };
+      step();
+    };
+    if (reduced) { if (textEl) textEl.textContent = word; if (dotEl) dotEl.classList.add('is-visible'); }
+    else { setTimeout(runType, 380); }
+    var closed = false;
+    var close = function() {
+      if (closed) return;
+      closed = true;
+      overlay.classList.add('is-hidden');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = prevOverflow;
+      setTimeout(function(){ if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 900);
+    };
+    btn.addEventListener('click', function(e){ e.stopPropagation(); close(); });
+    overlay.addEventListener('click', close);
+  })();
+
+  // ============= INTERACTIVITY =============
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if ('IntersectionObserver' in window && !prefersReducedMotion) {
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('is-visible'); sectionObserver.unobserve(entry.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('section.block').forEach(s => sectionObserver.observe(s));
+  } else {
+    document.querySelectorAll('section.block').forEach(s => s.classList.add('is-visible'));
+  }
+
+  // ============= PRESS KIT UNLOCK =============
+  // Code donné aux promoters/press :
+  const PRESS_CODE = 'NAFZGER26';
+
+  const pressLocked = document.getElementById('press-locked');
+  const pressUnlocked = document.getElementById('press-unlocked');
+  const pressCodeInput = document.getElementById('press-code');
+  const pressUnlockBtn = document.getElementById('press-unlock');
+  const pressError = document.getElementById('press-error');
+
+  function unlockPress() {
+    if (!pressCodeInput) return;
+    const code = (pressCodeInput.value || '').trim().toLowerCase();
+    if (code === PRESS_CODE.toLowerCase()) {
+      pressLocked.style.display = 'none';
+      pressUnlocked.style.display = 'flex';
+      pressError.textContent = '';
+      try { sessionStorage.setItem('eln-unlocked', '1'); } catch(e) {}
+    } else {
+      pressError.textContent = code ? 'Invalid code. Contact booking for access.' : 'Please enter a code.';
+      pressCodeInput.focus();
+    }
+  }
+
+  if (pressUnlockBtn) {
+    pressUnlockBtn.addEventListener('click', unlockPress);
+    pressCodeInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); unlockPress(); } });
+    try { if (sessionStorage.getItem('eln-unlocked') === '1') { pressLocked.style.display = 'none'; pressUnlocked.style.display = 'flex'; } } catch(e) {}
+  }
+
+  // ============= EMAIL COPY (toast) =============
+  const EMAIL = 'i@toitoimusik.com';
+  const toast = document.getElementById('toast');
+  let toastTimeout;
+  function showToast() { clearTimeout(toastTimeout); toast.classList.add('show'); toastTimeout = setTimeout(() => toast.classList.remove('show'), 2600); }
+  async function copyEmail() {
+    try {
+      if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(EMAIL); return true; }
+      const ta = document.createElement('textarea'); ta.value = EMAIL; ta.style.position='fixed'; ta.style.left='-9999px';
+      document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); document.body.removeChild(ta); return ok;
+    } catch (e) { return false; }
+  }
+  // copy on click of any mailto (still follows through to mail client)
+  document.querySelectorAll('a[href^="mailto:"]').forEach(el => {
+    el.addEventListener('click', async () => { const ok = await copyEmail(); if (ok) showToast(); });
+  });
+</script>
+
+<script>
+  // ============= BLUR-IN STATEMENT =============
+  (function(){
+    var el = document.getElementById('blurband');
+    if(!el) return;
+    var p = el.querySelector('p');
+    var text = p.getAttribute('data-text') || '';
+    var words = text.split(' ');
+    var maxEnd = 0;
+    words.forEach(function(w, i){
+      var prog = i / words.length;
+      var delay = i * 0.06 + Math.pow(prog, 0.8) * 0.5 + (Math.random() - 0.5) * 0.05;
+      if (delay < 0) delay = 0;
+      var dur = 2.0 + Math.cos(i * 0.3) * 0.3;
+      var blur = 12 + Math.floor(Math.random() * 8);
+      var scale = (0.9 + Math.sin(i * 0.2) * 0.05).toFixed(3);
+      var span = document.createElement('span');
+      span.className = 'w' + (w === '—' ? ' em' : '');
+      span.textContent = w;
+      span.style.transitionDuration = dur.toFixed(2) + 's';
+      span.style.transitionDelay = delay.toFixed(2) + 's';
+      span.style.setProperty('--blur', blur + 'px');
+      span.style.setProperty('--scale', scale);
+      p.appendChild(span);
+      maxEnd = Math.max(maxEnd, delay + dur);
+    });
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { el.classList.add('in'); return; }
+    var running = false;
+    function loop(){
+      el.classList.add('in');
+      setTimeout(function(){
+        el.classList.remove('in');
+        setTimeout(loop, 3500);
+      }, (maxEnd + 1.2) * 1000);
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting && !running) { running = true; loop(); io.disconnect(); }
+      });
+    }, { threshold: 0.35 });
+    io.observe(el);
+  })();
+</script>
+
+<script>
+  // ============= GOOGLE CALENDAR (gigs) =============
+  (function loadGigs(){
+    var CALENDAR_ID = 'f07b641855b1ee565d417a646b1d70d61d5ab8a82493961175a03c9fd3c743ee@group.calendar.google.com';
+    var API_KEY = 'AIzaSyBDvGVIXDD721O3NO2KUKeY2zFKz5qj7AI';
+    var MAX_RESULTS = 12, TIMEZONE = 'Europe/London';
+    var container = document.getElementById('dates-container');
+    if(!container) return;
+    function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+    function empty(){ container.innerHTML='<p class="dates-empty">No upcoming gigs scheduled. Reach out for booking inquiries.</p>'; }
+    if(CALENDAR_ID.indexOf('PLACEHOLDER')===0){ empty(); return; }
+    var now=new Date().toISOString();
+    var url='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CALENDAR_ID)+'/events?key='+API_KEY+'&orderBy=startTime&singleEvents=true&timeMin='+encodeURIComponent(now)+'&maxResults='+MAX_RESULTS;
+    fetch(url).then(function(r){return r.json();}).then(function(data){
+      if(data.error){ container.innerHTML='<p class="dates-empty">Unable to load gigs at the moment.</p>'; return; }
+      var events=(data.items||[]).filter(function(e){return e.start;});
+      if(events.length===0){ empty(); return; }
+      container.innerHTML=events.map(function(ev){
+        var s=ev.start.dateTime||ev.start.date, d=new Date(s);
+        var day=d.toLocaleDateString('en-US',{day:'numeric',timeZone:TIMEZONE});
+        var month=d.toLocaleDateString('en-US',{month:'short',timeZone:TIMEZONE});
+        var wd=d.toLocaleDateString('en-US',{weekday:'short',timeZone:TIMEZONE});
+        var venue=(ev.summary||'TBA').trim(), city=(ev.location||'').split(',')[0].trim();
+        return '<div class="date-row"><span class="date-when">'+day+' '+month+' · '+wd+'</span><span class="date-venue">'+esc(venue)+'</span><span class="date-city">'+esc(city)+'</span></div>';
+      }).join('');
+    }).catch(function(){ container.innerHTML='<p class="dates-empty">Unable to load gigs at the moment.</p>'; });
+  })();
+</script>
+
+<!-- =================== DECKIT — booking + optional sections CSS =================== -->
+<style id="dk-opt-css">
+  .pk-btn{ display:inline-flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; padding:15px 30px; border:1px solid var(--fg); color:var(--fg); background:transparent; cursor:pointer; transition:background .15s,color .15s,border-color .15s; text-decoration:none; }
+  .pk-btn:hover{ background:var(--fg); color:var(--bg); }
+  .bk{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:44px; align-items:start; }
+  .bk-lead{ font-size:clamp(17px,1.4vw,20px); font-weight:300; color:var(--fg-dim); line-height:1.55; margin-bottom:22px; max-width:34ch; }
+  .bk-col .pk-btn{ display:inline-flex; margin:0 10px 10px 0; }
+  .bk-form .pk-btn.pk-zip{ background:var(--accent); color:var(--bg); font-weight:600; border-color:var(--accent); }
+  .bk-form{ display:flex; flex-direction:column; gap:14px; border:1px solid var(--line-strong); padding:26px; }
+  .bk-form-title{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin-bottom:4px; }
+  .bk-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .bk-form label{ display:flex; flex-direction:column; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+  .bk-form input, .bk-form textarea{ background:transparent; border:1px solid var(--line-strong); border-radius:1px; padding:11px 13px; color:var(--fg); font-family:inherit; font-size:16px; outline:none; transition:border-color .2s; resize:vertical; }
+  .bk-form input:focus, .bk-form textarea:focus{ border-color:var(--accent); }
+  .bk-form .pk-btn{ align-self:flex-start; }
+  @media(max-width:820px){ .bk{ grid-template-columns:1fr; gap:32px; } .bk-row{ grid-template-columns:1fr; } }
+  .yt-featured{ position:relative; aspect-ratio:16/9; overflow:hidden; border:1px solid var(--line); cursor:pointer; }
+  .yt-featured img{ display:block; width:100%; height:100%; object-fit:cover; transition:transform .7s cubic-bezier(.22,.61,.36,1), opacity .4s; opacity:.92; }
+  .yt-featured:hover img{ transform:scale(1.03); opacity:1; }
+  .yt-featured iframe, .yt-card iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .yt-play{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:74px; height:74px; border-radius:50%; border:1px solid rgba(239,236,228,.4); background:rgba(14,13,12,.55); display:flex; align-items:center; justify-content:center; color:var(--fg); transition:background .25s,border-color .25s,transform .25s; }
+  .yt-play svg{ width:20px; height:20px; margin-left:3px; }
+  .yt-featured:hover .yt-play, .yt-card:hover .yt-play{ background:var(--accent); border-color:var(--accent); color:var(--bg); transform:translate(-50%,-50%) scale(1.06); }
+  .yt-cap{ position:absolute; left:22px; bottom:18px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--fg); text-shadow:0 1px 8px rgba(0,0,0,.6); }
+  .yt-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:18px; margin-top:18px; }
+  .yt-card{ cursor:pointer; }
+  .yt-thumb{ position:relative; aspect-ratio:16/9; overflow:hidden; border:1px solid var(--line); }
+  .yt-thumb img{ display:block; width:100%; height:100%; object-fit:cover; transition:transform .6s, opacity .3s; opacity:.85; }
+  .yt-card:hover .yt-thumb img{ transform:scale(1.04); opacity:1; }
+  .yt-title{ display:block; margin-top:10px; font-size:15px; font-weight:500; letter-spacing:-.01em; color:var(--fg); }
+  .visuals-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:18px; }
+  .visual-card{ position:relative; aspect-ratio:4/5; overflow:hidden; border:1px solid var(--line); background:#14161a; cursor:zoom-in; transition:border-color .3s, transform .4s; }
+  .visual-card img{ display:block; width:100%; height:100%; object-fit:cover; transition:transform .6s, opacity .4s; opacity:.92; }
+  .visual-card:hover{ border-color:var(--line-strong); }
+  .visual-card:hover img{ transform:scale(1.04); opacity:1; }
+  .visual-card::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent 60%,rgba(14,13,12,.72)); pointer-events:none; opacity:0; transition:opacity .3s; }
+  .visual-card:hover::after{ opacity:1; }
+  .visual-caption{ position:absolute; left:14px; right:14px; bottom:14px; z-index:2; opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; pointer-events:none; }
+  .visual-card:hover .visual-caption{ opacity:1; transform:translateY(0); }
+  .visual-caption-text{ display:block; font-family:'IBM Plex Mono',monospace; font-style:italic; font-size:14px; color:var(--fg); line-height:1.35; }
+  .visual-caption-credit{ display:block; margin-top:4px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.28em; text-transform:uppercase; color:var(--fg-dim); }
+  .lightbox[hidden]{ display:none; }
+  .lightbox{ position:fixed; inset:0; z-index:9998; display:flex; align-items:center; justify-content:center; padding:40px; background:rgba(8,8,7,.94); }
+  .lightbox-inner{ position:relative; max-width:92vw; max-height:88vh; display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .lightbox-img{ max-width:92vw; max-height:80vh; object-fit:contain; border:1px solid var(--line-strong); }
+  .lightbox-caption{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--fg-dim); text-align:center; }
+  .lightbox-caption .cap{ font-style:italic; color:var(--fg); }
+  .lightbox-caption .credit{ margin-left:10px; letter-spacing:.2em; text-transform:uppercase; font-size:10px; }
+  .lightbox-close, .lightbox-prev, .lightbox-next{ position:absolute; background:rgba(14,13,12,.55); border:1px solid var(--line-strong); color:var(--fg); width:44px; height:44px; border-radius:50%; cursor:pointer; font-size:20px; display:flex; align-items:center; justify-content:center; transition:background .2s,border-color .2s; }
+  .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+  .lightbox-close{ top:-6px; right:-6px; } .lightbox-prev{ top:50%; left:-6px; transform:translateY(-50%); } .lightbox-next{ top:50%; right:-6px; transform:translateY(-50%); }
+  .articles{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+  .art{ position:relative; display:flex; flex-direction:column; justify-content:flex-end; aspect-ratio:3/2; padding:18px; border:1px solid var(--line-strong); background:#14161a center/cover no-repeat; overflow:hidden; color:inherit; transition:border-color .35s, transform .35s; text-decoration:none; }
+  .art::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(14,13,12,.2) 0%,rgba(14,13,12,.85) 100%); z-index:0; }
+  .art > *{ position:relative; z-index:1; }
+  .art:hover{ border-color:var(--accent); transform:translateY(-3px); }
+  .art-mast{ font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:var(--accent); margin-bottom:6px; }
+  .art-title{ font-size:17px; font-weight:500; letter-spacing:-.01em; color:var(--fg); line-height:1.25; }
+</style>
+
+<section class="block" id="watch" hidden>
+  <div class="wrap"><span class="eyebrow">Watch</span><div class="yt-featured" data-yt=""></div><div class="yt-grid"></div></div>
+</section>
+<section class="block" id="gallery" hidden>
+  <div class="wrap"><span class="eyebrow">Gallery</span><div class="visuals-grid" id="visuals-grid"></div></div>
+</section>
+<section class="block" id="press-articles" hidden>
+  <div class="wrap"><span class="eyebrow">Press</span><div class="articles"></div></div>
+</section>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">✕</button>
+    <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous">‹</button>
+    <button class="lightbox-next" id="lightbox-next" aria-label="Next">›</button>
+    <img class="lightbox-img" id="lightbox-img" alt="" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
+
+<!-- ============= DECKIT CONTENT LOADER (additive; design-preserving) ============= -->
+<script>
+(function(){
+  "use strict";
+  var CB='?t='+Date.now();
+  var WORKER='https://deckit-media-uploader.nadimmasmoudi93.workers.dev/content/';
+  var SITE='elia';
+  function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function txt(el,v){ if(el && v!=null && String(v).trim()!=='') el.textContent=v; }
+  function attr(el,a,v){ if(el && v!=null && String(v).trim()!=='') el.setAttribute(a,v); }
+  function getJSON(name){ return fetch(WORKER+name+'.json'+CB,{cache:'no-store',headers:{'X-Deckit-Site':SITE}}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}); }
+  function safe(fn){ try{ fn(); }catch(e){ if(window.console) console.warn('[loader]',e); } }
+  function reveal(sel){ var s=document.querySelector(sel); if(s){ s.removeAttribute('hidden'); s.classList.add('is-visible'); } }
+
+  getJSON('profile').then(function(p){ if(!p) return;
+    safe(function(){ txt(document.querySelector('.hero-eyebrow'), p.eyebrow); });
+    safe(function(){ var t=document.querySelector('h1.hero-title'); if(!t) return; var sps=t.querySelectorAll('span'); if(sps.length===1) txt(sps[0],p.name); else if(sps.length===0) txt(t,p.name); });
+    safe(function(){ txt(document.querySelector('.hero-tagline'), p.tagline); });
+    safe(function(){ attr(document.querySelector('.hero-media img, .hero-bg img'), 'src', p.hero_image); });
+    safe(function(){ var bio=(p.bio_en&&p.bio_en.trim())?p.bio_en:''; if(!bio) return; var box=document.querySelector('.bio-text'); if(!box) return;
+      box.innerHTML=bio.trim().split(/\n\s*\n/).map(function(pa){ return '<p>'+esc(pa.trim())+'</p>'; }).join(''); });
+  });
+
+  getJSON('mixes').then(function(mx){ if(!mx||!Array.isArray(mx.list)||!mx.list.length) return;
+    safe(function(){
+      var box=document.querySelector('.mixes'); if(!box) return;
+      var tplWave=box.querySelector('.mix .mix-wave'); var waveHTML=tplWave?tplWave.outerHTML:'';
+      var playHTML='<span class="mix-play" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 1.5 L13 8 L3 14.5 Z"/></svg></span>';
+      var arch=box.querySelector('.mix-archive'); var archHTML=arch?arch.outerHTML:'';
+      var list=mx.list.filter(function(m){ return m && (m.featured!==false); });
+      box.innerHTML=list.map(function(m){ var href=(m.url&&String(m.url).trim())?m.url:'#';
+        return '<a class="mix" href="'+esc(href)+'" target="_blank" rel="noopener">'+playHTML+'<div class="mix-content"><span class="mix-title">'+esc(m.title||'')+'</span><span class="mix-meta">'+esc(m.meta||'')+'</span></div>'+waveHTML+'</a>';
+      }).join('')+archHTML;
+    });
+  });
+
+  getJSON('productions').then(function(pr){ if(!pr||!Array.isArray(pr.list)||!pr.list.length) return;
+    safe(function(){
+      var box=document.querySelector('#releases .releases-grid'); if(!box) return;
+      var list=pr.list.filter(function(it){ return it && (it.featured!==false); });
+      box.innerHTML=list.map(function(it,i){ var num=('0'+(i+1)).slice(-2); var arrow=((it.source||'Bandcamp')+' ↗');
+        var cover=it.artwork?'<img src="'+esc(it.artwork)+'" alt="'+esc((it.title||'')+' artwork')+'" loading="lazy" onerror="this.style.display=\'none\'" />':'';
+        return '<a class="release-card" href="'+esc(it.url||'#')+'" target="_blank" rel="noopener"><div class="rc-cover"><span class="rc-num">'+num+'</span><span class="rc-arrow" aria-hidden="true">'+esc(arrow)+'</span>'+cover+'</div><div class="rc-meta"><div class="rc-title">'+esc(it.title||'')+'</div><div class="rc-label">'+esc(it.label||'')+'</div></div></a>';
+      }).join('');
+    });
+  });
+
+  // GIGS — Studio gigs.json wins when it has items; otherwise the site's Google Calendar fallback shows.
+  getJSON('gigs').then(function(g){ if(!g||!Array.isArray(g.list)||!g.list.length) return;
+    safe(function(){
+      var old=document.getElementById('dates-container'); if(!old) return;
+      function fmt(v){ var s=(v||'').trim(); if(!s) return ''; var d=new Date(s.length<=10?(s+'T12:00:00'):s); if(isNaN(d.getTime())) return esc(s);
+        return esc(d.toLocaleDateString('en-US',{day:'numeric'})+' '+d.toLocaleDateString('en-US',{month:'short'})+' · '+d.toLocaleDateString('en-US',{weekday:'short'})); }
+      var rows=g.list.map(function(it){ if(!it) return ''; return '<div class="date-row"><span class="date-when">'+fmt(it.date)+'</span><span class="date-venue">'+esc(it.venue||'TBA')+'</span><span class="date-city">'+esc(it.city||'')+'</span></div>'; }).join('');
+      var fresh=old.cloneNode(false); fresh.innerHTML=rows; if(old.parentNode) old.parentNode.replaceChild(fresh,old); else old.innerHTML=rows;
+    });
+  });
+
+  getJSON('press_kit').then(function(pk){ if(!pk) return; safe(function(){ if(pk.info_text&&pk.info_text.trim()) txt(document.querySelector('.press-info'), pk.info_text); }); });
+
+  getJSON('contact').then(function(ct){ if(!ct) return;
+    safe(function(){
+      function handle(url){ if(!url) return ''; var m=url.replace(/\/+$/,'').split('/'); return '@'+m[m.length-1]; }
+      function bare(url){ return (url||'').replace(/^https?:\/\//,'').replace(/\/+$/,''); }
+      document.querySelectorAll('#contact .contact-row').forEach(function(row){
+        var lblEl=row.querySelector('.contact-label'); var label=(lblEl?lblEl.textContent:'').trim().toLowerCase(); var val=row.querySelector('.contact-value');
+        function setRow(url,disp){ if(!url||!url.trim()) return; if(row.tagName==='A') row.setAttribute('href',url); if(val&&disp) val.textContent=disp; }
+        if(label==='direct'){ if(ct.email){ if(row.tagName==='A') row.setAttribute('href','mailto:'+ct.email); if(val) val.textContent=ct.email; } }
+        else if(label==='instagram'){ setRow(ct.instagram, handle(ct.instagram)); }
+        else if(label==='soundcloud'){ setRow(ct.soundcloud, handle(ct.soundcloud)); }
+        else if(label==='bandcamp'){ setRow(ct.bandcamp, bare(ct.bandcamp)); }
+      });
+    });
+  });
+
+  function ytId(item){ if(!item) return ''; if(item.youtube_id&&String(item.youtube_id).trim()) return String(item.youtube_id).trim(); var u=(item.url||'').trim(); if(!u) return ''; var m;
+    if((m=u.match(/[?&]v=([A-Za-z0-9_-]{6,})/))) return m[1]; if((m=u.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/))) return m[1];
+    if((m=u.match(/\/embed\/([A-Za-z0-9_-]{6,})/))) return m[1]; if((m=u.match(/\/shorts\/([A-Za-z0-9_-]{6,})/))) return m[1];
+    if(/^[A-Za-z0-9_-]{6,}$/.test(u)) return u; return ''; }
+  function ytEmbed(el,id){ if(!id||el.querySelector('iframe')) return; var f=document.createElement('iframe'); f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0'; f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'; f.allowFullscreen=true; var host=el.classList.contains('yt-card')?el.querySelector('.yt-thumb'):el; host.style.position='relative'; host.appendChild(f); }
+  function bindYT(el){ if(!el||el.__ytBound) return; el.__ytBound=true; el.addEventListener('click',function(){ ytEmbed(el, el.getAttribute('data-yt')); }); }
+  getJSON('watch').then(function(w){ if(!w||!Array.isArray(w.list)||!w.list.length) return;
+    safe(function(){ var list=w.list.filter(function(it){ return it&&ytId(it); }); if(!list.length) return;
+      var playHTML='<span class="yt-play" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 1.5 L13 8 L3 14.5 Z"/></svg></span>';
+      var feat=document.querySelector('#watch .yt-featured');
+      if(feat){ var fid=ytId(list[0]), ft=list[0].title||''; feat.setAttribute('data-yt',fid);
+        feat.innerHTML='<img src="https://i.ytimg.com/vi/'+esc(fid)+'/sddefault.jpg" onerror="this.onerror=null;this.src=\'https://i.ytimg.com/vi/'+esc(fid)+'/hqdefault.jpg\'" alt="'+esc(ft)+'" loading="lazy" />'+playHTML+'<span class="yt-cap">'+esc(ft)+'</span>'; bindYT(feat); }
+      var grid=document.querySelector('#watch .yt-grid');
+      if(grid){ grid.innerHTML=list.slice(1).map(function(it){ var id=ytId(it),t=it.title||''; return '<div class="yt-card" data-yt="'+esc(id)+'"><div class="yt-thumb"><img src="https://i.ytimg.com/vi/'+esc(id)+'/hqdefault.jpg" alt="'+esc(t)+'" loading="lazy" /><span class="yt-play"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 1.5 L13 8 L3 14.5 Z"/></svg></span></div><span class="yt-title">'+esc(t)+'</span></div>'; }).join(''); grid.querySelectorAll('.yt-card[data-yt]').forEach(bindYT); }
+      reveal('#watch');
+    });
+  });
+
+  getJSON('photos').then(function(ph){ if(!ph||!Array.isArray(ph.list)||!ph.list.length) return;
+    safe(function(){ var grid=document.getElementById('visuals-grid'); if(!grid) return; var list=ph.list.filter(function(it){ return it&&it.image; }); if(!list.length) return;
+      grid.innerHTML=list.map(function(it,i){ var cap=it.caption&&it.caption.trim()?'<span class="visual-caption-text">'+esc(it.caption)+'</span>':''; var cr=it.credit&&it.credit.trim()?'<span class="visual-caption-credit">'+esc(it.credit)+'</span>':'';
+        return '<div class="visual-card" data-photo-index="'+i+'"><img src="'+esc(it.image)+'" alt="'+esc(it.caption||'')+'" loading="lazy" /><div class="visual-caption">'+cap+cr+'</div></div>'; }).join('');
+      window.__DK_PHOTOS=list.map(function(it){ return {image:it.image||'',caption:it.caption||'',credit:it.credit||''}; }); reveal('#gallery');
+    });
+  });
+
+  getJSON('articles').then(function(ar){ if(!ar||!Array.isArray(ar.list)||!ar.list.length) return;
+    safe(function(){ var box=document.querySelector('#press-articles .articles'); if(!box) return; var list=ar.list.filter(function(it){ return it&&(it.title||it.source); }); if(!list.length) return;
+      box.innerHTML=list.map(function(it){ var bg=it.cover&&it.cover.trim()?' style="background-image:url(\''+esc(it.cover)+'\')"':''; var href=(it.url&&it.url.trim())?it.url:'#';
+        return '<a class="art" href="'+esc(href)+'" target="_blank" rel="noopener"'+bg+'><span class="art-mast">'+esc(it.source||'')+'</span><span class="art-title">'+esc(it.title||'')+'</span></a>'; }).join('');
+      reveal('#press-articles');
+    });
+  });
+})();
+</script>
+
+<!-- ============= DECKIT BOOKING → worker send ============= -->
+<script>
+(function(){
+  "use strict";
+  var BIO_SHORT="Elia Nafzger is a London-based DJ and producer driven by instinct, intention and a passion for digging. He's played Sunwaves, Fabric, Unmute and Guesthouse, with releases on Pressure Trax, Analogue, OOZ and Playedby — raw, considered and honest. In 2026 he co-founded Body2Body.";
+  var WORKER='https://deckit-media-uploader.nadimmasmoudi93.workers.dev';
+  var SITE='elia';
+  var cb=document.getElementById('bk-copybio');
+  if(cb) cb.addEventListener('click', function(){ (navigator.clipboard?navigator.clipboard.writeText(BIO_SHORT):Promise.reject()).then(function(){ cb.textContent='Copied ✓'; setTimeout(function(){ cb.textContent='Copy short bio'; },1800); }).catch(function(){}); });
+  var bf=document.getElementById('bk-form'); if(!bf) return;
+  var st=document.getElementById('bk-status'); var sendBtn=document.getElementById('bk-send');
+  function setStatus(m,k){ if(!st) return; st.style.display='block'; st.textContent=m; st.style.color = k==='err'?'#c2554d':(k==='ok'?'var(--accent)':'var(--muted)'); }
+  bf.addEventListener('submit', function(e){
+    e.preventDefault(); e.stopImmediatePropagation();
+    if(bf._gotcha && bf._gotcha.value) return;
+    var d=new FormData(bf);
+    var payload={ site:SITE, name:d.get('name')||'', email:d.get('email')||'', date:d.get('date')||'',
+      venue:[d.get('venue'),d.get('city'),d.get('budget')?('Budget: '+d.get('budget')):''].filter(Boolean).join(' · '), message:d.get('msg')||'' };
+    if(sendBtn) sendBtn.disabled=true; setStatus('Sending…','');
+    fetch(WORKER+'/booking',{method:'POST',headers:{'Content-Type':'application/json','X-Deckit-Site':SITE},body:JSON.stringify(payload)})
+      .then(function(r){ return r.json().catch(function(){return {};}).then(function(j){ return {ok:r.ok,j:j}; }); })
+      .then(function(res){ if(res.ok&&res.j.ok){ bf.reset(); setStatus('Request sent — Elia will get back to you by email. Thanks!','ok'); }
+        else { setStatus((res.j&&res.j.error)?('Couldn’t send: '+res.j.error):'Couldn’t send. Please email i@toitoimusik.com directly.','err'); if(sendBtn) sendBtn.disabled=false; } })
+      .catch(function(){ setStatus('Network error. Please email i@toitoimusik.com directly.','err'); if(sendBtn) sendBtn.disabled=false; });
+  });
+})();
+</script>
+
+<!-- ============= LIGHTBOX (press gallery) ============= -->
+<script>
+(function(){
+  var lb=document.getElementById('lightbox'); if(!lb) return;
+  var img=document.getElementById('lightbox-img'), cap=document.getElementById('lightbox-caption'),
+      bC=document.getElementById('lightbox-close'), bP=document.getElementById('lightbox-prev'), bN=document.getElementById('lightbox-next');
+  function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  var idx=0; function photos(){ return window.__DK_PHOTOS||[]; }
+  function show(i){ var a=photos(); if(!a.length) return; idx=(i+a.length)%a.length; var p=a[idx]; img.src=p.image; img.alt=p.caption||'';
+    cap.innerHTML=(p.caption?'<span class="cap">'+esc(p.caption)+'</span>':'')+(p.credit?'<span class="credit">'+esc(p.credit)+'</span>':''); lb.hidden=false; }
+  function close(){ lb.hidden=true; img.src=''; }
+  document.addEventListener('click', function(e){ var card=e.target.closest&&e.target.closest('.visual-card'); if(card){ show(parseInt(card.getAttribute('data-photo-index')||'0',10)); } });
+  bC&&bC.addEventListener('click',close); bP&&bP.addEventListener('click',function(){ show(idx-1); }); bN&&bN.addEventListener('click',function(){ show(idx+1); });
+  lb.addEventListener('click',function(e){ if(e.target===lb) close(); });
+  document.addEventListener('keydown',function(e){ if(lb.hidden) return; if(e.key==='Escape') close(); else if(e.key==='ArrowLeft') show(idx-1); else if(e.key==='ArrowRight') show(idx+1); });
+})();
+</script>
+
+<a id="dk-admin-link" href="/admin/" aria-label="Open Studio">Admin &#8594;</a>
+<style>#dk-admin-link{position:fixed;top:14px;right:18px;z-index:90;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);opacity:0;pointer-events:none;transition:opacity .2s;text-decoration:none;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(6px);padding:6px 11px;border:1px solid var(--line);border-radius:999px;}#dk-admin-link:hover{color:var(--fg);border-color:var(--accent);}</style>
+<script>try{var _l=Object.keys(localStorage).some(function(k){return /gotrue|netlify.?identity/i.test(k)&&localStorage.getItem(k);});if(_l){var a=document.getElementById('dk-admin-link');if(a){a.style.opacity='.75';a.style.pointerEvents='auto';}}}catch(e){}</script>
+
+</body>
+</html>

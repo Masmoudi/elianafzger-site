@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<style>:root{color-scheme:light;supported-color-schemes:light}</style>
+</head>
+<body style="margin:0;padding:0;background:#f4f2ee">
+<!-- Netlify Identity → Recovery email. Subject: Reset your Deckit Studio password -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f2ee;margin:0;padding:0">
+  <tr><td align="center" style="padding:40px 16px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;background:#ffffff;border:1px solid #e7e3dc;border-radius:6px">
+      <tr><td style="padding:32px 34px 0 34px">
+        <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:24px;font-weight:800;letter-spacing:-0.03em;color:#141210">deckit<span style="color:#8e2820">.</span></span>
+        <span style="font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.26em;color:#9a948a;text-transform:uppercase;margin-left:9px">Studio</span>
+      </td></tr>
+      <tr><td style="padding:22px 34px 6px 34px">
+        <h1 style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:19px;font-weight:600;color:#141210;margin:0 0 12px 0">Reset your password</h1>
+        <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.6;color:#57534d;margin:0 0 24px 0">You asked to reset the password for your Deckit Studio. Choose a new one below.</p>
+        <table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="background:#8e2820;border-radius:3px">
+          <a href="{{ .SiteURL }}#recovery_token={{ .Token }}" style="display:inline-block;font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#ffffff;text-decoration:none;padding:13px 26px">Set a new password →</a>
+        </td></tr></table>
+        <p style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;line-height:1.6;color:#9a948a;margin:24px 0 0 0">This link is valid for 24 hours. If you didn't request this, you can safely ignore this email.</p>
+      </td></tr>
+      <tr><td style="padding:26px 34px 30px 34px">
+        <div style="border-top:1px solid #e7e3dc;padding-top:18px">
+          <p style="font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.12em;color:#b6b0a6;text-transform:uppercase;margin:0">deckit<span style="color:#8e2820">.</span> — websites &amp; press kits for DJs</p>
+        </div>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>

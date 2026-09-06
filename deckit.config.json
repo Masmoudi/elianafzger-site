@@ -1,0 +1,56 @@
+{
+  "$schema": "./deckit.config.schema.json",
+  "meta": {
+    "template_version": "1.0.0",
+    "build_number": "004"
+  },
+  "client": {
+    "slug": "elia",
+    "artist_name": "Elia Nafzger",
+    "role": "DJ & Producer — London",
+    "domain": "elianafzger.com",
+    "site_url": "https://elianafzger.com",
+    "admin_email": "i@toitoimusik.com",
+    "plan": "Studio"
+  },
+  "brand": {
+    "accent_color": "#efece4",
+    "accent_hover": "#ffffff"
+  },
+  "infra": {
+    "github_repo": "Masmoudi/elianafzger-site",
+    "worker_url": "https://deckit-media-uploader.nadimmasmoudi93.workers.dev",
+    "media_public_url": "https://pub-c6bf98a8fcaf4d52a4b90e6e1f210f1e.r2.dev",
+    "media_namespace": "elia/"
+  },
+  "features": {
+    "gallery_photos": true,
+    "gallery_videos": true,
+    "press_kit_zips": true,
+    "gigs_calendar": true,
+    "soundcloud_mixes": true,
+    "custom_domain": true,
+    "remove_deckit_credit": false,
+    "multi_page": true,
+    "native_player": false,
+    "productions": true,
+    "watch": true,
+    "articles": true,
+    "custom_fonts": true,
+    "google_analytics": true,
+    "meta_pixel": true,
+    "qr_code": true,
+    "newsletter": true,
+    "booking_mode": true,
+    "bandcamp_embed": true,
+    "beatport_embed": true,
+    "basic_analytics": true,
+    "max_photos": null,
+    "max_videos": null
+  },
+  "integrations": {},
+  "serial": "N°004",
+  "press": {
+    "rider": ""
+  }
+}

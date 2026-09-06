@@ -1,0 +1,38 @@
+# Netlify configuration — nadim-dj.com
+# Static site, no build step. Publish from root.
+
+[build]
+  publish = "."
+  # No command needed — pure HTML/CSS/JS
+  # Content is read live from the Cloudflare worker (not Netlify), so content/uploads
+  # commits never need a deploy. Skip builds when ONLY content/ or uploads/ changed.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!content/**' ':!uploads/**'"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Long cache for static assets (images, fonts)
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.mp4"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Short cache for HTML (so updates via CMS deploy fast)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

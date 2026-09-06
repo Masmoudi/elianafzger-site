@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>deckit. — Studio</title>
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="%230e0d0c"/><text x="16" y="22" font-family="system-ui" font-weight="700" font-size="16" fill="%23efece4" text-anchor="middle" letter-spacing="-0.5">dk</text><circle cx="24" cy="22" r="2" fill="%238e2820"/></svg>' />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0e0d0c;
+      --bg-elev: #14110e;
+      --bg-input: #1a1714;
+      --bg-input-hover: #211c18;
+      --fg: #efece4;
+      --fg-dim: #b8b3a8;
+      --muted: #6b665e;
+      --line: rgba(239, 236, 228, 0.08);
+      --line-strong: rgba(239, 236, 228, 0.16);
+      --accent: #8e2820;
+      --accent-hover: #a5352a;
+      --accent-glow: rgba(142, 40, 32, 0.20);
+      --live: #4a9d5e;
+      --warning: #c98a3a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Inter Tight', -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+      opacity: 0.05;
+      background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    }
+    body::after {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(142, 40, 32, 0.12), transparent 40%),
+        radial-gradient(circle at 88% 85%, rgba(142, 40, 32, 0.06), transparent 45%);
+      filter: blur(90px);
+    }
+
+    button, input, textarea, select {
+      font-family: inherit; font-size: inherit; color: inherit;
+      background: none; border: none; outline: none;
+    }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ============ HEADER ============ */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background: rgba(14, 13, 12, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--line);
+      padding: 22px 48px 20px;
+    }
+    .header-row {
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 24px;
+      width: 100%; margin: 0;
+    }
+    .brand { display: flex; align-items: baseline; gap: 14px; }
+    .brand-mark { font-family: 'Inter Tight', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.03em; }
+    .brand-mark::after { content: '.'; color: var(--accent); }
+    .brand-divider { width: 1px; height: 18px; background: var(--line-strong); }
+    .brand-tag { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+    .header-meta { display: flex; align-items: center; gap: 24px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); }
+    .live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--live); box-shadow: 0 0 8px rgba(74,157,94,0.6); margin-right: 8px; vertical-align: middle; }
+    .header-meta a { color: var(--fg-dim); transition: color 0.2s; }
+    .header-meta a:hover { color: var(--accent); }
+    .header-client { justify-self: end; position: relative; }
+    .profile-trigger { display: flex; align-items: center; gap: 10px; background: transparent; border: none; border-radius: 2px; padding: 4px 4px 4px 4px; cursor: pointer; transition: opacity 0.2s; }
+    .profile-trigger:hover { opacity: 0.7; }
+    .avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--fg); display: flex; align-items: center; justify-content: center; font-family: 'Inter Tight', sans-serif; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+    .avatar-lg { width: 40px; height: 40px; font-size: 17px; }
+    .profile-name { font-family: 'Inter Tight', sans-serif; font-size: 14px; font-weight: 500; color: var(--fg); }
+    .profile-chevron { color: var(--muted); font-size: 10px; }
+    .profile-menu { position: absolute; top: calc(100% + 10px); right: 0; width: 260px; background: var(--bg-elev); border: 1px solid var(--line-strong); border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); padding: 8px; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity 0.18s ease, transform 0.18s ease; z-index: 200; }
+    .profile-menu.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .profile-head { display: flex; align-items: center; gap: 12px; padding: 12px 12px 14px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+    .profile-head-txt { flex: 1; min-width: 0; }
+    .profile-menu-name { font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 500; color: var(--fg); }
+    .profile-menu-url { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tier-badge { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 2px; padding: 3px 7px; }
+    .profile-item { display: flex; align-items: center; justify-content: space-between; width: 100%; background: transparent; border: none; text-align: left; padding: 10px 12px; border-radius: 2px; color: var(--fg-dim); font-family: 'Inter Tight', sans-serif; font-size: 14px; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .profile-item:hover { background: rgba(239,236,228,0.05); color: var(--fg); }
+    .pm-l { display: flex; align-items: center; gap: 11px; }
+    .pm-lead { display: inline-flex; color: var(--muted); transition: color .15s; }
+    .pm-lead svg { width: 15px; height: 15px; }
+    .profile-item:hover .pm-lead { color: var(--accent); }
+    .profile-item-danger .pm-lead { color: inherit; }
+    .profile-item .pm-ic { color: var(--muted); font-size: 12px; } .profile-item .pm-ic svg { width: 13px; height: 13px; display: block; }
+    .profile-item-danger { color: var(--muted); }
+    .profile-item-danger:hover { color: var(--accent); }
+    .profile-divider { height: 1px; background: var(--line); margin: 8px 4px; }
+
+    /* ============ MAIN ============ */
+    .main { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; padding: 140px 48px 160px; }
+    #view { animation: viewIn 0.32s ease; }
+    @keyframes viewIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Spinner (inside save button during publish) */
+    .spinner {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border: 1.5px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Success flash on save */
+    @keyframes successFlash {
+      0% { background: transparent; }
+      30% { background: rgba(74, 157, 94, 0.15); }
+      100% { background: transparent; }
+    }
+    .toolbar.flash-success { animation: successFlash 1.2s ease; }
+
+    /* Keyboard hint (subtle mono text) */
+    .kbd {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 0.14em;
+      color: var(--muted);
+      padding: 2px 6px;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      margin-left: 6px;
+      text-transform: uppercase;
+    }
+
+    .section-title { margin-bottom: 48px; }
+    .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+    .h1 { font-family: 'Inter Tight', sans-serif; font-size: 44px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 14px; }
+    .h1 em { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--fg-dim); }
+    .h1 .dk { font-weight: 700; }
+    .h1 .dk .dot { color: var(--accent); }
+    .sub { font-size: 15px; color: var(--fg-dim); max-width: 620px; line-height: 1.55; }
+    .hairline { margin: 32px 0; height: 1px; background: var(--line); }
+
+    /* ============ DASHBOARD ============ */
+    .collections { display: flex; flex-direction: column; }
+    .col-item { display: grid; grid-template-columns: 24px 1fr auto; gap: 24px; align-items: center; padding: 28px 20px; border-top: 1px solid var(--line); transition: all 0.2s; cursor: pointer; }
+    .col-item:last-child { border-bottom: 1px solid var(--line); }
+    .col-item:hover { border-top-color: var(--line-strong); background: rgba(239, 236, 228, 0.02); }
+    .col-item:hover + .col-item { border-top-color: var(--line-strong); }
+    .col-arrow { font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 18px; transition: color 0.2s, transform 0.2s; }
+    .col-item:hover .col-arrow { color: var(--accent); transform: translateX(4px); }
+    .col-body { display: flex; flex-direction: column; gap: 6px; }
+    .col-name { font-family: 'Inter Tight', sans-serif; font-size: 20px; font-weight: 500; letter-spacing: -0.015em; }
+    .col-item:hover .col-name { color: var(--accent); }
+    .col-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+    .col-count { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); padding: 6px 12px; border: 1px solid var(--line); border-radius: 2px; }
+
+    /* ============ COLLECTION VIEW ============ */
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); margin-bottom: 32px; transition: color 0.2s, border-color 0.2s, background 0.2s; cursor: pointer; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; }
+    .back-btn:hover { color: var(--fg); border-color: var(--accent); background: var(--bg-input-hover); }
+
+    /* Sticky toolbar (appears when dirty) */
+    .toolbar {
+      position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 75;
+      background: rgba(14, 13, 12, 0.94);
+      backdrop-filter: blur(20px);
+      border: none; border-top: 1px solid var(--line-strong);
+      border-radius: 0;
+      padding: 14px 48px;
+      margin: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px;
+      transition: transform 0.25s ease, opacity 0.2s;
+    }
+    .toolbar.hidden { transform: translateY(110%); opacity: 0; }
+    .toolbar.hidden { pointer-events: none; }
+    .toolbar-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--warning);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .toolbar-status.saving { color: var(--fg-dim); }
+    .toolbar-status.saved { color: var(--live); }
+    .toolbar-status.error { color: var(--accent); }
+    .toolbar-status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
+    .toolbar-actions { display: flex; gap: 12px; }
+    .btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px; letter-spacing: 0.28em;
+      text-transform: uppercase; font-weight: 500;
+      padding: 11px 22px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      color: var(--fg);
+      background: transparent;
+      transition: all 0.2s;
+    }
+    .btn:hover:not(:disabled) { border-color: var(--fg-dim); background: rgba(239, 236, 228, 0.04); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { color: #fff; border-color: var(--accent); background: var(--accent); }
+    .btn-primary:hover:not(:disabled) { background: color-mix(in srgb, var(--accent) 85%, #000); color: #fff; }
+    .btn-ghost { border-color: transparent; color: var(--muted); padding: 8px 12px; }
+    .btn-ghost:hover:not(:disabled) { color: var(--fg); background: rgba(239, 236, 228, 0.04); }
+    .btn-danger { color: var(--muted); }
+    .btn-danger:hover:not(:disabled) { color: var(--accent); border-color: var(--accent); }
+    .btn-move {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px; letter-spacing: 0;
+      padding: 6px 10px;
+      min-width: 34px;
+    }
+    .btn-move:disabled { opacity: 0.25; }
+
+    /* ============ FIELDS (editable) ============ */
+    .fields { display: flex; flex-wrap: wrap; gap: 24px 16px; }
+    .fields > .field { flex: 1 1 100%; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--accent);
+      font-weight: 500;
+    }
+    .np-block { border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, transparent); border-radius: 10px; padding: 16px 16px 14px; margin-top: 4px; }
+    .np-head { display: flex; align-items: center; gap: 9px; font-family: 'Inter Tight', sans-serif; font-size: 14px; font-weight: 600; color: var(--fg); margin-bottom: 6px; }
+    .np-head svg { width: 17px; height: 17px; color: var(--accent); }
+    .np-tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 8.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 2px; padding: 2px 6px; }
+    .np-hint { font-size: 12.5px; color: var(--dim); line-height: 1.5; margin-bottom: 12px; }
+    .field-hint {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 11.5px; color: var(--muted); font-style: italic;
+      margin-top: 1px;
+    }
+    .input, .textarea {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 14px;
+      color: var(--fg);
+      background: var(--bg-input);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 9px 12px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      width: 100%;
+      line-height: 1.45;
+    }
+    .input:hover, .textarea:hover { background: var(--bg-input-hover); }
+    .input:focus, .textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+      background: var(--bg-input-hover);
+    }
+    .input::placeholder, .textarea::placeholder { color: var(--muted); }
+    .field:focus-within .field-label { color: var(--fg); transition: color .15s ease; }
+    .field.field-error .input, .field.field-error .textarea { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .field-error-msg { font-family: 'Inter Tight', sans-serif; font-size: 12.5px; color: var(--accent); margin-top: 2px; display: none; }
+    .field.field-error .field-error-msg { display: block; }
+    .textarea { min-height: 100px; resize: vertical; font-family: 'Inter Tight', sans-serif; }
+    .textarea.large { min-height: 180px; }
+
+    /* Boolean toggle */
+    .toggle {
+      display: inline-flex; align-items: center; gap: 12px;
+      cursor: pointer; user-select: none;
+    }
+    .toggle-track {
+      width: 42px; height: 22px;
+      background: var(--bg-input);
+      border: 1px solid var(--line-strong);
+      border-radius: 22px;
+      position: relative;
+      transition: all 0.2s;
+    }
+    .toggle-thumb {
+      position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px;
+      background: var(--muted);
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    .toggle input:checked + .toggle-track { border-color: var(--accent); background: rgba(142, 40, 32, 0.15); }
+    .toggle input:checked + .toggle-track .toggle-thumb { transform: translateX(20px); background: var(--accent); }
+    .toggle input { position: absolute; opacity: 0; pointer-events: none; }
+    .toggle-label {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 14px; color: var(--fg-dim);
+    }
+    .toggle input:checked ~ .toggle-label { color: var(--fg); }
+
+    /* Image / file preview */
+    .file-input-wrap {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .file-preview {
+      max-width: 200px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg-input);
+    }
+    .file-preview img { display: block; width: 100%; height: auto; max-height: 150px; object-fit: cover; }
+    .file-preview-empty {
+      max-width: 200px;
+      padding: 24px 16px;
+      font-size: 12px;
+      border: 1px dashed var(--line2);
+      border-radius: 6px;
+      text-align: center;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase;
+      border: 1px dashed var(--line-strong);
+      border-radius: 2px;
+    }
+    .file-input-row {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .file-input-row .input { flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .file-note {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ============ LIST WIDGET ============ */
+    .list-widget { display: flex; flex-direction: column; gap: 16px; }
+    .list-item-card {
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .list-item-card.dirty { border-color: var(--warning); }
+    .list-item-header {
+      display: grid; grid-template-columns: auto 1fr auto; gap: 16px;
+      align-items: center;
+      padding: 8px 12px;
+      background: rgba(239, 236, 228, 0.02);
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+    }
+    .list-item-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px; letter-spacing: 0.24em;
+      text-transform: uppercase; color: var(--muted);
+      padding: 3px 7px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+    }
+    .list-item-summary {
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 13.5px; font-weight: 500;
+      color: var(--fg);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .list-item-actions { display: flex; gap: 6px; align-items: center; }
+    .list-item-actions .btn { padding: 6px 11px; font-size: 9.5px; letter-spacing: .16em; }
+    .list-item-actions .btn-ghost { padding: 6px 8px; }
+    .list-item-body {
+      padding: 12px 12px 14px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+    .list-item-body.collapsed { display: none; }
+    .list-add-btn {
+      align-self: stretch; text-align: center; width: 100%;
+      margin-top: 8px;
+      padding: 13px 24px;
+      border: 1px dashed var(--line-strong);
+      border-radius: 2px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px; letter-spacing: 0.28em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      background: transparent;
+    }
+    .item-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+    .list-add-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      border-style: solid;
+      background: rgba(142, 40, 32, 0.05);
+    }
+    .list-empty {
+      padding: 56px 20px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line-strong);
+      border-radius: 2px;
+      font-family: 'Inter Tight', sans-serif;
+    }
+    .list-empty-hint {
+      display: block;
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.6;
+    }
+    .list-empty em {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      color: var(--fg-dim);
+    }
+
+    /* ============ LOGIN ============ */
+    .login-screen {
+      position: fixed; inset: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+    }
+    .login-inner { max-width: 400px; width: 100%; padding: 48px; text-align: center; position: relative; z-index: 2; }
+    .login-mark { font-family: 'Inter Tight', sans-serif; font-size: 42px; font-weight: 600; letter-spacing: -0.04em; margin-bottom: 8px; }
+    .login-mark::after { content: '.'; color: var(--accent); }
+    .login-tag { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--muted); margin-bottom: 48px; }
+    .login-btn { display: inline-block; padding: 16px 32px; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 500; transition: all 0.2s; }
+    .login-btn:hover { background: var(--accent); color: var(--fg); }
+    .login-hint { margin-top: 32px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); line-height: 1.8; }
+
+    /* ============ TOAST ============ */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(16px);
+      z-index: 300;
+      padding: 12px 20px 12px 14px;
+      background: var(--bg-elev);
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 14px; letter-spacing: 0; text-transform: none; font-weight: 500;
+      color: var(--fg);
+      box-shadow: 0 18px 44px rgba(0,0,0,0.5);
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
+      display: flex; align-items: center; gap: 11px;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast::before { content: '•'; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 12px; font-weight: 700; flex-shrink: 0; background: var(--line-strong); color: var(--fg); }
+    .toast.success::before { content: '✓'; background: var(--live); color: #fff; }
+    .toast.error::before { content: '!'; background: var(--accent); color: #fff; }
+
+    /* ============ LOADING ============ */
+    .loading { display: flex; align-items: center; justify-content: center; min-height: 40vh; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+    .loading::after { content: '...'; display: inline-block; animation: dots 1.4s infinite; }
+    @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
+    .error-box { padding: 24px; border: 1px solid var(--accent); border-radius: 2px; color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+    .medialist { display: flex; flex-direction: column; gap: 10px; }
+    .medialist-item { display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--line); border-radius: 2px; }
+    .medialist-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 2px; border: 1px solid var(--line); }
+    .medialist-file { flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--fg-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .medialist-item .btn-danger { margin-left: auto; }
+    .medialist .btn[data-action="ml-add"] { align-self: flex-start; border-style: dashed; }
+
+    .list-item-body { display: flex; flex-direction: row; flex-wrap: wrap; gap: 18px 12px; }
+    .list-item-body .field { flex: 1 1 100%; margin: 0; }
+    .list-item-card { border-radius: 9px !important; }
+    .textarea { min-height: 78px; }
+    .field-half { flex: 1 1 calc(50% - 12px) !important; min-width: 180px; }
+    .field-half .file-preview, .field-half .file-preview-empty { max-width: 100%; }
+
+    /* ============ DASHBOARD GRID (Option A) ============ */
+    .dash-group { margin-bottom: 40px; }
+    .dash-group-label { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+    .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .dash-card { display: flex; flex-direction: column; align-items: flex-start; gap: 0; text-align: left; padding: 22px; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 2px; cursor: pointer; transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease; }
+    .dash-card:hover { border-color: var(--accent); background: var(--bg-input-hover); transform: translateY(-2px); }
+    .dash-ico { color: var(--accent); width: 26px; height: 26px; margin-bottom: 16px; }
+    .dash-ico svg { width: 100%; height: 100%; display: block; }
+    .dash-name { font-family: 'Inter Tight', sans-serif; font-size: 17px; font-weight: 500; letter-spacing: -0.015em; color: var(--fg); margin-bottom: 5px; }
+    .dash-meta { font-family: 'Inter Tight', sans-serif; font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+
+    /* ===== Cockpit dashboard ===== */
+    .ck-app { display: grid; grid-template-columns: 250px 1fr; gap: 18px; align-items: start; }
+    .ck-side { border: 1px solid var(--line); border-radius: 12px; background: var(--bg-elev); padding: 10px; position: sticky; top: 120px; }
+    .ck-sg { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); margin: 14px 10px 5px; }
+    .ck-sg:first-child { margin-top: 6px; }
+    .ck-si { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: none; border-radius: 8px; padding: 9px 10px; color: var(--fg-dim); font-family: 'Inter Tight', sans-serif; font-size: 13.5px; cursor: pointer; transition: background .15s, color .15s; }
+    .ck-si:hover { background: var(--bg-input-hover); color: var(--fg); }
+    .ck-siico { display: inline-flex; width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+    .ck-siico svg { width: 16px; height: 16px; }
+    .ck-si.lock .ck-siico { color: var(--muted); }
+    .ck-si.done { color: var(--fg); }
+    .ck-sidot { width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid var(--muted); flex-shrink: 0; }
+    .ck-sidot.on { background: var(--accent); border-color: var(--accent); }
+    .ck-si.lock { opacity: .55; } .ck-sinm { flex: 1; }
+    .ck-sib { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 2px; padding: 2px 5px; }
+    .ck-center { display: flex; flex-direction: column; gap: 16px; }
+    .ck-stat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .ck-s { border: 1px solid var(--line); border-radius: 10px; padding: 16px; background: var(--bg-elev); }
+    .ck-n { font-size: 26px; font-weight: 600; letter-spacing: -.02em; color: var(--fg); }
+    .ck-l { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+    .ck-prev { position: relative; display: flex; align-items: flex-end; width: 100%; text-align: left; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; aspect-ratio: 16/7; padding: 24px; cursor: pointer; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 26%, #100f0e), #100f0e 68%); transition: border-color .2s; }
+    .ck-prev.has-img { background: #100f0e; }
+    .ck-prev-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(.5) saturate(.5); z-index: 0; }
+    .ck-prev.has-img::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(14,13,12,.9), rgba(14,13,12,.25) 55%, transparent 82%); z-index: 1; }
+    .ck-prev-inner, .ck-prevtag { position: relative; z-index: 2; }
+    .ck-prev:hover { border-color: var(--accent); }
+    .ck-prev-name { font-size: 30px; font-weight: 700; letter-spacing: -.02em; color: var(--fg); } .ck-prev-name span { color: var(--accent); }
+    .ck-prev-url { font-size: 12px; color: var(--fg-dim); margin-top: 2px; }
+    .ck-prevtag { position: absolute; top: 12px; left: 12px; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--fg); background: rgba(14,13,12,.7); backdrop-filter: blur(6px); padding: 5px 10px; border-radius: 999px; }
+    .ck-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .ck-book { border: 1px solid var(--line); border-radius: 10px; padding: 16px; background: var(--bg-elev); }
+    .ck-book-h { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    .ck-book-b { display: flex; gap: 10px; flex-wrap: wrap; }
+    .ck-todo { font-size: 13px; color: var(--fg-dim); } .ck-todo b { color: var(--fg); } .ck-todo a { color: var(--accent); cursor: pointer; } .ck-todo a:hover { text-decoration: underline; }
+    .ck-soon { font-size: 11.5px; color: var(--muted); }
+    @media (max-width: 900px) { .ck-app { grid-template-columns: 1fr; } .ck-side { position: static; } .ck-stat { grid-template-columns: 1fr 1fr; } }
+
+    .dash-card.locked { cursor: pointer; opacity: 0.5; border-style: dashed; border-color: var(--line); background: transparent; }
+    .dash-card.locked:hover { opacity: 0.82; border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: var(--bg-input-hover); transform: none; }
+    .dash-card.locked:hover .dash-lock { background: var(--accent); color: #fff; }
+    .dash-card.locked .dash-lock { transition: background .2s, color .2s; }
+    .dash-card.locked .dash-ico { color: var(--muted); }
+    .dash-lock-ic { display: inline-flex; align-items: center; color: var(--muted); }
+    .dash-lock-ic svg { width: 13px; height: 13px; }
+    .dash-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .dash-name-row .dash-name { margin-bottom: 0; }
+    .dash-lock { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 2px; padding: 2px 6px; line-height: 1; }
+    .dash-card.locked .dash-meta em { color: var(--accent); font-style: normal; }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 900px) {
+      .header { padding: 16px 16px 14px; }
+      .header-row { grid-template-columns: 1fr auto; gap: 10px; }
+      .header-meta { display: none; }
+      .header-client { gap: 12px; }
+      .client-role { display: none; }
+      .main { padding: 104px 16px 100px; }
+      .h1 { font-size: 30px; }
+      .dash-grid { grid-template-columns: 1fr; }
+      .col-item { grid-template-columns: 18px 1fr auto; padding: 18px 10px; gap: 14px; }
+      .col-name { font-size: 16px; }
+      .col-meta { font-size: 10px; }
+      .toolbar { padding: 12px 16px; gap: 12px; }
+      .toolbar-actions { display: flex; gap: 10px; }
+      .toolbar-actions .btn { flex: 1; }
+      .list-item-header { grid-template-columns: auto 1fr auto; gap: 10px; padding: 9px 11px; }
+      .list-item-actions { grid-column: auto; flex-wrap: nowrap; gap: 4px; }
+      .list-item-actions .btn-move { display: none; }
+      .list-item-actions .btn { padding: 6px 8px; font-size: 8.5px; letter-spacing: .1em; }
+      .list-item-body { padding: 14px 12px; }
+      .field-value.image, .file-preview { max-width: 100%; }
+      .input, .textarea { font-size: 16px; } /* prevents iOS zoom on focus */
+      .medialist-item { flex-wrap: wrap; }
+    }
+    @media (max-width: 480px) {
+      .brand-tag { display: none; }
+      .h1 { font-size: 26px; }
+      .btn-logout { padding: 7px 10px; font-size: 9px; }
+      .col-count { display: none; }
+    }
+  
+    @media (max-width: 600px) {
+      .field-half { flex: 1 1 100% !important; min-width: 0; }
+      .ck-stat { grid-template-columns: 1fr; }
+      .ck-prev { aspect-ratio: 16/10; padding: 18px; }
+      .ck-prev-name { font-size: 22px; }
+      .ck-actions { flex-direction: column; }
+      .ck-actions .btn { width: 100%; }
+      .ck-book-b { flex-direction: column; }
+      .ck-book-b .btn { width: 100%; }
+      .list-item-body { gap: 14px 10px; }
+      .fields { gap: 18px 12px; }
+      .toolbar-actions .btn { padding: 12px 14px; }
+    }
+
+    /* ===== MOBILE M1 nav + sheets (hidden on desktop) ===== */
+    #mnav, .msheet, #mScrim { display: none; }
+    #mnav button { background: none; border: none; }
+    @media (max-width: 700px) {
+      /* minimalist smaller buttons */
+      .btn { padding: 8px 12px; font-size: 9px; letter-spacing: .14em; border-radius: 8px; }
+      .toolbar-actions .btn { padding: 10px 12px; }
+      .list-add-btn { padding: 11px; font-size: 9px; }
+      /* cockpit → mobile: rail + booker block move to sheets */
+      .ck-app { display: block; }
+      .ck-side { display: none; }
+      .ck-book { display: none; }
+      .main { padding-bottom: 96px; }
+      /* bottom nav */
+      body:not(.view-collection) #mnav { display: grid; }
+      #mnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; grid-template-columns: repeat(3,1fr);
+        background: rgba(14,13,12,.95); backdrop-filter: blur(16px); border-top: 1px solid var(--line2);
+        padding: 8px 0 calc(6px + env(safe-area-inset-bottom)); }
+      #mnav button { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;
+        font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+      #mnav button svg { width: 21px; height: 21px; color: var(--muted); }
+      #mnav button.on { color: var(--fg); } #mnav button.on svg { color: var(--accent); }
+      /* scrim + sheets */
+      #mScrim { display: none; position: fixed; inset: 0; z-index: 64; background: rgba(0,0,0,.5); }
+      #mScrim.on { display: block; }
+      .msheet { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 65;
+        background: var(--bg-elev); border-top: 1px solid var(--line2); border-radius: 18px 18px 0 0;
+        max-height: 82%; overflow-y: auto; transform: translateY(100%); transition: transform .25s ease;
+        padding-bottom: calc(14px + env(safe-area-inset-bottom)); box-shadow: 0 -20px 60px rgba(0,0,0,.5); }
+      .msheet.on { transform: translateY(0); }
+      .msgrip { width: 38px; height: 4px; border-radius: 999px; background: var(--line2); margin: 10px auto 4px; }
+      .msheet-h { padding: 6px 18px 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+      .msg { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); padding: 14px 18px 4px; }
+      .msrow { width: 100%; display: flex; align-items: center; gap: 13px; padding: 13px 18px; border-top: 1px solid var(--line); background: none; border-left: 0; border-right: 0; border-bottom: 0; cursor: pointer; text-align: left; color: var(--fg); }
+      .msrow svg { width: 19px; height: 19px; color: var(--accent); flex-shrink: 0; }
+      .msrow.lock svg { color: var(--muted); } .msrow.lock { opacity: .6; }
+      .msnm { flex: 1; font-size: 15px; }
+      .msdot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); } .msdot.off { background: var(--line2); }
+      .mstier { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 2px 5px; }
+      .mschev { color: var(--muted); font-size: 16px; }
+      #mShareBody { padding: 6px 18px 4px; display: flex; flex-direction: column; gap: 8px; }
+      #mShareBody .btn { width: 100%; padding: 12px; font-size: 10px; }
+    }
+
+    @media (max-width: 700px) {
+      .h1 { font-size: 24px; margin-bottom: 8px; }
+      .section-title { margin-bottom: 20px; }
+      .sub { font-size: 12px; }
+      .eyebrow { font-size: 9px; letter-spacing: .26em; margin-bottom: 8px; }
+      .field-label { font-size: 8.5px; letter-spacing: .18em; }
+      .field-hint { font-size: 10.5px; }
+      /* input text stays 16px on purpose (prevents iOS zoom-on-focus); everything else tightened */
+      .input, .textarea { padding: 9px 11px; border-radius: 7px; }
+      .textarea { min-height: 68px; }
+      .fields { gap: 16px 12px; }
+      .list-item-body { gap: 12px 10px; }
+      .back-btn { font-size: 10px; margin-bottom: 16px; padding: 10px 15px; color: var(--fg); border-color: var(--line2); }
+      .msections { margin-top: 2px; }
+      .input, .textarea { font-size: 13.5px; }   /* zoom locked via viewport, so we can shrink */
+      .fgroup > summary { font-size: 9px; padding: 12px 13px; }
+      .fgroup .fields { padding: 13px; }
+      /* compact save bar */
+      .toolbar { padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); gap: 12px; }
+      .toolbar-status { display: none; }
+      .toolbar { justify-content: flex-end; }
+      .toolbar-actions { gap: 8px; }
+      .toolbar-actions .btn { flex: 0 0 auto; padding: 9px 14px; font-size: 9px; letter-spacing: .12em; }
+      .btn .kbd { display: none; }
+      /* consistent status: filled = solid, empty = ring */
+      .msdot { background: var(--accent); }
+      .msdot.off { background: transparent; border: 1.5px solid var(--muted); }
+      /* account menu -> bottom sheet */
+      .profile-menu { position: fixed; top: auto; left: 0; right: 0; bottom: 0; width: 100%; border-radius: 18px 18px 0 0; padding: 12px 10px calc(16px + env(safe-area-inset-bottom)); transform: translateY(100%); box-shadow: 0 -22px 60px rgba(0,0,0,.55); }
+      .profile-menu.open { transform: translateY(0); }
+      .profile-item { padding: 14px 14px; font-size: 15px; }
+      .profile-menu .profile-head { padding: 6px 12px 14px; }
+    }
+
+    /* collapsible field groups (single collections) */
+    .fgroup { border: 1px solid var(--line); border-radius: 11px; background: var(--bg-elev); margin-bottom: 12px; overflow: hidden; }
+    .fgroup > summary { list-style: none; cursor: pointer; padding: 15px 17px; display: flex; align-items: center; justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); }
+    .fgroup > summary::-webkit-details-marker { display: none; }
+    .fgroup[open] > summary { border-bottom: 1px solid var(--line); color: var(--fg); }
+    .fgroup-chev { transition: transform .2s; color: var(--muted); }
+    .fgroup[open] .fgroup-chev { transform: rotate(180deg); }
+    .fgroup .fields { padding: 17px; }
+
+    /* in-app confirm modal (DA) */
+    .dk-modal-ov { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); opacity: 0; transition: opacity .18s ease; }
+    .dk-modal-ov.on { opacity: 1; }
+    .dk-modal { background: var(--bg-elev); border: 1px solid var(--line-strong); border-radius: 14px; max-width: 400px; width: 100%; padding: 26px 24px 20px; transform: translateY(10px) scale(.98); transition: transform .18s ease; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+    .dk-modal-ov.on .dk-modal { transform: none; }
+    .dk-modal-h { font-family: 'Inter Tight', sans-serif; font-size: 19px; font-weight: 600; letter-spacing: -.01em; color: var(--fg); margin-bottom: 8px; }
+    .dk-modal-b { font-size: 13.5px; line-height: 1.55; color: var(--fg-dim); margin-bottom: 22px; }
+    .dk-modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .dk-modal-actions .btn { padding: 10px 16px; }
+
+    /* ===== Help & FAQ modal ===== */
+    .faq-overlay { position: fixed; inset: 0; z-index: 400; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); padding: 24px; }
+    .faq-overlay.open { display: flex; }
+    .faq-panel { background: var(--bg-elev); border: 1px solid var(--line-strong); border-radius: 8px; max-width: 640px; width: 100%; max-height: 82vh; overflow-y: auto; padding: 34px 36px 30px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+    .faq-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+    .faq-head h2 { font-family: 'Inter Tight', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+    .faq-close { background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1; padding: 4px; }
+    .faq-close:hover { color: var(--fg); }
+    .faq-sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+    .faq-q { margin-top: 18px; }
+    .faq-q h3 { font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 600; color: var(--fg); margin-bottom: 5px; }
+    .faq-q p { font-size: 13.5px; line-height: 1.55; color: var(--fg-dim); }
+    .faq-q p a { color: var(--accent); }
+    .faq-foot { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+    .faq-foot a { color: var(--accent); }
+    .faq-search { width: 100%; background: var(--bg-input); border: 1px solid var(--line); border-radius: 6px; padding: 11px 14px; color: var(--fg); font-family: 'Inter Tight', sans-serif; font-size: 14px; margin-bottom: 8px; }
+    .faq-search::placeholder { color: var(--muted); }
+    .faq-search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .faq-item { border-bottom: 1px solid var(--line); }
+    .faq-item-q { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; text-align: left; background: none; border: none; cursor: pointer; padding: 15px 2px; color: var(--fg); font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 500; transition: color .18s; }
+    .faq-item-q:hover { color: var(--accent); }
+    .faq-item-ic { color: var(--muted); font-size: 20px; line-height: 1; transition: transform .25s cubic-bezier(.34,1.56,.64,1), color .2s; flex-shrink: 0; }
+    .faq-item.open .faq-item-q { color: var(--accent); }
+    .faq-item.open .faq-item-ic { transform: rotate(45deg); color: var(--accent); }
+    .faq-item-a { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+    .faq-item.open .faq-item-a { max-height: 260px; }
+    .faq-item-a p { font-size: 13.5px; line-height: 1.6; color: var(--fg-dim); padding: 0 2px 16px; }
+    .faq-item-a p a { color: var(--accent); }
+    .faq-empty { color: var(--muted); font-size: 13px; padding: 22px 2px; }
+
+</style>
+</head>
+<body>
+
+  <div data-netlify-identity-menu style="display:none"></div>
+
+  <div class="login-screen" id="loginScreen" style="display:none">
+    <div class="login-inner">
+      <div class="login-mark">deckit</div>
+      <div class="login-tag">Studio</div>
+      <button class="login-btn" id="loginBtn" type="button">Log in to studio →</button>
+      <div style="margin-top:18px"><button id="loginForgot" type="button" style="background:none;border:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;text-decoration:underline">Forgot password?</button></div>
+      <div class="login-hint">
+        Authorized users only.<br />
+        Contact deckit for access.
+      </div>
+    </div>
+  </div>
+
+  <div class="header" id="header" style="display:none">
+    <div class="header-row">
+      <div class="brand">
+        <span class="brand-mark">deckit</span>
+        <span class="brand-divider"></span>
+        <span class="brand-tag">Studio</span>
+      </div>
+      <div class="header-client">
+        <button class="profile-trigger" id="profileTrigger" aria-label="Account menu">
+          <span class="avatar" id="profileAvatar">D</span>
+          <span class="profile-name" id="profileName">Deckit</span>
+          <span class="profile-chevron">▾</span>
+        </button>
+        <div class="profile-menu" id="profileMenu">
+          <div class="profile-head">
+            <span class="avatar avatar-lg" id="profileAvatarLg">D</span>
+            <div class="profile-head-txt">
+              <div class="profile-menu-name" id="profileMenuName">Deckit</div>
+            </div>
+            <span class="tier-badge" id="tierBadge">Pro</span>
+          </div>
+          <a class="profile-item" id="pmVisit" target="_blank" rel="noopener"><span class="pm-l"><span class="pm-lead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg></span><span>Visit your page</span></span><span class="pm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+          <button class="profile-item" id="pmPassword" type="button"><span class="pm-l"><span class="pm-lead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="13" r="3"/><path d="M10.5 11.5L20 4M17 6l2 2M14 9l2 2"/></svg></span><span>Change password</span></span></button>
+          <a class="profile-item" id="pmUpgrade" href="https://deckit.art/packages" target="_blank" rel="noopener"><span class="pm-l"><span class="pm-lead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M6 11l6-6 6 6"/></svg></span><span>Upgrade plan</span></span><span class="pm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+          <div class="profile-divider"></div>
+          <a class="profile-item" id="pmHelp" href="https://deckit.art" target="_blank" rel="noopener"><span class="pm-l"><span class="pm-lead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.4 2.4 0 1 1 3.3 2.6c-.7.4-1 .9-1 1.7"/><circle cx="12" cy="16.6" r=".6" fill="currentColor" stroke="none"/></svg></span><span>Help &amp; FAQ</span></span><span class="pm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+          <a class="profile-item" id="pmFeedback"><span class="pm-l"><span class="pm-lead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H8l-4 4z"/></svg></span><span>Share feedback</span></span><span class="pm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+          <div class="profile-divider"></div>
+          <button class="profile-item profile-item-danger" id="pmLogout" type="button"><span class="pm-l"><span class="pm-lead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></span><span>Log out</span></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="main" id="main" style="display:none">
+    <div id="view"></div>
+  </main>
+
+  <!-- ===== MOBILE M1 (bottom-nav + sheets) — mobile only ===== -->
+  <nav id="mnav">
+    <button id="mnHome" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg><span>Home</span></button>
+    <button id="mnSections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="6" height="6" rx="1.4"/><rect x="14" y="4" width="6" height="6" rx="1.4"/><rect x="4" y="14" width="6" height="6" rx="1.4"/><rect x="14" y="14" width="6" height="6" rx="1.4"/></svg><span>Sections</span></button>
+    <button id="mnShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="12" r="2.2"/><circle cx="17" cy="6" r="2.2"/><circle cx="17" cy="18" r="2.2"/><path d="M8 11l7-4M8 13l7 4"/></svg><span>Share</span></button>
+  </nav>
+  <div id="mScrim"></div>
+  <div class="msheet" id="mShareWrap"><div class="msgrip"></div><div class="msheet-h">Share with bookers</div><div id="mShareBody"></div></div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>(function(){var h=location.hash||'';var m=/(recovery_token|invite_token)=([^&]+)/.exec(h);if(m){window.__DK_PW={kind:m[1]==='invite_token'?'invite':'recovery',token:m[2]};try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}})();</script>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <script>
+    // ============================================================
+    // DECKIT STUDIO — Session 2 (edit + save via Git Gateway)
+    // ============================================================
+
+    // Config loaded async at startup — falls back to nadim defaults for safety
+    let REPO = 'Masmoudi/nadim-dj-site';
+    let MEDIA_UPLOADER = 'https://deckit-media-uploader.nadimmasmoudi93.workers.dev';
+    let SITE_SLUG = 'nadim';
+    let CLIENT_NAME = 'Nadim';
+    let CLIENT_ROLE = 'DJ — Strasbourg · Tunis';
+    let SITE_URL = 'https://nadim-dj.com';
+    let BUILD_NUMBER = '001';
+    const BRANCH = 'main';
+    const GIT_GATEWAY = '/.netlify/git/github';
+
+    async function loadDeckitConfig() {
+      try {
+        const res = await fetch('/deckit.config.json?v=' + Date.now());
+        if (!res.ok) return;
+        const cfg = await res.json();
+        window.__STUDIO_FEATURES = cfg.features || {};
+        if (cfg.client && cfg.client.slug) SITE_SLUG = cfg.client.slug;
+        if (cfg.infra && cfg.infra.github_repo) REPO = cfg.infra.github_repo;
+        if (cfg.infra && cfg.infra.worker_url) MEDIA_UPLOADER = cfg.infra.worker_url;
+        if (cfg.client && cfg.client.artist_name) CLIENT_NAME = cfg.client.artist_name;
+        if (cfg.client && cfg.client.role) CLIENT_ROLE = cfg.client.role;
+        if (cfg.client && cfg.client.site_url) SITE_URL = cfg.client.site_url;
+        if (cfg.client && cfg.client.admin_email) window.__DECKIT_ADMIN_EMAIL = cfg.client.admin_email;
+        if (cfg.meta && cfg.meta.build_number) BUILD_NUMBER = cfg.meta.build_number;
+        if (cfg.brand && cfg.brand.accent_color) document.documentElement.style.setProperty('--accent', cfg.brand.accent_color);
+        if (cfg.brand && cfg.brand.accent_hover) document.documentElement.style.setProperty('--accent-hover', cfg.brand.accent_hover);
+        // Update profile menu UI
+        const initial = (CLIENT_NAME || 'D').trim().charAt(0).toUpperCase();
+        const f = window.__STUDIO_FEATURES || {};
+        const tierLabel = f.multi_page ? 'Studio' : (f.gallery_photos ? 'Pro' : 'Starter');
+        const set = (sel, txt) => { const el = document.querySelector(sel); if (el) el.textContent = txt; };
+        set('#profileAvatar', initial); set('#profileAvatarLg', initial);
+        set('#profileName', CLIENT_NAME); set('#profileMenuName', CLIENT_NAME);
+        set('#tierBadge', tierLabel);
+        const visit = document.querySelector('#pmVisit'); if (visit) visit.href = SITE_URL;
+      } catch (e) { console.warn('[Deckit Studio] config load failed:', e); }
+    }
+
+    const feat = (name) => { const f = window.__STUDIO_FEATURES || {}; return f[name] !== false; };
+
+    // Dashboard grouping + minimalist line icons (Deckit aesthetic)
+    const GROUPS = [
+      { name: 'Identity', keys: ['profile', 'contact', 'sound'] },
+      { name: 'Music', keys: ['mixes', 'native_player', 'productions', 'watch'] },
+      { name: 'Press', keys: ['photos', 'videos', 'articles'] },
+      { name: 'Booking', keys: ['venues', 'gigs', 'press_kit'] },
+      { name: 'Settings', keys: ['integrations'] }
+    ];
+    // key -> { f: gating feature, tier: badge } ; absent = always unlocked (Starter)
+    const LOCKS = {
+      photos:       { f: 'gallery_photos', tier: 'Pro' },
+      videos:       { f: 'gallery_videos', tier: 'Pro' },
+      articles:     { f: 'gallery_photos', tier: 'Pro' },
+      watch:        { f: 'watch', tier: 'Studio' },
+      native_player:{ f: 'native_player', tier: 'Studio' },
+      integrations: { f: 'google_analytics', tier: 'Studio' }
+    };
+    const ICONS = {
+      profile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>',
+      contact: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 7l9 6 9-6"/></svg>',
+      sound: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4 14V11M8 17V8M12 19V6M16 15V9M20 13V11"/></svg>',
+      mixes: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 14V12a8 8 0 0116 0v2"/><rect x="3" y="14" width="4" height="6" rx="1"/><rect x="17" y="14" width="4" height="6" rx="1"/></svg>',
+      native_player: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg>',
+      integrations: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M9 15l6-6M8 12l-2 2a3 3 0 004 4l2-2M16 12l2-2a3 3 0 00-4-4l-2 2"/></svg>',
+      photos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="4" width="18" height="16" rx="1.5"/><circle cx="8.5" cy="9" r="1.5"/><path d="M4 17l5-5 4 4 3-3 4 4"/></svg>',
+      videos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M10 9l5 3-5 3z"/></svg>',
+      watch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="6" width="19" height="12" rx="3"/><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor" stroke="none"/></svg>',
+      venues: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+      gigs: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="16" rx="1.5"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>',
+      productions: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.4"/></svg>',
+      articles: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M8 9h8M8 12h8M8 15h5"/></svg>',
+      press_kit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M12 4v10M8 11l4 3 4-3M5 19h14"/></svg>'
+    };
+    const SCHEMA = {
+      profile: {
+        label: 'Profile & bio',
+        blurb: 'Artist name, tagline, hero image, and short/long bios.',
+        groups: [
+          { name: 'Identity', fields: ['name','eyebrow','city','display_font'] },
+          { name: 'Bio', fields: ['tagline','bio_en','bio_fr','statement'] },
+          { name: 'Scene', fields: ['alongside','residency','collective','festivals'] },
+          { name: 'Images', fields: ['hero_image','hero_as_avatar','profile_image'] }
+        ],
+        file: 'content/profile.json',
+        kind: 'single',
+        fields: [
+          { name: 'name', label: 'Artist name', type: 'text', required: true, half: true },
+          { name: 'eyebrow', label: 'Eyebrow (top-left header)', type: 'text', half: true },
+          { name: 'tagline', label: 'Tagline', type: 'textarea' },
+          { name: 'bio_en', label: 'Bio (English)', type: 'textarea', large: true, hint: 'Shown on your site. A few sentences about you.' },
+          { name: 'bio_fr', label: 'Bio (French — optional)', type: 'textarea', large: true, hint: 'If set, an EN / FR toggle appears on your site.' },
+          { name: 'statement', label: 'Statement (Identity block)', type: 'textarea', hint: 'Short one-line signature shown big. Falls back to your tagline.' },
+          { name: 'alongside', label: 'Alongside (artists)', type: 'text', half: true },
+          { name: 'residency', label: 'Residency', type: 'text', half: true },
+          { name: 'collective', label: 'Collective / label', type: 'text', half: true },
+          { name: 'festivals', label: 'Festivals', type: 'text', half: true },
+          { name: 'city', label: 'City / Base', type: 'text', half: true },
+          { name: 'display_font', label: 'Display font', type: 'select', half: true, requiresFeature: 'custom_fonts', options: [
+            { value: '', label: 'Default (Inter Tight)' },
+            { value: 'Space Grotesk', label: 'Space Grotesk' },
+            { value: 'Syne', label: 'Syne' },
+            { value: 'Archivo', label: 'Archivo' },
+            { value: 'Sora', label: 'Sora' },
+            { value: 'Unbounded', label: 'Unbounded' },
+            { value: 'Bricolage Grotesque', label: 'Bricolage Grotesque' },
+            { value: 'Instrument Serif', label: 'Instrument Serif' }
+          ] },
+          { name: 'hero_image', label: 'Hero image', type: 'image', hint: 'Full-frame background at the top of your site.' },
+          { name: 'hero_as_avatar', label: 'Use hero as my profile picture too', type: 'boolean', hint: 'On = your avatar reuses the hero image (no separate upload needed).' },
+          { name: 'profile_image', label: 'Profile picture (avatar)', type: 'image', hint: 'Optional — only used if the box above is off. If both are empty, the hero is used.' }
+        ]
+      },
+      contact: {
+        label: 'Contact & socials',
+        blurb: 'Email, Instagram, SoundCloud, press kit access code.',
+        file: 'content/contact.json',
+        kind: 'single',
+        fields: [
+          { name: 'email', label: 'Booking email', type: 'text', required: true },
+          { name: 'instagram', label: 'Instagram URL', type: 'url', half: true },
+          { name: 'soundcloud', label: 'SoundCloud URL', type: 'url', half: true },
+          { name: 'resident_advisor', label: 'Resident Advisor URL', type: 'url', half: true },
+          { name: 'bandcamp', label: 'Bandcamp URL', type: 'url', half: true },
+          { name: 'beatport', label: 'Beatport URL', type: 'url', half: true },
+          { name: 'discogs', label: 'Discogs URL', type: 'url', half: true },
+          { name: 'press_kit_code', label: 'Press kit access code', type: 'text', hint: 'Code bookers enter to unlock ZIP downloads' }
+        ]
+      },
+      mixes: {
+        label: 'Mixes',
+        blurb: 'SoundCloud mixes shown in the Listen section.',
+        file: 'content/mixes.json',
+        kind: 'list',
+        listKey: 'list',
+        itemSingular: 'mix',
+        summary: (m) => m.title || 'Untitled',
+        newItem: () => ({ title: '', url: '', meta: '', group: '', featured: true }),
+        fields: [
+          { name: 'title', label: 'Mix title', type: 'text', required: true, hint: 'Shown in the Listen section and the Latest-mix band.' },
+          { name: 'url', label: 'SoundCloud URL', type: 'url', half: true },
+          { name: 'meta', label: 'Meta line', type: 'text', hint: "e.g. 'Warm-up · 09.25 · SoundCloud'", half: true },
+          { name: 'group', label: 'Group (optional)', type: 'text', half: true, suggest: true, hint: "Optional heading, e.g. 'Dance' or 'Downtempo'" },
+          { name: 'featured', label: 'Show on site?', type: 'boolean' }
+        ]
+      },
+      sound: {
+        label: 'Sound identity',
+        blurb: 'The 3 blocks describing your sound (Groove / Genres / Energy).',
+        file: 'content/sound.json',
+        kind: 'list',
+        listKey: 'blocks',
+        itemSingular: 'block',
+        summary: (b) => b.label || '—',
+        newItem: () => ({ label: '', text: '' }),
+        fields: [
+          { name: 'label', label: 'Label', type: 'text' },
+          { name: 'text', label: 'Description', type: 'textarea' }
+        ]
+      },
+      venues: {
+        label: 'Selected appearances',
+        blurb: 'Venues you have played (shown in Appearances section).',
+        file: 'content/venues.json',
+        kind: 'list',
+        listKey: 'list',
+        itemSingular: 'venue',
+        summary: (v) => `${v.name || '—'}${v.city ? ' — ' + v.city : ''}`,
+        newItem: () => ({ name: '', city: '' }),
+        fields: [
+          { name: 'name', label: 'Venue name', type: 'text', required: true, half: true },
+          { name: 'city', label: 'City', type: 'text', half: true }
+        ]
+      },
+      photos: {
+        label: 'Press photos',
+        blurb: 'Individual high-res photos.',
+        file: 'content/photos.json',
+        kind: 'list',
+        listKey: 'list',
+        itemSingular: 'photo',
+        summary: (p) => p.caption || 'Untitled photo',
+        newItem: () => ({ image: '', caption: '', credit: '', featured: true }),
+        fields: [
+          { name: 'caption', label: 'Title', type: 'text', half: true },
+          { name: 'credit', label: 'Photographer', type: 'text', half: true, required: false },
+          { name: 'image', label: 'Photo', type: 'image', required: true, half: true },
+          { name: 'featured', label: 'Show on site?', type: 'boolean' }
+        ]
+      },
+      videos: {
+        label: 'Press videos',
+        blurb: 'Individual video clips.',
+        file: 'content/videos.json',
+        kind: 'list',
+        listKey: 'list',
+        itemSingular: 'video',
+        summary: (v) => v.title || 'Untitled video',
+        newItem: () => ({ title: '', video: '', poster: '', featured: true }),
+        fields: [
+          { name: 'title', label: 'Title', type: 'text', required: true, hint: "e.g. 'Sigma Ibiza' — name it before uploading" },
+          { name: 'video', label: 'Video file', type: 'file', required: true, half: true, hint: 'Upload MP4 (max 25MB)' },
+          { name: 'poster', label: 'Poster image (optional)', type: 'image', half: true, hint: 'Shown before play — if empty, browser uses first frame' },
+          { name: 'featured', label: 'Show on site?', type: 'boolean' }
+        ]
+      },
+      productions: {
+        label: 'Productions',
+        blurb: 'Releases — artwork, label, year and a buy link.',
+        file: 'content/productions.json',
+        kind: 'list',
+        listKey: 'list',
+        itemSingular: 'release',
+        summary: (p) => p.title || 'Untitled release',
+        newItem: () => ({ artwork: '', title: '', label: '', year: '', buy_url: '', featured: true }),
+        fields: [
+          { name: 'buy_url', label: 'Release link', type: 'url', fetchButton: true, hint: 'Bandcamp / Beatport / Spotify — paste it, then hit Auto-fill.' },
+          { name: 'artwork', label: 'Artwork', type: 'image', half: true, hint: 'Auto-filled from the release link, or Upload your own. Optional.' },
+          { name: 'title', label: 'Track / release title', type: 'text', half: true, hint: 'Auto-filled from the link — edit if needed.' },
+          { name: 'label', label: 'Label', type: 'text', half: true },
+          { name: 'year', label: 'Year', type: 'text', half: true, numeric4: true },
+          { name: 'featured', label: 'Show on site?', type: 'boolean' }
+        ]
+      },
+
+      articles: {
+        label: 'Articles',
+        blurb: 'Press features — cover, source and a link.',
+        file: 'content/articles.json',
+        kind: 'list',
+        listKey: 'list',
+        itemSingular: 'article',
+        summary: (a) => a.title || 'Untitled article',
+        newItem: () => ({ cover: '', title: '', source: '', year: '', url: '', featured: true }),
+        fields: [
+          { name: 'title', label: 'Headline', type: 'text', required: true },
+          { name: 'source', label: 'Publication', type: 'text', half: true },
+          { name: 'year', label: 'Year', type: 'text', half: true, numeric4: true },
+          { name: 'url', label: 'Article link', type: 'url', hint: 'Full URL to the piece' },
+          { name: 'cover', label: 'Cover image', type: 'image', half: true, hint: 'Optional visual — masthead or feature image.' },
+          { name: 'featured', label: 'Show on site?', type: 'boolean' }
+        ]
+      },
+
+      native_player: {
+        label: 'Native player',
+        blurb: 'One set (MP3) that plays right on your site.',
+        file: 'content/native_player.json',
+        kind: 'single',
+        fields: [
+          { name: 'title', label: 'Set title', type: 'text' },
+          { name: 'audio', label: 'Upload your set (MP3)', type: 'file', hint: 'Plays on your site — visitors press play without leaving. Export ~96–128 kbps · max 100 MB. One set per site.' }
+        ]
+      },
+
+      watch: {
+        label: 'Watch',
+        blurb: 'YouTube sets shown full-frame on your site.',
+        file: 'content/watch.json',
+        kind: 'list',
+        listKey: 'list',
+        itemSingular: 'video',
+        summary: (w) => w.title || 'Untitled video',
+        newItem: () => ({ title: '', url: '', featured: true }),
+        fields: [
+          { name: 'title', label: 'Title', type: 'text', required: true, half: true },
+          { name: 'url', label: 'YouTube link', type: 'url', required: true, half: true, hint: 'Full YouTube URL (youtube.com/watch?v=… or youtu.be/…)' },
+          { name: 'featured', label: 'Show on site?', type: 'boolean' }
+        ]
+      },
+
+      gigs: {
+        label: 'Gigs',
+        blurb: 'Upcoming shows — shown in the Gigs section.',
+        file: 'content/gigs.json',
+        kind: 'list',
+        listKey: 'list',
+        itemSingular: 'gig',
+        summary: (g) => `${g.date || ''} — ${g.venue || 'Venue'}`,
+        newItem: () => ({ date: '', venue: '', city: '', note: '' }),
+        fields: [
+          { name: 'date', label: 'Date', type: 'date', half: true, required: true },
+          { name: 'city', label: 'City', type: 'text', half: true },
+          { name: 'venue', label: 'Venue', type: 'text', required: true, half: true },
+          { name: 'note', label: 'Note (optional)', type: 'text', required: false, half: true }
+        ]
+      },
+
+      integrations: {
+        label: 'Integrations & tracking',
+        blurb: 'Analytics, tracking & newsletter (Studio).',
+        file: 'content/integrations.json',
+        kind: 'single',
+        requiresAny: ['google_analytics', 'meta_pixel', 'newsletter'],
+        fields: [
+          { name: 'ga_id', label: 'Google Analytics ID', type: 'text', requiresFeature: 'google_analytics', half: true, hint: 'e.g. G-XXXXXXX' },
+          { name: 'meta_pixel_id', label: 'Meta Pixel ID', type: 'text', requiresFeature: 'meta_pixel', half: true, hint: 'Your Facebook/Instagram pixel ID' },
+          { name: 'newsletter_url', label: 'Newsletter signup URL', type: 'text', requiresFeature: 'newsletter', hint: 'Mailchimp / ConvertKit form action URL' }
+        ]
+      },
+
+      press_kit: {
+        label: 'Press kit downloads',
+        blurb: 'Photos & videos bookers download as a ZIP (separate from the site galleries).',
+        file: 'content/press_kit.json',
+        kind: 'single',
+        fields: [
+          { name: 'photos', label: 'Press photos — downloaded as ZIP', type: 'medialist', mediaType: 'image', hint: 'Add multiple photos. Bookers download them all as one .zip.' },
+          { name: 'videos', label: 'Press videos — downloaded as ZIP', type: 'medialist', mediaType: 'file', hint: 'Add multiple videos. Bookers download them all as one .zip.' },
+          { name: 'info_text', label: 'Info text (above unlock code)', type: 'textarea' }
+        ]
+      }
+    };
+
+    const state = {
+      user: null,
+      data: {},           // { profile: {content, sha}, ... }
+      currentView: 'dashboard',
+      draft: null,        // { key, value: <the-current-json-being-edited> }
+      dirty: false,
+      saving: false,
+      expandedItems: {},  // { key-index: true/false }
+    };
+
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => document.querySelectorAll(sel);
+    const esc = (s) => (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const b64encode = (str) => btoa(unescape(encodeURIComponent(str)));
+    const b64decode = (str) => decodeURIComponent(escape(atob(str.replace(/\s/g, ''))));
+    // For legacy images stored in the repo, load from GitHub raw (available before Netlify redeploy).
+    // New uploads go to Cloudflare R2 → the URL is already absolute (https://pub-xxx.r2.dev/...).
+    const previewUrl = (url) => {
+      if (!url) return url;
+      if (url.startsWith('http://') || url.startsWith('https://')) return url; // R2 or external
+      if (url.startsWith('/uploads/') || url.startsWith('uploads/')) {
+        const path = url.startsWith('/') ? url.slice(1) : url;
+        return `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${path}?t=${Date.now()}`;
+      }
+      return url;
+    };
+
+    // ============ TOAST ============
+    let toastTimer = null;
+    function toast(msg, type = 'default') {
+      const el = $('#toast');
+      el.textContent = msg;
+      el.className = 'toast show ' + type;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { el.className = 'toast'; }, 3500);
+    }
+
+    // ============ CONTENT R/W via WORKER (no Git Gateway needed) ============
+    async function gitGetFile(filePath) {
+      const filename = filePath.replace(/^content\//, '');
+      const r = await fetch(MEDIA_UPLOADER + '/content/' + filename + '?t=' + Date.now(), {
+        headers: { 'X-Deckit-Site': SITE_SLUG }, cache: 'no-cache'
+      });
+      if (!r.ok) return null;
+      const content = await r.json();
+      return { content, sha: null };
+    }
+
+    async function gitPutFile(filePath, contentObj) {
+      const user = window.netlifyIdentity.currentUser();
+      if (!user) throw new Error('Not logged in');
+      const token = await user.jwt();
+      if (!token) throw new Error('No auth token');
+      const r = await fetch(MEDIA_UPLOADER + '/save-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, 'X-Deckit-Site': SITE_SLUG },
+        body: JSON.stringify({ file: filePath, content: contentObj })
+      });
+      if (!r.ok) {
+        let msg = 'Save error ' + r.status;
+        try { const b = await r.json(); msg = b.error || msg; } catch(e){}
+        throw new Error(msg);
+      }
+      return r.json();
+    }
+
+    // ============ FETCH ALL ============
+    async function fetchAll() {
+      const keys = Object.keys(SCHEMA);
+      const results = await Promise.all(keys.map(async k => {
+        const cfg = SCHEMA[k];
+        try {
+          return await gitGetFile(cfg.file);
+        } catch (e) {
+          console.warn('Failed to load', cfg.file, e.message);
+          return null;
+        }
+      }));
+      const data = {};
+      keys.forEach((k, i) => { data[k] = results[i]; });
+      state.data = data;
+    }
+
+    // ============ DIRTY TRACKING ============
+    function markDirty() {
+      state.dirty = true;
+      const toolbar = $('.toolbar');
+      if (toolbar) toolbar.classList.remove('hidden');
+      const status = $('.toolbar-status');
+      if (status) {
+        status.className = 'toolbar-status';
+        status.innerHTML = '<span class="toolbar-status-dot"></span>Unsaved changes';
+      }
+      const saveBtn = $('#saveBtn');
+      if (saveBtn) saveBtn.disabled = false;
+    }
+
+    function markClean() {
+      state.dirty = false;
+      const status = $('.toolbar-status');
+      if (status) {
+        status.className = 'toolbar-status saved';
+        status.innerHTML = '<span class="toolbar-status-dot"></span>All saved';
+      }
+      const saveBtn = $('#saveBtn');
+      if (saveBtn) saveBtn.disabled = true;
+      // Slide the sticky toolbar away once everything is saved (it only shows when dirty).
+      const toolbar = $('.toolbar');
+      if (toolbar) setTimeout(() => { if (!state.dirty) toolbar.classList.add('hidden'); }, 1100);
+    }
+
+    // ============ SAVE ============
+    function validateDraft(cfg) {
+      const isEmpty = (v) => v === undefined || v === null || (typeof v === 'string' && v.trim() === '');
+      const isUrl = (v) => typeof v === 'string' && (/^https?:\/\//.test(v.trim()) || v.trim().startsWith('/'));
+      const checkField = (f, v, label) => {
+        if (f.required && isEmpty(v)) return `${label}"${f.label}" is required`;
+        if ((f.type === 'image' || f.type === 'file') && !isEmpty(v) && !isUrl(v)) return `${label}"${f.label}" must be an uploaded file (use Upload), not plain text`;
+        if (f.numeric4 && !isEmpty(v) && !/^[0-9]{4}$/.test(String(v).trim())) return `${label}"${f.label}" should be a 4-digit year (e.g. 2025)`;
+        return null;
+      };
+      if (cfg.kind === 'list') {
+        const arr = state.draft.value[cfg.listKey] || [];
+        for (let i = 0; i < arr.length; i++) {
+          for (const f of cfg.fields) {
+            const err = checkField(f, arr[i][f.name], `${cfg.itemSingular || 'Item'} #${String(i+1).padStart(2,'0')}: `);
+            if (err) return err;
+          }
+        }
+      } else {
+        for (const f of cfg.fields) {
+          if (f.requiresFeature && !feat(f.requiresFeature)) continue;
+          const err = checkField(f, state.draft.value[f.name], '');
+          if (err) return err;
+        }
+      }
+      return null;
+    }
+
+    function loadImageOk(url) {
+      return new Promise((resolve) => {
+        const img = new Image(); let done = false;
+        const t = setTimeout(() => { if (!done) { done = true; resolve(false); } }, 7000);
+        img.onload = () => { if (!done) { done = true; clearTimeout(t); resolve(img.naturalWidth > 0); } };
+        img.onerror = () => { if (!done) { done = true; clearTimeout(t); resolve(false); } };
+        img.src = url;
+      });
+    }
+    async function validateImages(cfg) {
+      const empty = (v) => v === undefined || v === null || (typeof v === 'string' && v.trim() === '');
+      const rows = cfg.kind === 'list' ? (state.draft.value[cfg.listKey] || []) : [state.draft.value];
+      for (let i = 0; i < rows.length; i++) {
+        for (const fld of cfg.fields) {
+          if (fld.type !== 'image') continue;
+          const v = rows[i][fld.name];
+          if (empty(v)) continue;
+          const ok = await loadImageOk(previewUrl(v));
+          if (!ok) {
+            const label = cfg.kind === 'list' ? `${cfg.itemSingular || 'Item'} #${String(i+1).padStart(2,'0')}: ` : '';
+            return `${label}"${fld.label}" — this image link looks broken. Re-upload it or fix the URL.`;
+          }
+        }
+      }
+      return null;
+    }
+    async function save() {
+      if (!state.draft || state.saving) return;
+      const cfg = SCHEMA[state.draft.key];
+      // Validation: required fields must be filled
+      const reqErr = validateDraft(cfg);
+      if (reqErr) { toast(reqErr, 'error'); return; }
+      const imgErr = await validateImages(cfg);
+      if (imgErr) { toast(imgErr, 'error'); return; }
+      const filePath = cfg.file;
+      const originalSha = state.data[state.draft.key] ? state.data[state.draft.key].sha : null;
+
+      state.saving = true;
+      const status = $('.toolbar-status');
+      if (status) {
+        status.className = 'toolbar-status saving';
+        status.innerHTML = '<span class="toolbar-status-dot"></span>Saving';
+      }
+      const saveBtn = $('#saveBtn');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner"></span>Saving';
+      }
+
+      try {
+        await gitPutFile(filePath, state.draft.value);
+        state.data[state.draft.key] = { content: state.draft.value, sha: null };
+        markClean();
+        // Flash toolbar green briefly
+        const toolbar = $('.toolbar');
+        if (toolbar) {
+          toolbar.classList.remove('flash-success');
+          void toolbar.offsetWidth; // reflow
+          toolbar.classList.add('flash-success');
+        }
+        if (saveBtn) saveBtn.innerHTML = 'Save →';
+        toast('Saved', 'success');
+      } catch (e) {
+        console.error(e);
+        const status = $('.toolbar-status');
+        if (status) {
+          status.className = 'toolbar-status error';
+          status.innerHTML = '<span class="toolbar-status-dot"></span>Save failed';
+        }
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = 'Retry publish →';
+        }
+        toast('Save failed: ' + e.message, 'error');
+      } finally {
+        state.saving = false;
+      }
+    }
+
+    // ============ RENDER: DASHBOARD ============
+    function renderDashboard() {
+      setChrome('dashboard');
+      const isLocked = (key) => { const L = LOCKS[key]; return !!(L && !feat(L.f)); };
+      const isFilled = (key) => {
+        const d = state.data[key]; if (!d || !d.content) return false;
+        const c = d.content, cfg = SCHEMA[key];
+        if (cfg.kind === 'list') return Array.isArray(c[cfg.listKey]) && c[cfg.listKey].length > 0;
+        return (cfg.fields||[]).some(fl => { const v = c[fl.name]; return v !== undefined && v !== null && v !== false && String(v).trim() !== ''; });
+      };
+      const allKeys = GROUPS.flatMap(g => g.keys).filter(k => SCHEMA[k]);
+      const unlocked = allKeys.filter(k => !isLocked(k));
+      const filled = unlocked.filter(isFilled);
+      const pct = unlocked.length ? Math.round(filled.length / unlocked.length * 100) : 0;
+      const f = window.__STUDIO_FEATURES || {};
+      const tier = f.multi_page ? 'Studio' : (f.gallery_photos ? 'Pro' : 'Starter');
+      const contactContent = (state.data.contact && state.data.contact.content) || {};
+      const pressCode = contactContent.press_kit_code || '';
+      const todo = unlocked.filter(k => !isFilled(k)).slice(0, 4);
+      const heroRaw = (state.data.profile && state.data.profile.content && state.data.profile.content.hero_image) || '';
+      const heroImg = heroRaw ? previewUrl(heroRaw) : '';
+
+      // left rail
+      const rail = GROUPS.map(g => {
+        const items = g.keys.filter(k => SCHEMA[k]).map(k => {
+          const locked = isLocked(k), done = !locked && isFilled(k), L = LOCKS[k];
+          return `<button class="ck-si${done ? ' done' : ''}${locked ? ' lock' : ''}" data-key="${k}" data-locked="${locked ? '1' : ''}">
+            <span class="ck-siico">${ICONS[k] || ''}</span><span class="ck-sinm">${esc(SCHEMA[k].label)}</span>${locked ? `<span class="ck-sib">${esc(L.tier)}</span>` : `<span class="ck-sidot${done ? ' on' : ''}"></span>`}</button>`;
+        }).join('');
+        return `<div class="ck-sg">${esc(g.name)}</div>${items}`;
+      }).join('');
+
+      const qrBtn = feat('qr_code') ? `<button class="btn" id="ckQr">Download QR</button>` : '';
+      const codeBtn = pressCode ? `<button class="btn" id="ckCode">Copy press-kit code</button>` : '';
+
+      $('#view').innerHTML = `
+        <div class="section-title"><div class="eyebrow">Dashboard</div>
+          <h1 class="h1">Your <b class="dk">deckit<span class="dot">.</span></b></h1>
+          <p class="sub">Your control room — edit content, upload media, update anytime.</p>
+        </div>
+        <div class="ck-app">
+          <div class="ck-side">${rail}</div>
+          <div class="ck-center">
+            <div class="ck-stat">
+              <div class="ck-s"><div class="ck-n">${pct}%</div><div class="ck-l">Profile complete</div></div>
+              <div class="ck-s"><div class="ck-n">${filled.length}/${unlocked.length}</div><div class="ck-l">Sections live</div></div>
+              <div class="ck-s"><div class="ck-n">${esc(tier)}</div><div class="ck-l">Your plan</div></div>
+            </div>
+            <button class="ck-prev${heroImg ? ' has-img' : ''}" id="ckPrev">${heroImg ? `<img class="ck-prev-img" src="${heroImg.replace(/'/g,'%27')}" alt="">` : ''}<div class="ck-prev-inner"><div class="ck-prev-name">${esc(CLIENT_NAME || "Your site")}<span>.</span></div><div class="ck-prev-url">${esc((SITE_URL||"").replace(/^https?:\/\//,""))} — live ↗</div></div><span class="ck-prevtag">Your site</span></button>
+            <div class="ck-actions"><a class="btn btn-primary" id="ckVisit" href="${esc(SITE_URL)}" target="_blank" rel="noopener">View my site ↗</a><button class="btn" id="ckCopy">Copy link</button></div>
+            <div class="ck-book">
+              <div class="ck-book-h">Share with bookers</div>
+              <div class="ck-book-b"><button class="btn" id="ckBooker">Copy booker link</button>${codeBtn}${qrBtn}</div>
+            </div>
+            ${todo.length ? `<div class="ck-todo"><b>Finish your Deckit:</b> ${todo.map(k => `<a data-key="${k}">${esc(SCHEMA[k].label)}</a>`).join(' · ')}</div>` : `<div class="ck-todo">✓ Everything in your plan is filled in.</div>`}
+            <div class="ck-soon">Visitor stats — coming with analytics ${feat('google_analytics') ? '(connect GA in Settings)' : '(Studio)'}.</div>
+          </div>
+        </div>`;
+
+      // wire rail
+      $$('.ck-si').forEach(el => el.addEventListener('click', () => {
+        if (el.dataset.locked) { const k = el.dataset.key; const t = (LOCKS[k]||{}).tier||'Pro'; toast(`“${SCHEMA[k].label}” is a ${t} feature — upgrade to unlock it.`, 'info'); window.open('https://deckit.art/packages','_blank'); return; }
+        openCollection(el.dataset.key);
+      }));
+      $$('.ck-todo a').forEach(a => a.addEventListener('click', () => openCollection(a.dataset.key)));
+      const copy = (txt, msg) => { navigator.clipboard.writeText(txt).then(() => toast(msg, 'success')).catch(() => toast('Copy failed', 'error')); };
+      $('#ckPrev')?.addEventListener('click', () => { const w = window.open(SITE_URL, '_blank'); if (!w) location.href = SITE_URL; });
+      $('#ckCopy')?.addEventListener('click', () => copy(SITE_URL, 'Site link copied'));
+      $('#ckBooker')?.addEventListener('click', () => copy(SITE_URL + '#press', 'Booker link copied'));
+      $('#ckCode')?.addEventListener('click', () => copy(pressCode, 'Press-kit code copied'));
+      $('#ckQr')?.addEventListener('click', () => window.open('https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data=' + encodeURIComponent(SITE_URL) + '&download=1', '_blank'));
+    }
+
+    // ============ RENDER: COLLECTION ============
+    function openCollection(key, from, noPush) {
+      state.backTo = from || 'dashboard';
+      state.currentView = 'collection:' + key;
+      if (!noPush && window.history) history.pushState({ view:'collection', key: key, back: state.backTo }, '', '#' + key);
+      // Init draft as deep copy of current data
+      const d = state.data[key];
+      const source = d && d.content ? d.content : (SCHEMA[key].kind === 'list' ? { [SCHEMA[key].listKey]: [] } : {});
+      state.draft = { key, value: JSON.parse(JSON.stringify(source)) };
+      state.dirty = false;
+      state.expandedItems = {};
+      renderCollection(key);
+    }
+
+    function renderCollection(key) {
+      setChrome('collection');
+      const cfg = SCHEMA[key];
+      const value = state.draft.value;
+
+      let body = '';
+      if (cfg.kind === 'single' && cfg.groups) {
+        body = cfg.groups.map((g, gi) => {
+          const flds = g.fields.map(n => cfg.fields.find(f => f.name === n)).filter(f => f && (!f.requiresFeature || feat(f.requiresFeature)));
+          if (!flds.length) return '';
+          return `<details class="fgroup" ${gi === 0 ? 'open' : ''}><summary class="fgroup-h">${esc(g.name)}<span class="fgroup-chev">\u25be</span></summary><div class="fields">${flds.map(f => renderField(f, value, key)).join('')}</div></details>`;
+        }).join('');
+      } else if (cfg.kind === 'single') {
+        body = `<div class="fields">${cfg.fields.filter(f => !f.requiresFeature || feat(f.requiresFeature)).map(f => renderField(f, value, key)).join('')}</div>`;
+      } else if (cfg.kind === 'list') {
+        const arr = value[cfg.listKey] || [];
+        body = `
+          <div class="list-widget">
+            ${arr.length === 0
+              ? `<div class="list-empty">Nothing yet — <em>add your first ${esc(cfg.itemSingular)}</em> to see it live on the site.<span class="list-empty-hint">Section 02 · ${esc(cfg.label)}</span></div>`
+              : arr.map((item, i) => renderListItem(cfg, item, i, key, arr.length)).join('')
+            }
+            <button class="list-add-btn" data-action="add">+ Add ${esc(cfg.itemSingular)}</button>
+          </div>
+        `;
+      }
+
+      $('#view').innerHTML = `
+        <button class="back-btn" id="backBtn">← ${state.backTo === 'sections' ? 'Sections' : 'Dashboard'}</button>
+        <div class="section-title">
+          <h1 class="h1">${esc(cfg.label)}</h1>
+          <p class="sub">${esc(cfg.blurb)}</p>
+        </div>
+        ${cfg.kind === 'list' ? '' : `<div class="toolbar hidden">
+          <div class="toolbar-status saved">
+            <span class="toolbar-status-dot"></span>All saved
+          </div>
+          <div class="toolbar-actions">
+            <button class="btn" id="revertBtn">Revert</button>
+            <button class="btn btn-primary" id="saveBtn" disabled>Save →<span class="kbd">⌘S</span></button>
+          </div>
+        </div>`}
+        ${body}
+      `;
+
+      // Wire back button
+      $('#backBtn').addEventListener('click', () => {
+        if (window.history) { history.back(); return; }
+        if (state.dirty && !confirm('You have unsaved changes. Discard them?')) return;
+        state.currentView = state.backTo || 'dashboard'; state.draft = null; state.dirty = false; render();
+      });
+
+      // Wire save / revert (bottom toolbar exists on single-kind pages only)
+      const _saveBtn = $('#saveBtn'); if (_saveBtn) _saveBtn.addEventListener('click', save);
+      const _revertBtn = $('#revertBtn'); if (_revertBtn) _revertBtn.addEventListener('click', async () => {
+        if (!(await dkConfirm({ title: 'Discard changes?', body: 'This resets the section to the last saved version.', confirm: 'Discard', cancel: 'Keep editing' }))) return;
+        openCollection(key, state.backTo, true);
+      });
+      $$('.item-save').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); save(); }));
+      $$('.item-revert').forEach(b => b.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const rb = $('#revertBtn');
+        if (rb) { rb.click(); return; }
+        // List pages have no bottom toolbar — revert directly.
+        if (!(await dkConfirm({ title: 'Discard changes?', body: 'This resets the section to the last saved version.', confirm: 'Discard', cancel: 'Keep editing' }))) return;
+        openCollection(key, state.backTo, true);
+      }));
+
+      // Wire input change handlers
+      wireInputs(key);
+
+      // Wire list actions
+      if (cfg.kind === 'list') {
+        wireListActions(key);
+      }
+
+      // Wire file upload buttons
+      wireUploadButtons(key);
+      wireCoverButtons();
+
+      // Wire media-list add/remove
+      wireMediaList(key);
+
+      // Restore dirty visual state if there are pending changes (survives re-renders)
+      if (state.dirty) {
+        const toolbar = $('.toolbar');
+        if (toolbar) toolbar.classList.remove('hidden');
+        const status = $('.toolbar-status');
+        if (status) {
+          status.className = 'toolbar-status';
+          status.innerHTML = '<span class="toolbar-status-dot"></span>Unsaved changes';
+        }
+        const saveBtn = $('#saveBtn');
+        if (saveBtn) saveBtn.disabled = false;
+      }
+    }
+
+    // ============ FIELD RENDERERS (editable) ============
+    function renderField(field, value, key, path = '') {
+      const v = value[field.name];
+      const id = `f-${key}-${path}${field.name}`.replace(/[^a-zA-Z0-9-]/g, '-');
+
+      let inputHtml = '';
+      switch (field.type) {
+        case 'textarea':
+          inputHtml = `<textarea class="textarea ${field.large ? 'large' : ''}" id="${id}" data-name="${field.name}" data-path="${path}">${esc(v || '')}</textarea>`;
+          break;
+        case 'boolean':
+          inputHtml = `
+            <label class="toggle">
+              <input type="checkbox" id="${id}" data-name="${field.name}" data-path="${path}" ${v ? 'checked' : ''} />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              <span class="toggle-label">${v ? 'On' : 'Off'}</span>
+            </label>
+          `;
+          break;
+        case 'image':
+          inputHtml = `
+            <div class="file-input-wrap" data-field-type="image" data-field-id="${id}">
+              ${v ? `<div class="file-preview"><img src="${esc(previewUrl(v))}" alt="" onerror="this.parentElement.innerHTML='<div class=\\'file-preview-empty\\'>Image URL invalid</div>'" /></div>` : `<div class="file-preview-empty">No image</div>`}
+              <div class="file-input-row">
+                <input type="text" class="input" id="${id}" data-name="${field.name}" data-path="${path}" value="${esc(v || '')}" placeholder="/uploads/photo.jpg or paste full URL" />
+                <button class="btn" data-action="upload" data-target="${id}" data-accept="image/*">Upload</button>
+                ${field.fetchCover ? `<button class="btn btn-ghost" data-action="fetch-cover" data-target="${id}" data-link-field="${field.fetchCover}">↓ Fetch from link</button>` : ''}
+              </div>
+              <div class="file-note">JPG / PNG / WebP · max 5MB</div>
+            </div>
+          `;
+          break;
+        case 'file':
+          inputHtml = `
+            <div class="file-input-wrap" data-field-type="file" data-field-id="${id}">
+              <div class="file-input-row">
+                <input type="text" class="input" id="${id}" data-name="${field.name}" data-path="${path}" value="${esc(v || '')}" placeholder="/uploads/file.mp4 or paste full URL" />
+                <button class="btn" data-action="upload" data-target="${id}" data-accept="*/*">Upload</button>
+              </div>
+              <div class="file-note">${v ? '✓ ' + esc(v) : 'Any file · max 25MB (Git limit)'}</div>
+            </div>
+          `;
+          break;
+        case 'date':
+          inputHtml = `<input type="date" class="input" id="${id}" data-name="${field.name}" data-path="${path}" value="${esc(v || '')}" />`;
+          break;
+        case 'select': {
+          const opts = field.options || [];
+          inputHtml = `<select class="input" id="${id}" data-name="${field.name}" data-path="${path}">
+            ${opts.map(o => `<option value="${esc(o.value)}" ${((v||'')===o.value)?'selected':''}>${esc(o.label)}</option>`).join('')}
+          </select>`;
+          break;
+        }
+        case 'medialist': {
+          const arr = Array.isArray(v) ? v : [];
+          const isImg = field.mediaType === 'image';
+          inputHtml = `
+            <div class="medialist">
+              ${arr.map((u, i) => `
+                <div class="medialist-item">
+                  ${isImg ? `<img class="medialist-thumb" src="${esc(previewUrl(u))}" alt="" />` : `<span class="medialist-file">${esc((u||'').split('/').pop())}</span>`}
+                  <button class="btn btn-ghost btn-danger" data-action="ml-remove" data-name="${field.name}" data-idx="${i}">Remove</button>
+                </div>
+              `).join('')}
+              <button class="btn" data-action="ml-add" data-name="${field.name}" data-accept="${isImg ? 'image/*' : '*/*'}">+ Add ${isImg ? 'photo' : 'video'}</button>
+              <div class="file-note">${arr.length} file${arr.length===1?'':'s'} · bundled into one .zip on download</div>
+            </div>
+          `;
+          break;
+        }
+        case 'url':
+        case 'text':
+        default:
+          if (field.fetchButton) {
+            inputHtml = `<div class="file-input-row"><input type="text" class="input" id="${id}" data-name="${field.name}" data-path="${path}" value="${esc(v || '')}" placeholder="Paste your release link…" /><button class="btn btn-primary" data-action="fetch-meta" data-target="${id}">↓ Auto-fill</button></div>`;
+          } else {
+            let listAttr = '', dl = '';
+            if (field.suggest) {
+              const _cfg = SCHEMA[key];
+              const _arr = (_cfg && _cfg.listKey && state.draft && state.draft.value && state.draft.value[_cfg.listKey]) || [];
+              const _opts = [...new Set(_arr.map(it => ((it && it[field.name]) || '').toString().trim()).filter(Boolean))];
+              if (_opts.length) { const _dlid = 'dl-' + id; listAttr = ` list="${_dlid}"`; dl = `<datalist id="${_dlid}">${_opts.map(o => `<option value="${esc(o)}"></option>`).join('')}</datalist>`; }
+            }
+            inputHtml = `<input type="text" class="input"${listAttr} id="${id}" data-name="${field.name}" data-path="${path}" value="${esc(v || '')}" />` + dl;
+          }
+      }
+
+      const inner = `
+        <div class="field${field.half ? ' field-half' : ''}">
+          <label class="field-label" for="${id}">${esc(field.label)}</label>
+          ${inputHtml}
+          ${field.hint ? `<div class="field-hint">${esc(field.hint)}</div>` : ''}
+        </div>`;
+      if (field.block) {
+        return `<div class="np-block">
+          <div class="np-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg><span>${esc(field.block)}</span><span class="np-tag">Studio</span></div>
+          ${field.blockHint ? `<p class="np-hint">${esc(field.blockHint)}</p>` : ''}
+          ${inner}
+        </div>`;
+      }
+      return inner;
+    }
+
+    function renderListItem(cfg, item, index, key, total) {
+      const num = String(index + 1).padStart(2, '0');
+      const summary = cfg.summary ? cfg.summary(item) : `Item ${num}`;
+      const expanded = state.expandedItems[`${key}-${index}`] === true; // default collapsed (accordion)
+      const fieldsHtml = cfg.fields.map(f => renderField(f, item, key, `${index}.`)).join('');
+      const isFirst = index === 0;
+      const isLast = index === total - 1;
+
+      return `
+        <div class="list-item-card" data-index="${index}">
+          <div class="list-item-header" data-action="toggle" data-index="${index}">
+            <span class="list-item-num">${num}</span>
+            <span class="list-item-summary">${esc(summary)}</span>
+            <span class="list-item-actions">
+              <button class="btn btn-ghost btn-move" data-action="move-up" data-index="${index}" title="Move up" ${isFirst ? 'disabled' : ''}>↑</button>
+              <button class="btn btn-ghost btn-move" data-action="move-down" data-index="${index}" title="Move down" ${isLast ? 'disabled' : ''}>↓</button>
+              <button class="btn btn-ghost btn-danger" data-action="remove" data-index="${index}">Remove</button>
+              <span class="btn btn-ghost list-open-btn">${expanded ? 'Close ▴' : 'Edit ▾'}</span>
+            </span>
+          </div>
+          <div class="list-item-body ${expanded ? '' : 'collapsed'}">
+            ${fieldsHtml}
+            <div class="item-actions"><button class="btn btn-ghost item-revert" type="button">Revert</button><button class="btn btn-primary item-save" type="button">Save item</button></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ============ WIRE INPUTS ============
+    function wireInputs(key) {
+      const cfg = SCHEMA[key];
+
+      $$('.textarea, .input').forEach(el => {
+        el.addEventListener('input', (e) => {
+          const name = e.target.dataset.name;
+          const path = e.target.dataset.path;
+          setDraftValue(cfg, path, name, e.target.value);
+          // Live-update the collapsed summary row as you type
+          if (cfg.kind === 'list' && path) {
+            const idx = parseInt(path, 10);
+            if (!isNaN(idx)) {
+              const item = (state.draft.value[cfg.listKey] || [])[idx];
+              const sumEl = document.querySelector(`.list-item-card[data-index="${idx}"] .list-item-summary`);
+              if (item && sumEl && cfg.summary) sumEl.textContent = cfg.summary(item);
+            }
+          }
+          // Refresh image preview if this is an image URL
+          if (path === '' || path === undefined) {
+            const field = cfg.fields.find(f => f.name === name);
+            if (field && field.type === 'image') {
+              refreshImagePreview(e.target);
+            }
+          }
+        });
+      });
+
+      $$('select.input').forEach(el => {
+        el.addEventListener('change', (e) => {
+          setDraftValue(cfg, e.target.dataset.path, e.target.dataset.name, e.target.value);
+        });
+      });
+
+      $$('.toggle input[type="checkbox"]').forEach(el => {
+        el.addEventListener('change', (e) => {
+          const name = e.target.dataset.name;
+          const path = e.target.dataset.path;
+          setDraftValue(cfg, path, name, e.target.checked);
+          const label = e.target.parentElement.querySelector('.toggle-label');
+          if (label) label.textContent = e.target.checked ? 'On' : 'Off';
+        });
+      });
+    }
+
+    function refreshImagePreview(input) {
+      const wrap = input.closest('.file-input-wrap');
+      if (!wrap) return;
+      const preview = wrap.querySelector('.file-preview, .file-preview-empty');
+      if (!preview) return;
+      const v = input.value;
+      if (v) {
+        preview.outerHTML = `<div class="file-preview"><img src="${esc(previewUrl(v))}" alt="" onerror="this.parentElement.innerHTML='<div class=\\'file-preview-empty\\'>Image URL invalid</div>'" /></div>`;
+      } else {
+        preview.outerHTML = `<div class="file-preview-empty">No image</div>`;
+      }
+    }
+
+    function setDraftValue(cfg, path, name, value) {
+      if (cfg.kind === 'single') {
+        state.draft.value[name] = value;
+      } else if (cfg.kind === 'list') {
+        const idx = parseInt(path, 10);
+        if (!isNaN(idx)) {
+          state.draft.value[cfg.listKey][idx][name] = value;
+        }
+      }
+      markDirty();
+    }
+
+    // ============ FILE UPLOAD ============
+    function sanitizeFilename(name) {
+      // Strip path, lowercase, replace non-alphanumerics with dash, keep extension
+      const clean = name.split(/[\/\\]/).pop();
+      const ext = clean.includes('.') ? '.' + clean.split('.').pop().toLowerCase() : '';
+      const base = clean.replace(/\.[^/.]+$/, '').toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'file';
+      const stamp = Date.now().toString(36).slice(-6);
+      return `${base}-${stamp}${ext}`;
+    }
+
+    async function uploadFile(file, fieldType) {
+      // Check size
+      const maxSize = fieldType === 'image' ? 5 * 1024 * 1024 : 25 * 1024 * 1024;
+      if (file.size > maxSize) {
+        throw new Error(`File too big (${(file.size / 1024 / 1024).toFixed(1)}MB > ${maxSize / 1024 / 1024}MB)`);
+      }
+
+      const user = window.netlifyIdentity.currentUser();
+      if (!user) throw new Error('Not logged in');
+      // Force a fresh JWT (auto-refreshes if expired)
+      const token = await user.jwt();
+      if (!token) throw new Error('No auth token');
+
+      const filename = sanitizeFilename(file.name);
+
+      // POST to Cloudflare Worker → R2 (no GitHub commit = no Netlify rebuild)
+      const res = await fetch(MEDIA_UPLOADER, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': file.type || 'application/octet-stream',
+          'X-File-Name': filename,
+          'X-Deckit-Site': SITE_SLUG
+        },
+        body: file
+      });
+
+      if (!res.ok) {
+        let msg = `Upload failed (${res.status})`;
+        try { const err = await res.json(); msg = err.error || msg; } catch(e){}
+        throw new Error(msg);
+      }
+
+      const result = await res.json();
+      return result.url; // Absolute R2 URL (e.g. https://pub-xxx.r2.dev/filename.jpg)
+    }
+
+    function wireCoverButtons() {
+      $$('[data-action="fetch-meta"]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const linkInput = document.getElementById(btn.dataset.target);
+          const link = linkInput && linkInput.value.trim();
+          if (!link) { toast('Paste the release link first', 'error'); return; }
+          const card = btn.closest('.list-item-card');
+          const orig = btn.textContent; btn.textContent = 'Fetching…'; btn.disabled = true;
+          try {
+            const r = await fetch(MEDIA_UPLOADER + '/og-cover', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: link }) });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            const data = await r.json();
+            const setSib = (name, val, isImg) => { if (!val || !card) return; const el = card.querySelector(`[data-name="${name}"]`); if (el && !el.value.trim()) { el.value = val; el.dispatchEvent(new Event('input', { bubbles: true })); if (isImg) refreshImagePreview(el); } };
+            setSib('artwork', data.url, true); setSib('title', data.title); setSib('label', data.label); setSib('year', data.year);
+            if (!data.url && !data.title) throw new Error('Nothing found at that link');
+            toast('Auto-filled from link', 'success');
+          } catch (err) { toast('Could not auto-fill: ' + err.message, 'error'); }
+          finally { btn.textContent = orig; btn.disabled = false; }
+        });
+      });
+    }
+
+    function wireUploadButtons(key) {
+      $$('[data-action="upload"]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const targetId = btn.dataset.target;
+          const accept = btn.dataset.accept;
+          const targetInput = document.getElementById(targetId);
+          if (!targetInput) return;
+
+          // Create hidden file input
+          const fileInput = document.createElement('input');
+          fileInput.type = 'file';
+          fileInput.accept = accept;
+          fileInput.style.display = 'none';
+          document.body.appendChild(fileInput);
+          fileInput.click();
+
+          fileInput.addEventListener('change', async () => {
+            const file = fileInput.files && fileInput.files[0];
+            document.body.removeChild(fileInput);
+            if (!file) return;
+
+            const originalLabel = btn.textContent;
+            btn.textContent = 'Uploading…';
+            btn.disabled = true;
+            toast(`Uploading ${file.name}`, 'default');
+
+            try {
+              const url = await uploadFile(file, btn.closest('.file-input-wrap').dataset.fieldType);
+              // Update the field
+              targetInput.value = url;
+              targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+              // Refresh preview
+              refreshImagePreview(targetInput);
+              toast('Uploaded', 'success');
+            } catch (err) {
+              console.error(err);
+              toast('Upload failed: ' + err.message, 'error');
+            } finally {
+              btn.textContent = originalLabel;
+              btn.disabled = false;
+            }
+          });
+        });
+      });
+    }
+
+    // ============ MEDIA-LIST (multi-file field, e.g. press kit) ============
+    function wireMediaList(key) {
+      const cfg = SCHEMA[key];
+      const getArr = (name) => {
+        if (!Array.isArray(state.draft.value[name])) state.draft.value[name] = [];
+        return state.draft.value[name];
+      };
+      // Add
+      document.querySelectorAll('[data-action="ml-add"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const name = btn.dataset.name;
+          const accept = btn.dataset.accept;
+          const fileInput = document.createElement('input');
+          fileInput.type = 'file'; fileInput.accept = accept; fileInput.multiple = true; fileInput.style.display = 'none';
+          document.body.appendChild(fileInput);
+          fileInput.click();
+          fileInput.addEventListener('change', async () => {
+            const files = Array.from(fileInput.files || []);
+            document.body.removeChild(fileInput);
+            if (!files.length) return;
+            const orig = btn.textContent; btn.disabled = true;
+            const isImg = accept.startsWith('image');
+            let done = 0;
+            for (const file of files) {
+              btn.textContent = `Uploading ${done + 1}/${files.length}…`;
+              try {
+                const url = await uploadFile(file, isImg ? 'image' : 'file');
+                getArr(name).push(url);
+                done++;
+              } catch (err) { toast('Failed: ' + file.name + ' — ' + err.message, 'error'); }
+            }
+            markDirty();
+            renderCollection(key);
+            toast(done + ' file' + (done===1?'':'s') + ' added', 'success');
+          });
+        });
+      });
+      // Remove
+      document.querySelectorAll('[data-action="ml-remove"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const name = btn.dataset.name;
+          const idx = parseInt(btn.dataset.idx, 10);
+          const arr = getArr(name);
+          if (idx >= 0 && idx < arr.length) { arr.splice(idx, 1); markDirty(); renderCollection(key); }
+        });
+      });
+    }
+
+    // ============ LIST ACTIONS ============
+    function wireListActions(key) {
+      const cfg = SCHEMA[key];
+
+      $$('[data-action="add"]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const arr = state.draft.value[cfg.listKey] = state.draft.value[cfg.listKey] || [];
+          arr.push(cfg.newItem ? cfg.newItem() : {});
+          state.expandedItems = {}; // accordion: collapse all, open only the new one
+          state.expandedItems[`${key}-${arr.length - 1}`] = true;
+          markDirty();
+          renderCollection(key);
+          const cards = $$('.list-item-card'); const last = cards[cards.length - 1];
+          if (last) last.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // No bottom Save bar on list pages — persist the structural change.
+          // A fresh item usually has empty required fields, so only auto-save when
+          // the draft already validates; otherwise the per-card 'Save item' persists it.
+          if (!validateDraft(cfg)) save();
+        });
+      });
+
+      $$('[data-action="remove"]').forEach(el => {
+        el.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const idx = parseInt(el.dataset.index, 10);
+          if (!(await dkConfirm({ title: `Remove this ${cfg.itemSingular}?`, body: `This deletes item #${String(idx + 1).padStart(2, '0')} from ${cfg.label}. It can't be undone.`, confirm: 'Remove', cancel: 'Cancel' }))) return;
+          state.draft.value[cfg.listKey].splice(idx, 1);
+          delete state.expandedItems[`${key}-${idx}`];
+          markDirty();
+          renderCollection(key);
+          // No bottom Save bar on list pages — persist the structural change.
+          save();
+        });
+      });
+
+      $$('[data-action="toggle"]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          if (e.target.closest('[data-action="remove"]')) return;
+          if (e.target.closest('[data-action="move-up"]')) return;
+          if (e.target.closest('[data-action="move-down"]')) return;
+          const idx = parseInt(el.dataset.index, 10);
+          const k = `${key}-${idx}`;
+          const isOpen = state.expandedItems[k] === true;
+          state.expandedItems = {}; // accordion: only one open at a time
+          if (!isOpen) state.expandedItems[k] = true;
+          renderCollection(key);
+        });
+      });
+
+      // Move up / down
+      const moveItem = (from, to) => {
+        const arr = state.draft.value[cfg.listKey];
+        if (!arr || to < 0 || to >= arr.length) return;
+        const [item] = arr.splice(from, 1);
+        arr.splice(to, 0, item);
+        // Preserve expanded state (swap the flags)
+        const fromKey = `${key}-${from}`;
+        const toKey = `${key}-${to}`;
+        const fromExpanded = state.expandedItems[fromKey];
+        state.expandedItems[fromKey] = state.expandedItems[toKey];
+        state.expandedItems[toKey] = fromExpanded;
+        markDirty();
+        renderCollection(key);
+        // No bottom Save bar on list pages — persist the reorder.
+        save();
+      };
+
+      $$('[data-action="move-up"]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(el.dataset.index, 10);
+          moveItem(idx, idx - 1);
+        });
+      });
+
+      $$('[data-action="move-down"]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(el.dataset.index, 10);
+          moveItem(idx, idx + 1);
+        });
+      });
+    }
+
+    // ============ RENDER DISPATCH ============
+    // ============ MOBILE M1 nav + sheets ============
+    function mLocked(key){ const L = LOCKS[key]; return !!(L && !feat(L.f)); }
+    function mFilled(key){
+      const d = state.data[key]; if(!d || !d.content) return false;
+      const c = d.content, cfg = SCHEMA[key]; if(!cfg) return false;
+      if(cfg.kind === 'list') return Array.isArray(c[cfg.listKey]) && c[cfg.listKey].length > 0;
+      return (cfg.fields||[]).some(fl => { const v = c[fl.name]; return v!==undefined && v!==null && v!==false && String(v).trim()!==''; });
+    }
+    function mCloseSheets(){ $$('.msheet').forEach(el=>el.classList.remove('on')); const sc=$('#mScrim'); if(sc) sc.classList.remove('on'); }
+    function dkConfirm(o){
+      o = o || {};
+      const title = o.title || 'Are you sure?';
+      const body = o.body || '';
+      const okL = o.confirm || 'Confirm';
+      const noL = o.cancel || 'Cancel';
+      const danger = o.danger !== false;
+      return new Promise(resolve => {
+        const ov = document.createElement('div');
+        ov.className = 'dk-modal-ov';
+        ov.innerHTML = `<div class="dk-modal" role="dialog" aria-modal="true"><div class="dk-modal-h">${esc(title)}</div><div class="dk-modal-b">${esc(body)}</div><div class="dk-modal-actions"><button class="btn dk-cancel">${esc(noL)}</button><button class="btn ${danger?'btn-danger':'btn-primary'} dk-ok">${esc(okL)}</button></div></div>`;
+        document.body.appendChild(ov);
+        requestAnimationFrame(() => ov.classList.add('on'));
+        const done = (v) => { ov.classList.remove('on'); setTimeout(() => ov.remove(), 200); resolve(v); };
+        ov.querySelector('.dk-ok').addEventListener('click', () => done(true));
+        ov.querySelector('.dk-cancel').addEventListener('click', () => done(false));
+        ov.addEventListener('click', (e) => { if (e.target === ov) done(false); });
+      });
+    }
+    // Mandatory "set new password" screen after a reset/invite link. The token already
+    // logged the user in via GoTrue; we just make them choose a password (no current pw).
+    // Deckit-branded login (email + password) via GoTrue directly — no Netlify widget.
+    function openLoginModal(){
+      const ov = document.createElement('div'); ov.className = 'dk-modal-ov';
+      ov.innerHTML = `<div class="dk-modal" role="dialog" aria-modal="true">`
+        + `<div class="dk-modal-h">Log in to Studio</div>`
+        + `<div class="fields" style="margin-bottom:20px">`
+        +   `<div class="field"><label class="field-label" for="lgEmail">Email</label><input class="input" type="email" id="lgEmail" autocomplete="username" placeholder="you@email.com" /></div>`
+        +   `<div class="field"><label class="field-label" for="lgPw">Password</label><input class="input" type="password" id="lgPw" autocomplete="current-password" placeholder="Your password" /></div>`
+        +   `<div class="field-error-msg" id="lgErr" style="display:none"></div>`
+        + `</div>`
+        + `<div class="dk-modal-actions"><button class="btn dk-cancel" type="button">Cancel</button><button class="btn btn-primary dk-ok" type="button">Log in</button></div>`
+        + `<div style="text-align:center;margin-top:16px"><button type="button" id="lgForgot" style="background:none;border:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:underline">Forgot password?</button></div>`
+        + `</div>`;
+      document.body.appendChild(ov); requestAnimationFrame(() => ov.classList.add('on'));
+      const close = () => { ov.classList.remove('on'); setTimeout(() => ov.remove(), 200); };
+      const err = ov.querySelector('#lgErr'); const showErr = (m) => { err.textContent = m; err.style.display = 'block'; };
+      ov.querySelector('.dk-cancel').addEventListener('click', close);
+      ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+      ov.querySelector('#lgForgot').addEventListener('click', () => { close(); openForgotModal(); });
+      const okBtn = ov.querySelector('.dk-ok');
+      const submit = async () => {
+        const email = ov.querySelector('#lgEmail').value.trim(), pw = ov.querySelector('#lgPw').value;
+        if (!email || !pw) { showErr('Enter your email and password.'); return; }
+        err.style.display = 'none'; okBtn.disabled = true; okBtn.textContent = 'Logging in…';
+        try {
+          const user = await window.netlifyIdentity.gotrue.login(email, pw, true);
+          close(); state.user = user;
+          if (isAllowed(user)) showApp(); else showDenied(user);
+        } catch(e) { okBtn.disabled = false; okBtn.textContent = 'Log in'; showErr('Wrong email or password.'); }
+      };
+      okBtn.addEventListener('click', submit);
+      ov.querySelector('#lgPw').addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+      setTimeout(() => { var el = ov.querySelector('#lgEmail'); if (el) el.focus(); }, 60);
+    }
+
+    // Deckit-branded "reset password" (email → recovery link) via GoTrue directly.
+    function openForgotModal(){
+      const ov = document.createElement('div'); ov.className = 'dk-modal-ov';
+      ov.innerHTML = `<div class="dk-modal" role="dialog" aria-modal="true">`
+        + `<div class="dk-modal-h">Reset your password</div>`
+        + `<div class="dk-modal-b">Enter your email — we'll send you a reset link.</div>`
+        + `<div class="fields" style="margin-bottom:20px">`
+        +   `<div class="field"><label class="field-label" for="fgEmail">Email</label><input class="input" type="email" id="fgEmail" autocomplete="username" placeholder="you@email.com" /></div>`
+        +   `<div class="field-error-msg" id="fgErr" style="display:none"></div>`
+        + `</div>`
+        + `<div class="dk-modal-actions"><button class="btn dk-cancel" type="button">Cancel</button><button class="btn btn-primary dk-ok" type="button">Send reset link</button></div>`
+        + `</div>`;
+      document.body.appendChild(ov); requestAnimationFrame(() => ov.classList.add('on'));
+      const close = () => { ov.classList.remove('on'); setTimeout(() => ov.remove(), 200); };
+      const err = ov.querySelector('#fgErr'); const showErr = (m) => { err.textContent = m; err.style.display = 'block'; };
+      ov.querySelector('.dk-cancel').addEventListener('click', close);
+      ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+      const okBtn = ov.querySelector('.dk-ok');
+      okBtn.addEventListener('click', async () => {
+        const email = ov.querySelector('#fgEmail').value.trim();
+        if (!email) { showErr('Enter your email.'); return; }
+        err.style.display = 'none'; okBtn.disabled = true; okBtn.textContent = 'Sending…';
+        try {
+          await window.netlifyIdentity.gotrue.requestPasswordRecovery(email);
+          close(); toast('Reset link sent — check your email.', 'success');
+        } catch(e) { okBtn.disabled = false; okBtn.textContent = 'Send reset link'; showErr((e && e.message) || 'Could not send. Try again.'); }
+      });
+      setTimeout(() => { var el = ov.querySelector('#fgEmail'); if (el) el.focus(); }, 60);
+    }
+
+    function openRecoveryModal(kind, token){
+      const ov = document.createElement('div');
+      ov.className = 'dk-modal-ov';
+      const title = kind === 'invite' ? 'Welcome — set your password' : 'Set a new password';
+      const body  = kind === 'invite' ? 'Choose a password to activate your Studio login.' : 'Choose a new password for your Studio login.';
+      ov.innerHTML = `<div class="dk-modal" role="dialog" aria-modal="true">`
+        + `<div class="dk-modal-h">${title}</div>`
+        + `<div class="dk-modal-b">${body}</div>`
+        + `<div class="fields" style="margin-bottom:20px">`
+        +   `<div class="field"><label class="field-label" for="rcPw1">New password</label><input class="input" type="password" id="rcPw1" autocomplete="new-password" placeholder="At least 8 characters" /></div>`
+        +   `<div class="field"><label class="field-label" for="rcPw2">Confirm new password</label><input class="input" type="password" id="rcPw2" autocomplete="new-password" placeholder="Repeat new password" /></div>`
+        +   `<div class="field-error-msg" id="rcErr" style="display:none"></div>`
+        + `</div>`
+        + `<div class="dk-modal-actions"><button class="btn btn-primary dk-ok" type="button">Save password</button></div>`
+        + `</div>`;
+      document.body.appendChild(ov);
+      requestAnimationFrame(() => ov.classList.add('on'));
+      const err = ov.querySelector('#rcErr');
+      const showErr = (m) => { err.textContent = m; err.style.display = 'block'; };
+      const finish = () => { ov.classList.remove('on'); setTimeout(() => ov.remove(), 200); try { history.replaceState(null, '', location.pathname + location.search); } catch(e){} };
+      const okBtn = ov.querySelector('.dk-ok');
+      okBtn.addEventListener('click', async () => {
+        const p1 = ov.querySelector('#rcPw1').value, p2 = ov.querySelector('#rcPw2').value;
+        if (p1.length < 8) { showErr('Password must be at least 8 characters.'); return; }
+        if (p1 !== p2) { showErr('Passwords do not match.'); return; }
+        err.style.display = 'none'; okBtn.disabled = true; okBtn.textContent = 'Saving…';
+        try {
+          if (kind === 'invite') { await window.netlifyIdentity.gotrue.acceptInvite(token, p1, true); }
+          else { await window.netlifyIdentity.currentUser().update({ password: p1 }); }
+          finish();
+          toast('Password set — you’re in', 'success');
+          const user = window.netlifyIdentity.currentUser();
+          state.user = user;
+          if (isAllowed(user)) showApp(); else showDenied(user);
+        } catch(e) {
+          okBtn.disabled = false; okBtn.textContent = 'Save password';
+          showErr((e && e.message) || 'Could not set password. The link may have expired — request a new email.');
+        }
+      });
+    }
+
+    // In-app "Change password" modal (authenticated user updates via GoTrue).
+    function openPasswordModal(){
+      const gotrueUser = window.netlifyIdentity && window.netlifyIdentity.gotrue && window.netlifyIdentity.gotrue.currentUser && window.netlifyIdentity.gotrue.currentUser();
+      if (!gotrueUser) { toast('Not logged in', 'error'); return; }
+      const ov = document.createElement('div');
+      ov.className = 'dk-modal-ov';
+      ov.innerHTML = `<div class="dk-modal" role="dialog" aria-modal="true">`
+        + `<div class="dk-modal-h">Change password</div>`
+        + `<div class="dk-modal-b">Set a new password for your Studio login.</div>`
+        + `<div class="fields" style="margin-bottom:20px">`
+        +   `<div class="field"><label class="field-label" for="dkPw0">Current password</label><input class="input" type="password" id="dkPw0" autocomplete="current-password" placeholder="Your current password" /></div>`
+        +   `<div class="field"><label class="field-label" for="dkPw1">New password</label><input class="input" type="password" id="dkPw1" autocomplete="new-password" placeholder="At least 8 characters" /></div>`
+        +   `<div class="field"><label class="field-label" for="dkPw2">Confirm new password</label><input class="input" type="password" id="dkPw2" autocomplete="new-password" placeholder="Repeat new password" /></div>`
+        +   `<div class="field-error-msg" id="dkPwErr" style="display:none"></div>`
+        + `</div>`
+        + `<div class="dk-modal-actions"><button class="btn dk-cancel" type="button">Cancel</button><button class="btn btn-primary dk-ok" type="button">Update password</button></div>`
+        + `</div>`;
+      document.body.appendChild(ov);
+      requestAnimationFrame(() => ov.classList.add('on'));
+      const close = () => { ov.classList.remove('on'); setTimeout(() => ov.remove(), 200); };
+      const err = ov.querySelector('#dkPwErr');
+      const showErr = (m) => { err.textContent = m; err.style.display = 'block'; };
+      ov.querySelector('.dk-cancel').addEventListener('click', close);
+      ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+      const okBtn = ov.querySelector('.dk-ok');
+      okBtn.addEventListener('click', async () => {
+        const p0 = ov.querySelector('#dkPw0').value;
+        const p1 = ov.querySelector('#dkPw1').value;
+        const p2 = ov.querySelector('#dkPw2').value;
+        if (!p0) { showErr('Enter your current password.'); return; }
+        if (p1.length < 8) { showErr('Password must be at least 8 characters.'); return; }
+        if (p1 !== p2) { showErr('Passwords do not match.'); return; }
+        err.style.display = 'none';
+        okBtn.disabled = true; okBtn.textContent = 'Updating\u2026';
+        try {
+          // Re-authenticate to verify the current password before changing it.
+          const email = window.netlifyIdentity.currentUser().email;
+          try {
+            await window.netlifyIdentity.gotrue.login(email, p0, true);
+          } catch (loginErr) {
+            okBtn.disabled = false; okBtn.textContent = 'Update password';
+            showErr('Current password is incorrect');
+            return;
+          }
+          await window.netlifyIdentity.currentUser().update({ password: p1 });
+          close();
+          toast('Password updated', 'success');
+        } catch (e) {
+          okBtn.disabled = false; okBtn.textContent = 'Update password';
+          showErr((e && e.message) || 'Could not update password.');
+        }
+      });
+      setTimeout(() => { const f = ov.querySelector('#dkPw0'); if (f) f.focus(); }, 60);
+    }
+    function setChrome(v){
+      document.body.classList.toggle('view-collection', v === 'collection');
+      const h=$('#mnHome'), ss=$('#mnSections');
+      if(h) h.classList.toggle('on', v === 'dashboard');
+      if(ss) ss.classList.toggle('on', v === 'sections' || v === 'collection');
+      mCloseSheets();
+    }
+    function mOpenSheet(sel){ mCloseSheets(); const sh=$(sel); if(sh) sh.classList.add('on'); const sc=$('#mScrim'); if(sc) sc.classList.add('on'); }
+    function renderSectionsPage(){
+      setChrome('sections');
+      const html = GROUPS.map(g => {
+        const items = g.keys.filter(k=>SCHEMA[k]).map(k=>{
+          const locked = mLocked(k), filled = !locked && mFilled(k), L = LOCKS[k];
+          return `<button class="msrow${locked?' lock':''}" data-key="${k}" data-locked="${locked?'1':''}">`
+            + `${ICONS[k]||''}<span class="msnm">${esc(SCHEMA[k].label)}</span>`
+            + (locked ? `<span class="mstier">${esc(L.tier)}</span>` : `<span class="msdot${filled?'':' off'}"></span>`)
+            + `<span class="mschev">\u203a</span></button>`;
+        }).join('');
+        return `<div class="msg">${esc(g.name)}</div>${items}`;
+      }).join('');
+      $('#view').innerHTML = `<div class="section-title"><div class="eyebrow">Studio</div><h1 class="h1">Sections</h1><p class="sub">Tap a section to edit.</p></div><div class="msections">${html}</div>`;
+      $$('#view .msrow').forEach(el => el.addEventListener('click', () => {
+        if(el.dataset.locked){ const k=el.dataset.key; const t=(LOCKS[k]||{}).tier||'Pro'; toast(`\u201c${SCHEMA[k].label}\u201d is a ${t} feature \u2014 upgrade to unlock it.`,'info'); return; }
+        openCollection(el.dataset.key, 'sections');
+      }));
+    }
+    function mBuildShare(){
+      const cc = (state.data.contact && state.data.contact.content) || {};
+      const pressCode = cc.press_kit_code || '';
+      const qr = feat('qr_code');
+      $('#mShareBody').innerHTML = `<a class="btn btn-primary" id="mShVisit" href="${SITE_URL}" target="_blank" rel="noopener">View my site \u2197</a>`
+        + `<button class="btn" id="mShCopy">Copy link</button>`
+        + `<button class="btn" id="mShBooker">Copy booker link</button>`
+        + (pressCode ? `<button class="btn" id="mShCode">Copy press-kit code</button>` : '')
+        + (qr ? `<button class="btn" id="mShQr">Download QR</button>` : '');
+      const copy = (t,m)=>navigator.clipboard.writeText(t).then(()=>toast(m,'success')).catch(()=>toast('Copy failed','error'));
+      $('#mShCopy').onclick = ()=>copy(SITE_URL,'Site link copied');
+      $('#mShBooker').onclick = ()=>copy(SITE_URL + '#press','Booker link copied');
+      if($('#mShCode')) $('#mShCode').onclick = ()=>copy(pressCode,'Press-kit code copied');
+      if($('#mShQr')) $('#mShQr').onclick = ()=>{ const q=$('#ckQr'); if(q){ mCloseSheets(); q.click(); } else toast('Open on desktop for QR','info'); };
+    }
+    function wireMobileNav(){
+      if(window.__mnavWired) return; window.__mnavWired = true;
+      $('#mnHome').addEventListener('click', async ()=>{ mCloseSheets(); if(state.currentView!=='dashboard'){ if(state.dirty && !(await dkConfirm({title:'Discard changes?',body:"You haven't saved this section. Leave without saving?",confirm:'Discard',cancel:'Keep editing'}))) return; state.currentView='dashboard'; state.draft=null; state.dirty=false; if(window.history) history.pushState({view:'dashboard'},'','#'); render(); } window.scrollTo({top:0,behavior:'smooth'}); });
+      $('#mnSections').addEventListener('click', async ()=>{ if(state.currentView.startsWith('collection:') && state.dirty && !(await dkConfirm({title:'Discard changes?',body:"You haven't saved this section. Leave without saving?",confirm:'Discard',cancel:'Keep editing'}))) return; state.currentView='sections'; state.draft=null; state.dirty=false; if(window.history) history.pushState({view:'sections'},'','#sections'); render(); window.scrollTo({top:0}); });
+      $('#mnShare').addEventListener('click', ()=>{ mBuildShare(); mOpenSheet('#mShareWrap'); });
+      $('#mScrim').addEventListener('click', mCloseSheets);
+      $$('.msgrip').forEach(g=>g.addEventListener('click', mCloseSheets));
+      window.addEventListener('popstate', async (e) => {
+        const st = e.state || {};
+        if (state.currentView.startsWith('collection:') && state.dirty) {
+          history.pushState({ view:'collection', key: state.currentView.split(':')[1], back: state.backTo }, '', '');
+          if (!(await dkConfirm({ title: 'Discard changes?', body: "Your edits to this section aren't saved yet. Leave without saving?", confirm: 'Discard', cancel: 'Keep editing' }))) return;
+          state.dirty = false; history.back(); return;
+        }
+        if (st.view === 'collection' && st.key) { openCollection(st.key, st.back || 'dashboard', true); }
+        else if (st.view === 'sections') { state.currentView='sections'; state.draft=null; state.dirty=false; render(); }
+        else { state.currentView='dashboard'; state.draft=null; state.dirty=false; render(); }
+      });
+    }
+
+    function render() {
+      document.body.classList.toggle('view-collection', state.currentView.startsWith('collection:'));
+      mCloseSheets();
+      const _nH = $('#mnHome'), _nS = $('#mnSections');
+      if (_nH) _nH.classList.toggle('on', state.currentView === 'dashboard');
+      if (_nS) _nS.classList.toggle('on', state.currentView === 'sections' || state.currentView.startsWith('collection:'));
+      if (state.currentView === 'dashboard') {
+        renderDashboard();
+      } else if (state.currentView === 'sections') {
+        renderSectionsPage();
+      } else if (state.currentView.startsWith('collection:')) {
+        const key = state.currentView.split(':')[1];
+        renderCollection(key);
+      }
+    }
+
+    // ============ AUTH ============
+    function isAllowed(user){
+      if(!user || !user.email) return false;
+      var email = user.email.trim().toLowerCase();
+      // Deckit operator(s) — super-admin, can access every studio.
+      var OPERATORS = ['nadimmasmoudi93@gmail.com'];
+      if (OPERATORS.indexOf(email) !== -1) return true;
+      var allowed = (window.__DECKIT_ADMIN_EMAIL || '').trim().toLowerCase();
+      if(!allowed) return true; // no admin_email configured → allow any logged-in (backward compat)
+      return email === allowed;
+    }
+    function showDenied(user){
+      $('#loginScreen').style.display='flex'; $('#header').style.display='none'; $('#main').style.display='none';
+      var inner = document.querySelector('#loginScreen .login-inner');
+      if(inner){
+        inner.innerHTML = '<div class="login-mark">deckit</div><div class="login-tag">Studio</div>'
+          + '<div class="login-hint" style="margin-top:0;margin-bottom:28px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--fg-dim);line-height:1.6">This studio belongs to <b style="color:var(--fg)">'+ (CLIENT_NAME||'this artist') +'</b>.<br>You are signed in as <b style="color:var(--fg)">'+ (user.email||'') +'</b>, which does not have access.</div>'
+          + '<button class="login-btn" id="deniedLogout" type="button">Log out</button>';
+        var b = document.getElementById('deniedLogout'); if(b) b.addEventListener('click', function(){ try{ window.netlifyIdentity.logout(); }catch(e){} setTimeout(function(){ location.href='/admin/'; }, 400); });
+      }
+    }
+
+    function showLogin() {
+      $('#loginScreen').style.display = 'flex';
+      $('#header').style.display = 'none';
+      $('#main').style.display = 'none';
+    }
+
+    async function showApp() {
+      $('#loginScreen').style.display = 'none';
+      $('#header').style.display = 'block';
+      $('#main').style.display = 'block';
+      $('#view').innerHTML = '<div class="loading">Loading collections</div>';
+      try {
+        await fetchAll();
+        try {
+          const P = (state.data.profile && state.data.profile.content) || {};
+          const av = P.hero_as_avatar ? P.hero_image : (P.profile_image || P.hero_image);
+          const avUrl = av ? previewUrl(av) : '';
+          if (avUrl) {
+            ['#profileAvatar','#profileAvatarLg'].forEach(sel => {
+              const el = document.querySelector(sel);
+              if (el) { el.textContent=''; el.style.backgroundImage=`url("${avUrl}")`; el.style.backgroundSize='cover'; el.style.backgroundPosition='center'; }
+            });
+          }
+        } catch(e){}
+        render();
+        wireMobileNav();
+        if (window.history) history.replaceState({ view:'dashboard' }, '', '');
+      } catch (e) {
+        $('#view').innerHTML = `<div class="error-box">Failed to load: ${esc(e.message)}</div>`;
+      }
+    }
+
+    // ============ INIT ============
+    window.addEventListener('load', async () => {
+      await loadDeckitConfig(); // load per-client config first (accent color, repo, client name, etc.)
+
+      const identity = window.netlifyIdentity;
+      if (!identity) {
+        $('#view').innerHTML = '<div class="error-box">Netlify Identity failed to load.</div>';
+        return;
+      }
+
+      // Recovery (reset) / invite (first-password) link. The token was captured at the top
+      // of <head> into window.__DK_PW BEFORE the widget could consume it. We handle it
+      // directly via GoTrue — no identity.open(), so no blocking widget overlay.
+      var _pw = window.__DK_PW || null;
+      identity.on('init', (user) => {
+        state.user = user;
+        if (_pw) { handlePwFlow(_pw); return; } // hold for the set-password modal
+        if (!user) { showLogin(); if ((location.hash + location.search).indexOf('signup') >= 0) setTimeout(function(){ try { identity.open('signup'); } catch(e) { identity.open(); } }, 500); }
+        else if (isAllowed(user)) showApp(); else showDenied(user);
+      });
+      identity.on('login', (user) => {
+        state.user = user;
+        identity.close();
+        if (isAllowed(user)) showApp(); else showDenied(user);
+      });
+      identity.on('logout', () => window.location.reload());
+
+      function handlePwFlow(pw) {
+        var tries = 0;
+        (function waitGt(){
+          var gt = window.netlifyIdentity && window.netlifyIdentity.gotrue;
+          if (gt) {
+            if (pw.kind === 'recovery') {
+              gt.recover(pw.token, true)
+                .then(function(){ openRecoveryModal('recovery', null); })
+                .catch(function(){ showLogin(); toast('This reset link has expired — request a new one.', 'error'); });
+            } else {
+              openRecoveryModal('invite', pw.token);
+            }
+          } else if (tries++ < 50) { setTimeout(waitGt, 100); }
+          else { showLogin(); }
+        })();
+      }
+
+      $('#loginBtn').addEventListener('click', () => { openLoginModal(); });
+      var _lf=$('#loginForgot'); if(_lf) _lf.addEventListener('click', () => { openForgotModal(); });
+      // Profile dropdown
+      const pTrigger = $('#profileTrigger'), pMenu = $('#profileMenu');
+      if (pTrigger && pMenu) {
+        pTrigger.addEventListener('click', (e) => { e.stopPropagation(); pMenu.classList.toggle('open'); });
+        document.addEventListener('click', (e) => { if (!pMenu.contains(e.target) && !pTrigger.contains(e.target)) pMenu.classList.remove('open'); });
+      }
+      const pmLogout = $('#pmLogout'); if (pmLogout) pmLogout.addEventListener('click', async () => {
+        if (state.dirty && !(await dkConfirm({ title: 'Log out?', body: 'You have unsaved changes. Log out anyway?', confirm: 'Log out', cancel: 'Stay' }))) return;
+        identity.logout();
+      });
+      const pmFeedback = $('#pmFeedback'); if (pmFeedback) {
+        pmFeedback.removeAttribute('href'); pmFeedback.style.cursor = 'pointer';
+        pmFeedback.addEventListener('click', (e) => {
+          e.preventDefault();
+          const ov = document.createElement('div');
+          ov.className = 'dk-modal-ov';
+          ov.innerHTML = `<div class="dk-modal" role="dialog" aria-modal="true">`
+            + `<div class="dk-modal-h">Share feedback</div>`
+            + `<div class="dk-modal-b">What's working, what's missing? It goes straight to the Deckit team.</div>`
+            + `<div class="fields" style="margin-bottom:20px">`
+            +   `<div class="field"><textarea class="input" id="fbMsg" rows="4" placeholder="Your feedback…" style="resize:vertical"></textarea></div>`
+            +   `<div class="field-error-msg" id="fbErr" style="display:none"></div>`
+            + `</div>`
+            + `<div class="dk-modal-actions"><button class="btn dk-cancel" type="button">Cancel</button><button class="btn btn-primary dk-ok" type="button">Send</button></div>`
+            + `</div>`;
+          document.body.appendChild(ov);
+          requestAnimationFrame(() => ov.classList.add('on'));
+          const close = () => { ov.classList.remove('on'); setTimeout(() => ov.remove(), 200); };
+          const err = ov.querySelector('#fbErr');
+          ov.querySelector('.dk-cancel').addEventListener('click', close);
+          ov.addEventListener('click', (ev) => { if (ev.target === ov) close(); });
+          const okBtn = ov.querySelector('.dk-ok');
+          okBtn.addEventListener('click', async () => {
+            const msg = ov.querySelector('#fbMsg').value.trim();
+            if (!msg) { err.textContent = 'Write a short message first.'; err.style.display = 'block'; return; }
+            err.style.display = 'none'; okBtn.disabled = true; okBtn.textContent = 'Sending…';
+            try {
+              const u = window.netlifyIdentity && window.netlifyIdentity.currentUser && window.netlifyIdentity.currentUser();
+              const r = await fetch(MEDIA_UPLOADER + '/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Deckit-Site': SITE_SLUG },
+                body: JSON.stringify({ message: msg, from: (CLIENT_NAME || 'Deckit') + (SITE_SLUG ? ' · ' + SITE_SLUG : ''), email: (u && u.email) || '' })
+              });
+              const j = await r.json().catch(() => ({}));
+              if (r.ok && j.ok) { close(); toast('Feedback sent — thank you!', 'success'); }
+              else { okBtn.disabled = false; okBtn.textContent = 'Send'; err.textContent = (j && j.error) || 'Could not send. Try again.'; err.style.display = 'block'; }
+            } catch (e2) {
+              okBtn.disabled = false; okBtn.textContent = 'Send';
+              err.textContent = 'Network error. Try again.'; err.style.display = 'block';
+            }
+          });
+        });
+      }
+      const faqOverlay = $('#faqOverlay');
+      const pmHelp = $('#pmHelp');
+      if (pmHelp && faqOverlay) {
+        const FAQ = [
+          { q: 'How do my changes go live?', a: 'Hit <b>Save</b>. Your site rebuilds and updates within about 1–2 minutes — refresh the public page to see it.' },
+          { q: "A section isn't showing on my site — why?", a: 'Sections only appear once they have content <b>and</b> are included in your plan. Empty sections stay hidden; locked ones (greyed cards) need an upgrade.' },
+          { q: 'How do I add my hero image or photos?', a: "Use the <b>Upload</b> button on the image field — don't paste text into it. JPG / PNG / WebP, up to 5 MB." },
+          { q: 'My mixes look empty.', a: "Give every mix a <b>title</b> — it's required, and it's what shows in the Listen section and the Latest-mix band." },
+          { q: 'Productions — how do I add the cover?', a: 'Upload a square image, or paste the buy/listen link and hit <b>“↓ Cover from link”</b> to fetch it automatically.' },
+          { q: "What's the press-kit access code?", a: 'Set it in <b>Contact &amp; socials</b>, then share it with bookers so they can download your press kit.' },
+          { q: 'How do I unlock Pro / Studio features?', a: 'Open the profile menu (top-right) → <b>Upgrade plan</b>.' },
+          { q: 'I forgot my password.', a: 'Profile menu → <b>Change password</b> lets you set a new one right here — no email needed.' }
+        ];
+        const faqList = $('#faqList');
+        const renderFaq = (filter) => {
+          if (!faqList) return;
+          const fl = (filter || '').toLowerCase();
+          const items = FAQ.filter(x => !fl || (x.q + ' ' + x.a).toLowerCase().includes(fl));
+          faqList.innerHTML = items.length
+            ? items.map(x => `<div class="faq-item"><button class="faq-item-q" type="button"><span>${esc(x.q)}</span><span class="faq-item-ic">+</span></button><div class="faq-item-a"><p>${x.a}</p></div></div>`).join('')
+            : '<div class="faq-empty">No matching question — email <a href="mailto:hello@deckit.art">hello@deckit.art</a>.</div>';
+          faqList.querySelectorAll('.faq-item-q').forEach(b => b.addEventListener('click', () => {
+            const it = b.closest('.faq-item'); const wasOpen = it.classList.contains('open');
+            faqList.querySelectorAll('.faq-item').forEach(x => x.classList.remove('open'));
+            if (!wasOpen) it.classList.add('open');
+          }));
+        };
+        pmHelp.removeAttribute('href'); pmHelp.removeAttribute('target'); pmHelp.style.cursor = 'pointer';
+        pmHelp.addEventListener('click', (e) => { e.preventDefault(); pMenu.classList.remove('open'); renderFaq(''); const se = $('#faqSearch'); if (se) se.value = ''; faqOverlay.classList.add('open'); });
+        const se = $('#faqSearch'); if (se) se.addEventListener('input', () => renderFaq(se.value));
+        const closeFaq = () => faqOverlay.classList.remove('open');
+        const fc = $('#faqClose'); if (fc) fc.addEventListener('click', closeFaq);
+        faqOverlay.addEventListener('click', (e) => { if (e.target === faqOverlay) closeFaq(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeFaq(); });
+      }
+      const pmPassword = $('#pmPassword'); if (pmPassword) pmPassword.addEventListener('click', () => {
+        pMenu.classList.remove('open');
+        openPasswordModal();
+      });
+
+      // Warn before leaving page with unsaved changes
+      window.addEventListener('beforeunload', (e) => {
+        if (state.dirty) { e.preventDefault(); e.returnValue = ''; }
+      });
+
+      // Keyboard shortcuts
+      window.addEventListener('keydown', (e) => {
+        // cmd+s / ctrl+s → publish
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+          e.preventDefault();
+          if (state.currentView.startsWith('collection:') && state.dirty && !state.saving) {
+            save();
+          }
+        }
+        // Esc → back to dashboard (from any collection)
+        if (e.key === 'Escape' && state.currentView.startsWith('collection:')) {
+          const backBtn = $('#backBtn');
+          if (backBtn) backBtn.click();
+        }
+      });
+
+      identity.init();
+    });
+  </script>
+
+<div class="faq-overlay" id="faqOverlay" role="dialog" aria-modal="true" aria-label="Help and FAQ">
+  <div class="faq-panel">
+    <div class="faq-head"><h2>Help &amp; FAQ</h2><button class="faq-close" id="faqClose" aria-label="Close">&times;</button></div>
+    <p class="faq-sub">Everything you need to run your Deckit studio.</p>
+    <input type="text" class="faq-search" id="faqSearch" placeholder="Search help…" autocomplete="off" />
+    <div id="faqList"></div>
+
+    <div class="faq-foot">Still stuck? Email <a href="mailto:hello@deckit.art">hello@deckit.art</a> and we'll help.</div>
+  </div>
+</div>
+</body>
+</html>

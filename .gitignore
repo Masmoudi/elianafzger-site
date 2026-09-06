@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Node (if we add tooling later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+.env
+.env.local
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Netlify cache
+.netlify/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Press ZIPs hosted on R2 (too large / bandwidth) — not in git
+elia-press-photos-shb6whal.zip
+elia-press-videos-shb6whal.zip
