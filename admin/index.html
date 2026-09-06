@@ -1407,6 +1407,7 @@
           const listHTML=(arr,label,fmt)=>{ if(!arr||!arr.length) return `<div class="ck-vis-col"><div class="ck-vis-ct">${label}</div><div class="ck-vis-empty">\u2014</div></div>`; const mx=Math.max(1,...arr.map(a=>a.count)); return `<div class="ck-vis-col"><div class="ck-vis-ct">${label}</div>`+arr.map(a=>`<div class="ck-row"><span class="ck-row-n">${fmt(a.name)}</span><span class="ck-row-bar"><i style="width:${Math.round(a.count/mx*100)}%"></i></span><span class="ck-row-c">${a.count}</span></div>`).join('')+`</div>`; };
           const sources = listHTML(d.sources,'Top sources', nm => esc(nm==='direct'?'Direct / typed':nm));
           const countries = listHTML(d.countries,'Top countries', nm => flag(nm)+' '+esc(nm==='XX'?'Unknown':nm));
+          const cities = (()=>{ const arr=d.cities||[]; if(!arr.length) return `<div class="ck-vis-col"><div class="ck-vis-ct">Top cities</div><div class="ck-vis-empty">—</div></div>`; const mx=Math.max(1,...arr.map(a=>a.count)); return `<div class="ck-vis-col"><div class="ck-vis-ct">Top cities</div>`+arr.map(a=>`<div class="ck-row"><span class="ck-row-n">${flag(a.cc)} ${esc(a.city)}</span><span class="ck-row-bar"><i style="width:${Math.round(a.count/mx*100)}%"></i></span><span class="ck-row-c">${a.count}</span></div>`).join('')+`</div>`; })();
           const devs=d.devices||[]; const dt=devs.reduce((a,b)=>a+b.count,0)||1;
           const colors={mobile:'var(--accent,#8e2820)',desktop:'#6b7280',tablet:'#9ca3af'};
           let off=0; const segs=devs.map(v=>{ const dash=(v.count/dt)*100; const s=`<circle r="16" cx="21" cy="21" fill="transparent" stroke="${colors[v.name]||'#888'}" stroke-width="10" stroke-dasharray="${(dash*1.005).toFixed(2)} 100" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 21 21)"/>`; off+=dash; return s; }).join('');
@@ -1415,7 +1416,7 @@
             `<div class="ck-vis-h">Visitors <span class="ck-vis-sub">page views \u00b7 privacy-first \u00b7 no cookies</span></div>`
             + `<div class="ck-vis-nums"><div><b>${d.last7||0}</b><span>last 7 days</span></div><div><b>${d.last30||0}</b><span>last 30 days</span></div><div><b>${d.total||0}</b><span>all time</span></div></div>`
             + (daily.some(x=>x.views) ? `<div class="ck-chart-wrap">${chart}<div class="ck-chart-x"><span>30 days ago</span><span>today</span></div></div>` : `<div class="ck-vis-empty">No visits yet \u2014 your chart fills in as people view your site.</div>`)
-            + `<div class="ck-vis-grid">${sources}${countries}${donut}</div>`;
+            + `<div class="ck-vis-grid">${sources}${countries}${cities}${donut}</div>`;
         } catch (e) { box.style.display = 'none'; }
       })();
       const copy = (txt, msg) => { navigator.clipboard.writeText(txt).then(() => toast(msg, 'success')).catch(() => toast('Copy failed', 'error')); };
