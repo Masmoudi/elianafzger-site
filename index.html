@@ -805,7 +805,7 @@
   <div class="wrap">
     <span class="eyebrow">Upcoming gigs</span>
     <div class="dates" id="dates-container">
-      <p class="dates-loading">Loading...</p>
+      <p class="dates-empty">No upcoming gigs scheduled. Reach out for booking inquiries.</p>
     </div>
     <p class="dates-note" id="dates-note">For booking inquiries — <a href="mailto:i@toitoimusik.com">email booking</a>.</p>
   </div>
@@ -1088,34 +1088,8 @@
   })();
 </script>
 
-<script>
-  // ============= GOOGLE CALENDAR (gigs) =============
-  (function loadGigs(){
-    var CALENDAR_ID = 'f07b641855b1ee565d417a646b1d70d61d5ab8a82493961175a03c9fd3c743ee@group.calendar.google.com';
-    var API_KEY = 'AIzaSyBDvGVIXDD721O3NO2KUKeY2zFKz5qj7AI';
-    var MAX_RESULTS = 12, TIMEZONE = 'Europe/London';
-    var container = document.getElementById('dates-container');
-    if(!container) return;
-    function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-    function empty(){ container.innerHTML='<p class="dates-empty">No upcoming gigs scheduled. Reach out for booking inquiries.</p>'; }
-    if(CALENDAR_ID.indexOf('PLACEHOLDER')===0){ empty(); return; }
-    var now=new Date().toISOString();
-    var url='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CALENDAR_ID)+'/events?key='+API_KEY+'&orderBy=startTime&singleEvents=true&timeMin='+encodeURIComponent(now)+'&maxResults='+MAX_RESULTS;
-    fetch(url).then(function(r){return r.json();}).then(function(data){
-      if(data.error){ container.innerHTML='<p class="dates-empty">Unable to load gigs at the moment.</p>'; return; }
-      var events=(data.items||[]).filter(function(e){return e.start;});
-      if(events.length===0){ empty(); return; }
-      container.innerHTML=events.map(function(ev){
-        var s=ev.start.dateTime||ev.start.date, d=new Date(s);
-        var day=d.toLocaleDateString('en-US',{day:'numeric',timeZone:TIMEZONE});
-        var month=d.toLocaleDateString('en-US',{month:'short',timeZone:TIMEZONE});
-        var wd=d.toLocaleDateString('en-US',{weekday:'short',timeZone:TIMEZONE});
-        var venue=(ev.summary||'TBA').trim(), city=(ev.location||'').split(',')[0].trim();
-        return '<div class="date-row"><span class="date-when">'+day+' '+month+' · '+wd+'</span><span class="date-venue">'+esc(venue)+'</span><span class="date-city">'+esc(city)+'</span></div>';
-      }).join('');
-    }).catch(function(){ container.innerHTML='<p class="dates-empty">Unable to load gigs at the moment.</p>'; });
-  })();
-</script>
+<!-- Gigs are managed from the Deckit Studio (content/gigs.json) — rendered by the content loader. -->
+
 
 <!-- =================== DECKIT — booking + optional sections CSS =================== -->
 <style id="dk-opt-css">
@@ -1305,6 +1279,18 @@
       reveal('#press-articles');
     });
   });
+
+  // ---- INTEGRATIONS (Studio: GA + Meta Pixel — injected only when an ID is set) ----
+  getJSON('integrations').then(function(ig){ if(!ig) return;
+    safe(function(){ var g=(ig.ga_id||'').trim(); if(g && !window.__dkGA){ window.__dkGA=1;
+      var s=document.createElement('script'); s.async=true; s.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(g); document.head.appendChild(s);
+      window.dataLayer=window.dataLayer||[]; window.gtag=function(){window.dataLayer.push(arguments);}; window.gtag('js', new Date()); window.gtag('config', g);
+    }});
+    safe(function(){ var m=(ig.meta_pixel_id||'').trim(); if(m && !window.__dkFB){ window.__dkFB=1;
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      window.fbq('init', m); window.fbq('track', 'PageView');
+    }});
+  });
 })();
 </script>
 
@@ -1354,6 +1340,8 @@
 })();
 </script>
 
+<!-- Deckit analytics beacon (first-party, no cookie) -->
+<script>(function(){try{var d=JSON.stringify({site:'elia',p:location.pathname});var u='https://deckit-media-uploader.nadimmasmoudi93.workers.dev/hit';if(navigator.sendBeacon){navigator.sendBeacon(u,new Blob([d],{type:'text/plain'}));}else{fetch(u,{method:'POST',headers:{'Content-Type':'text/plain'},body:d,keepalive:true}).catch(function(){});}}catch(e){}})();</script>
 <a id="dk-admin-link" href="/admin/" aria-label="Open Studio">Admin &#8594;</a>
 <style>#dk-admin-link{position:fixed;top:14px;right:18px;z-index:90;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);opacity:0;pointer-events:none;transition:opacity .2s;text-decoration:none;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(6px);padding:6px 11px;border:1px solid var(--line);border-radius:999px;}#dk-admin-link:hover{color:var(--fg);border-color:var(--accent);}</style>
 <script>try{var _l=Object.keys(localStorage).some(function(k){return /gotrue|netlify.?identity/i.test(k)&&localStorage.getItem(k);});if(_l){var a=document.getElementById('dk-admin-link');if(a){a.style.opacity='.75';a.style.pointerEvents='auto';}}}catch(e){}</script>

@@ -1375,7 +1375,7 @@
               <div class="ck-book-b"><button class="btn" id="ckBooker">Copy booker link</button>${codeBtn}${qrBtn}</div>
             </div>
             ${todo.length ? `<div class="ck-todo"><b>Finish your Deckit:</b> ${todo.map(k => `<a data-key="${k}">${esc(SCHEMA[k].label)}</a>`).join(' · ')}</div>` : `<div class="ck-todo">✓ Everything in your plan is filled in.</div>`}
-            <div class="ck-soon">Visitor stats — coming with analytics ${feat('google_analytics') ? '(connect GA in Settings)' : '(Studio)'}.</div>
+            <div class="ck-visitors" id="ckStats"><div class="ck-vis-h">Visitors</div><div class="ck-vis-loading">Loading…</div></div>
           </div>
         </div>`;
 
@@ -1385,6 +1385,26 @@
         openCollection(el.dataset.key);
       }));
       $$('.ck-todo a').forEach(a => a.addEventListener('click', () => openCollection(a.dataset.key)));
+
+      // ---- Visitors card (first-party analytics from the worker) ----
+      (async function loadStats(){
+        const box = document.getElementById('ckStats'); if (!box) return;
+        try {
+          const user = window.netlifyIdentity && window.netlifyIdentity.currentUser && window.netlifyIdentity.currentUser();
+          if (!user) { box.style.display = 'none'; return; }
+          const token = await user.jwt();
+          const r = await fetch(MEDIA_UPLOADER + '/analytics?t=' + Date.now(), { headers: { 'Authorization': 'Bearer ' + token, 'X-Deckit-Site': SITE_SLUG } });
+          if (!r.ok) { box.style.display = 'none'; return; }
+          const d = await r.json();
+          const daily = d.daily || [];
+          const max = Math.max(1, ...daily.map(x => x.views || 0));
+          const bars = daily.map(x => `<span title="${x.date}: ${x.views}" style="height:${Math.max(3, Math.round((x.views / max) * 100))}%"></span>`).join('');
+          box.innerHTML =
+            `<div class="ck-vis-h">Visitors <span class="ck-vis-sub">page views · no cookies</span></div>`
+            + `<div class="ck-vis-nums"><div><b>${d.last7||0}</b><span>last 7 days</span></div><div><b>${d.last30||0}</b><span>last 30 days</span></div><div><b>${d.total||0}</b><span>all time</span></div></div>`
+            + (daily.length ? `<div class="ck-vis-spark">${bars}</div>` : `<div class="ck-vis-empty">No visits yet — stats appear as people view your site.</div>`);
+        } catch (e) { box.style.display = 'none'; }
+      })();
       const copy = (txt, msg) => { navigator.clipboard.writeText(txt).then(() => toast(msg, 'success')).catch(() => toast('Copy failed', 'error')); };
       $('#ckPrev')?.addEventListener('click', () => { const w = window.open(SITE_URL, '_blank'); if (!w) location.href = SITE_URL; });
       $('#ckCopy')?.addEventListener('click', () => copy(SITE_URL, 'Site link copied'));
@@ -2454,5 +2474,18 @@
     <div class="faq-foot">Still stuck? Email <a href="mailto:hello@deckit.art">hello@deckit.art</a> and we'll help.</div>
   </div>
 </div>
+<style>
+  .ck-visitors{ margin-top:16px; padding:16px 18px; border:1px solid rgba(150,150,150,.22); border-radius:10px; }
+  .ck-vis-h{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; opacity:.7; margin-bottom:14px; display:flex; gap:10px; align-items:baseline; }
+  .ck-vis-sub{ font-size:10px; letter-spacing:.06em; text-transform:none; opacity:.7; }
+  .ck-vis-loading, .ck-vis-empty{ font-size:13px; opacity:.6; }
+  .ck-vis-nums{ display:flex; gap:28px; margin-bottom:14px; flex-wrap:wrap; }
+  .ck-vis-nums > div{ display:flex; flex-direction:column; }
+  .ck-vis-nums b{ font-size:24px; font-weight:700; line-height:1; }
+  .ck-vis-nums span{ font-size:11px; opacity:.6; margin-top:5px; }
+  .ck-vis-spark{ display:flex; align-items:flex-end; gap:2px; height:46px; }
+  .ck-vis-spark span{ flex:1; background:var(--accent,#8e2820); opacity:.5; border-radius:1px 1px 0 0; min-height:3px; transition:opacity .15s; }
+  .ck-vis-spark span:hover{ opacity:1; }
+</style>
 </body>
 </html>
