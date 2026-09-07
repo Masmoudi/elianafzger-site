@@ -51,6 +51,10 @@
   "integrations": {},
   "serial": "N°004",
   "press": {
-    "rider": ""
+    "rider": "/elia-rider.pdf"
+  },
+  "gigs": {
+    "calendar_id": "f07b641855b1ee565d417a646b1d70d61d5ab8a82493961175a03c9fd3c743ee@group.calendar.google.com",
+    "api_key": "AIzaSyBDvGVIXDD721O3NO2KUKeY2zFKz5qj7AI"
   }
 }
