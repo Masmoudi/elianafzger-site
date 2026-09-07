@@ -1482,6 +1482,7 @@ window.__DECKIT_CONFIG = null;
         if (profile.name) { const el = q('.hero-title'); if (el) el.textContent = profile.name; }
         if (profile.tagline) { const el = q('.hero-tagline'); if (el) el.textContent = profile.tagline; }
         if (profile.hero_image) { const img = q('.hero-bg img'); if (img) img.src = profile.hero_image; }
+        if (profile.hero_position) { const img = q('.hero-bg img'); if (img) img.style.objectPosition = profile.hero_position; }
         { const avatar = profile.hero_as_avatar ? profile.hero_image : (profile.profile_image || profile.hero_image);
           if (avatar) qa('[data-avatar], .avatar img, img.avatar').forEach(el => { if (el.tagName === 'IMG') el.src = avatar; else el.style.backgroundImage = 'url(' + avatar + ')'; }); }
         { const bioEl = q('.bio-text'); if (bioEl) { if (bioEn) bioEl.textContent = bioEn; else bioEl.closest('section').style.display='none'; } }
@@ -2334,9 +2335,21 @@ window.__DECKIT_CONFIG = null;
           sectionObserver.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+      // threshold 0: sections taller than the viewport (e.g. Productions with many covers on
+      // mobile) can never reach a positive ratio, so any-pixel intersection must trigger reveal.
+    }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
 
-    document.querySelectorAll('section.block').forEach(s => sectionObserver.observe(s));
+    const observeBlocks = () => {
+      document.querySelectorAll('section.block:not(.is-visible)').forEach(s => {
+        if (!s.hidden && getComputedStyle(s).display !== 'none') sectionObserver.observe(s);
+      });
+    };
+    observeBlocks();
+    // Sections revealed after async content load (productions, gallery, watch…) were display:none
+    // when first observed and never got picked up; re-observe them once the content is in.
+    document.addEventListener('deckit:ready', observeBlocks);
+    setTimeout(observeBlocks, 1500);
+    setTimeout(observeBlocks, 4000);
   } else {
     document.querySelectorAll('section.block').forEach(s => s.classList.add('is-visible'));
   }
