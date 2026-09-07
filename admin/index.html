@@ -1122,11 +1122,11 @@
     const previewUrl = (url) => {
       if (!url) return url;
       if (url.startsWith('http://') || url.startsWith('https://')) return url; // R2 or external
-      if (url.startsWith('/uploads/') || url.startsWith('uploads/')) {
-        const path = url.startsWith('/') ? url.slice(1) : url;
-        return `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${path}?t=${Date.now()}`;
-      }
-      return url;
+      if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+      // Any relative repo path (covers/x.jpg, /hero.jpg, uploads/…) → serve from the repo,
+      // not relative to /admin/ (which would 404 and show "Image URL invalid").
+      const path = url.startsWith('/') ? url.slice(1) : url;
+      return `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${path}?t=${Date.now()}`;
     };
 
     // ============ TOAST ============
@@ -1217,9 +1217,12 @@
     function validateDraft(cfg) {
       const isEmpty = (v) => v === undefined || v === null || (typeof v === 'string' && v.trim() === '');
       const isUrl = (v) => typeof v === 'string' && (/^https?:\/\//.test(v.trim()) || v.trim().startsWith('/'));
+      // Accept uploaded R2/absolute URLs AND relative repo media paths (e.g. "covers/x.jpg"),
+      // which is how migrated releases store their artwork and how they resolve on the live site.
+      const isMediaRef = (v) => isUrl(v) || (typeof v === 'string' && /\.(jpe?g|png|webp|gif|avif|svg|mp4|webm|mov|m4v)$/i.test(v.trim()));
       const checkField = (f, v, label) => {
         if (f.required && isEmpty(v)) return `${label}"${f.label}" is required`;
-        if ((f.type === 'image' || f.type === 'file') && !isEmpty(v) && !isUrl(v)) return `${label}"${f.label}" must be an uploaded file (use Upload), not plain text`;
+        if ((f.type === 'image' || f.type === 'file') && !isEmpty(v) && !isMediaRef(v)) return `${label}"${f.label}" must be an uploaded file (use Upload) or an image path like covers/name.jpg`;
         if (f.numeric4 && !isEmpty(v) && !/^[0-9]{4}$/.test(String(v).trim())) return `${label}"${f.label}" should be a 4-digit year (e.g. 2025)`;
         return null;
       };
@@ -1798,7 +1801,12 @@
           const orig = btn.textContent; btn.textContent = 'Fetching…'; btn.disabled = true;
           try {
             const r = await fetch(MEDIA_UPLOADER + '/og-cover', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: link }) });
-            if (!r.ok) throw new Error('HTTP ' + r.status);
+            if (!r.ok) {
+              let msg = 'HTTP ' + r.status;
+              try { const err = await r.json(); if (err && err.error) msg = err.error; } catch(e){}
+              if (r.status === 404) msg = 'No cover found on that page \u2014 upload the artwork with the Upload button instead';
+              throw new Error(msg);
+            }
             const data = await r.json();
             const setSib = (name, val, isImg) => { if (!val || !card) return; const el = card.querySelector(`[data-name="${name}"]`); if (el && !el.value.trim()) { el.value = val; el.dispatchEvent(new Event('input', { bubbles: true })); if (isImg) refreshImagePreview(el); } };
             setSib('artwork', data.url, true); setSib('title', data.title); setSib('label', data.label); setSib('year', data.year);
