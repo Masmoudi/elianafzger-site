@@ -937,7 +937,8 @@
       },
       sound: {
         label: 'Sound identity',
-        blurb: 'The 3 blocks describing your sound (Groove / Genres / Energy).',
+        blurb: 'Up to 4 blocks describing your sound. Name them how you like \u2014 your labels appear on your site.',
+        maxItems: 4,
         file: 'content/sound.json',
         kind: 'list',
         listKey: 'blocks',
@@ -1949,6 +1950,12 @@
         el.addEventListener('click', (e) => {
           e.stopPropagation();
           const arr = state.draft.value[cfg.listKey] = state.draft.value[cfg.listKey] || [];
+          // Hard cap for sections the public site renders into a FIXED number of slots
+          // (the fiche has 4 rows) — without this, extra blocks vanish silently on the site.
+          if (cfg.maxItems && arr.length >= cfg.maxItems) {
+            toast(`This section is limited to ${cfg.maxItems} ${cfg.itemSingular || 'item'}s — remove one first.`, 'error');
+            return;
+          }
           arr.push(cfg.newItem ? cfg.newItem() : {});
           state.expandedItems = {}; // accordion: collapse all, open only the new one
           state.expandedItems[`${key}-${arr.length - 1}`] = true;

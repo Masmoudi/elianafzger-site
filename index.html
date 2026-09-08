@@ -1538,12 +1538,21 @@ window.__DECKIT_CONFIG = null;
           if (val && val.trim()) { dd.textContent = val; }
           else if (row) row.style.display = 'none';
         };
-        const blocks = (sound && Array.isArray(sound.blocks)) ? sound.blocks : [];
-        const byLabel = (name) => { const b = blocks.find(b => (b.label||'').toLowerCase().includes(name)); return b ? b.text : ''; };
+        const blocks = ((sound && Array.isArray(sound.blocks)) ? sound.blocks : [])
+          .filter(b => ((b.label || '').trim() || (b.text || '').trim()));
         setF('base', (profile && profile.city) || '');
-        setF('groove', byLabel('groove'));
-        setF('genres', byLabel('genre'));
-        setF('energy', byLabel('energy'));
+        // The Studio lets artists name these 3 blocks freely and reorder them, so the fiche maps
+        // them BY POSITION (block 1/2/3 = the order shown in the Studio) and uses each artist's
+        // own label as the row title. Matching on the words "groove/genre/energy" used to empty
+        // the fiche silently for anyone who renamed them (Cora used Sound / Influences / Selection).
+        ['groove', 'genres', 'energy', 'extra'].forEach((slot, i) => {
+          const b = blocks[i];
+          if (b && (b.label || '').trim()) {
+            const dt = q('[data-fiche-row="' + slot + '"] dt');
+            if (dt) dt.textContent = b.label.trim();
+          }
+          setF(slot, b ? b.text : '');
+        });
         const fiche = q('#fiche');
         if (fiche && !fiche.querySelector('.gfiche > div:not([style*="none"])')) fiche.style.display = 'none';
       }
@@ -1950,6 +1959,7 @@ window.__DECKIT_CONFIG = null;
       <div data-fiche-row="groove"><dt>Groove</dt><dd data-fiche="groove"></dd></div>
       <div data-fiche-row="genres"><dt>Genres</dt><dd data-fiche="genres"></dd></div>
       <div data-fiche-row="energy"><dt>Energy</dt><dd data-fiche="energy"></dd></div>
+      <div data-fiche-row="extra"><dt>Extra</dt><dd data-fiche="extra"></dd></div>
     </dl>
   </div>
 </section>
