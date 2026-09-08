@@ -867,7 +867,7 @@
         label: 'Profile & bio',
         blurb: 'Artist name, tagline, hero image, and short/long bios.',
         groups: [
-          { name: 'Identity', fields: ['name','eyebrow','city','display_font'] },
+          { name: 'Identity', fields: ['name','eyebrow','city','display_font','accent_color'] },
           { name: 'Bio', fields: ['tagline','bio_en','bio_fr','statement'] },
           { name: 'Scene', fields: ['alongside','residency','collective','festivals'] },
           { name: 'Images', fields: ['hero_image','hero_as_avatar','profile_image'] }
@@ -896,6 +896,7 @@
             { value: 'Bricolage Grotesque', label: 'Bricolage Grotesque' },
             { value: 'Instrument Serif', label: 'Instrument Serif' }
           ] },
+          { name: 'accent_color', label: 'Accent color', type: 'color', half: true, default: '#c8793a', hint: 'Your site\u2019s highlight color \u2014 links, hovers, buttons.' },
           { name: 'hero_image', label: 'Hero image', type: 'image', hint: 'Full-frame background at the top of your site.' },
           { name: 'hero_as_avatar', label: 'Use hero as my profile picture too', type: 'boolean', hint: 'On = your avatar reuses the hero image (no separate upload needed).' },
           { name: 'profile_image', label: 'Profile picture (avatar)', type: 'image', hint: 'Optional — only used if the box above is off. If both are empty, the hero is used.' }
@@ -1611,6 +1612,11 @@
           `;
           break;
         }
+        case 'color': {
+          const cv = (v || field.default || '#c8793a');
+          inputHtml = `<input type="color" class="input color-field" id="${id}" data-name="${field.name}" data-path="${path}" value="${esc(cv)}" style="height:46px;width:84px;padding:4px;cursor:pointer;" />`;
+          break;
+        }
         case 'url':
         case 'text':
         default:
@@ -1755,7 +1761,7 @@
 
     async function uploadFile(file, fieldType) {
       // Check size
-      const maxSize = fieldType === 'image' ? 5 * 1024 * 1024 : 25 * 1024 * 1024;
+      const maxSize = fieldType === 'image' ? 5 * 1024 * 1024 : 100 * 1024 * 1024; // audio sets up to 100MB (matches worker + native-player hint)
       if (file.size > maxSize) {
         throw new Error(`File too big (${(file.size / 1024 / 1024).toFixed(1)}MB > ${maxSize / 1024 / 1024}MB)`);
       }
@@ -2270,14 +2276,11 @@
 
     // ============ AUTH ============
     function isAllowed(user){
-      if(!user || !user.email) return false;
-      var email = user.email.trim().toLowerCase();
-      // Deckit operator(s) — super-admin, can access every studio.
-      var OPERATORS = ['nadimmasmoudi93@gmail.com'];
-      if (OPERATORS.indexOf(email) !== -1) return true;
-      var allowed = (window.__DECKIT_ADMIN_EMAIL || '').trim().toLowerCase();
-      if(!allowed) return true; // no admin_email configured → allow any logged-in (backward compat)
-      return email === allowed;
+      // Netlify Identity is invite-only AND scoped to THIS site, so any authenticated user was
+      // explicitly invited by the operator → allow. Matching a single configured admin_email used
+      // to lock out DJs who signed in with a different Google account than the one in config
+      // (e.g. invited Contact@… but logged in as name@gmail.com — Omar 08/09).
+      return !!(user && user.email);
     }
     function showDenied(user){
       $('#loginScreen').style.display='flex'; $('#header').style.display='none'; $('#main').style.display='none';

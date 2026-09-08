@@ -155,7 +155,7 @@
   }
 
   h1.hero-title {
-    font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--display-font, 'Inter Tight'), -apple-system, BlinkMacSystemFont, sans-serif;
     font-weight: 500;
     font-size: clamp(78px, 13vw, 160px);
     line-height: 0.92;
@@ -1483,6 +1483,8 @@ window.__DECKIT_CONFIG = null;
         if (profile.tagline) { const el = q('.hero-tagline'); if (el) el.textContent = profile.tagline; }
         if (profile.hero_image) { const img = q('.hero-bg img'); if (img) img.src = profile.hero_image; }
         if (profile.hero_position) { const img = q('.hero-bg img'); if (img) img.style.objectPosition = profile.hero_position; }
+        if (profile.accent_color) { const _a = profile.accent_color; const rs = document.documentElement.style; rs.setProperty('--accent', _a); try { const n = parseInt(_a.replace('#',''),16); const r=Math.min(255,(n>>16)+22), g=Math.min(255,((n>>8)&255)+22), b=Math.min(255,(n&255)+22); rs.setProperty('--accent-hover', '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)); } catch(e){ rs.setProperty('--accent-hover', _a); } }
+        if (profile.display_font) { const _f = profile.display_font; const _l = document.createElement('link'); _l.rel='stylesheet'; _l.href='https://fonts.googleapis.com/css2?family='+_f.replace(/ /g,'+')+':wght@400;500;600;700&display=swap'; document.head.appendChild(_l); document.documentElement.style.setProperty('--display-font', "'"+_f+"'"); }
         { const avatar = profile.hero_as_avatar ? profile.hero_image : (profile.profile_image || profile.hero_image);
           if (avatar) qa('[data-avatar], .avatar img, img.avatar').forEach(el => { if (el.tagName === 'IMG') el.src = avatar; else el.style.backgroundImage = 'url(' + avatar + ')'; }); }
         { const bioEl = q('.bio-text'); if (bioEl) { if (bioEn) bioEl.textContent = bioEn; else bioEl.closest('section').style.display='none'; } }
