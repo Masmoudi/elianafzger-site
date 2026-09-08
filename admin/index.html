@@ -1124,10 +1124,11 @@
       if (!url) return url;
       if (url.startsWith('http://') || url.startsWith('https://')) return url; // R2 or external
       if (url.startsWith('data:') || url.startsWith('blob:')) return url;
-      // Any relative repo path (covers/x.jpg, /hero.jpg, uploads/…) → serve from the repo,
-      // not relative to /admin/ (which would 404 and show "Image URL invalid").
-      const path = url.startsWith('/') ? url.slice(1) : url;
-      return `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${path}?t=${Date.now()}`;
+      // Relative repo path (covers/x.jpg, hero.jpg…) → resolve from the SITE ROOT.
+      // The admin lives at /admin/, so a bare relative path would 404 there. We must NOT use
+      // raw.githubusercontent either: the site repos are private, so those URLs 404 too — which
+      // made the save-time image check reject every migrated cover.
+      return '/' + url.replace(/^\/+/, '');
     };
 
     // ============ TOAST ============
