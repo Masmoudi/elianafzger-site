@@ -45,8 +45,8 @@
     "bandcamp_embed": true,
     "beatport_embed": true,
     "basic_analytics": true,
-    "max_photos": null,
-    "max_videos": null
+    "max_photos": 9,
+    "max_videos": 9
   },
   "integrations": {},
   "serial": "N°004",
