@@ -661,6 +661,29 @@
   .prod-card:hover .prod-buy { opacity: 1; transform: none; }
   @media (hover: none) { .prod-buy { opacity: 1; transform: none; } }
 
+  /* ---- Articles: accent bar + lift on hover (back-ported from Clovis) ---- */
+  .art-card { position: relative; }
+  .art-card::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.22,.61,.36,1); }
+  .art-card:hover::after { transform: scaleX(1); }
+  .art-card:hover { transform: translateY(-4px); }
+  .art-cover img { transition: transform .6s cubic-bezier(.22,.61,.36,1); }
+  .art-card:hover .art-cover img { transform: scale(1.04); }
+
+  /* ---- Watch: thumbnail zoom + play button lights up (back-ported from Clovis) ---- */
+  .watch-item img { transition: transform .6s cubic-bezier(.22,.61,.36,1), opacity .3s; }
+  .watch-item:hover img { transform: scale(1.04); }
+  .watch-play span { transition: background .25s, border-color .25s, transform .25s; }
+  .watch-item:hover .watch-play span { background: var(--accent); border-color: var(--accent); transform: scale(1.06); }
+  .watch-item:hover .watch-play span::after { border-left-color: var(--bg); }
+
+  /* ---- iOS / touch safe mode: big cover grids turned the page black on iOS Safari ----
+     Cora has 22 releases, well past the ~10-card threshold where this showed up. Clovis had
+     this guard from the start; it was never back-ported to the template. ---- */
+  @media (hover: none) {
+    section.block { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .prod-art img, .art-cover img, .watch-item img, .visual-card img { transition: none !important; transform: none !important; }
+  }
+
   /* ============= NATIVE PLAYER (latest band) ============= */
   .gwave.is-player { cursor: pointer; }
   .gwave-progress { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: color-mix(in srgb, var(--accent) 22%, transparent); pointer-events: none; transition: width .1s linear; }
@@ -1948,10 +1971,10 @@ window.__DECKIT_CONFIG = null;
           <path d="M3 7 L12 13 L21 7"/>
         </svg>
       </button>
-      <a href="#" data-bc target="_blank" rel="noopener" class="social-icon social-txt" aria-label="Bandcamp" hidden><span>BC</span></a>
-      <a href="#" data-bp target="_blank" rel="noopener" class="social-icon social-txt" aria-label="Beatport" hidden><span>BP</span></a>
-      <a href="#" data-dg target="_blank" rel="noopener" class="social-icon social-txt" aria-label="Discogs" hidden><span>DG</span></a>
-      <a href="#" data-ra target="_blank" rel="noopener" class="social-icon social-txt" aria-label="Resident Advisor" hidden><span>RA</span></a>
+      <a href="#" data-bc target="_blank" rel="noopener" class="social-icon" aria-label="Bandcamp" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 16.5L9 7.5h11.5l-5.5 9z"/></svg></a>
+      <a href="#" data-bp target="_blank" rel="noopener" class="social-icon" aria-label="Beatport" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="14.5" r="4.5"/><circle cx="16.5" cy="8.5" r="2.6"/></svg></a>
+      <a href="#" data-dg target="_blank" rel="noopener" class="social-icon" aria-label="Discogs" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+      <a href="#" data-ra target="_blank" rel="noopener" class="social-icon" aria-label="Resident Advisor" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/></svg></a>
     </div>
   </div>
 
@@ -2267,10 +2290,10 @@ window.__DECKIT_CONFIG = null;
         <path d="M3 7 L12 13 L21 7"/>
       </svg>
     </button>
-    <a href="#" data-bc target="_blank" rel="noopener" class="social-icon social-txt" aria-label="Bandcamp" hidden><span>BC</span></a>
-    <a href="#" data-bp target="_blank" rel="noopener" class="social-icon social-txt" aria-label="Beatport" hidden><span>BP</span></a>
-    <a href="#" data-dg target="_blank" rel="noopener" class="social-icon social-txt" aria-label="Discogs" hidden><span>DG</span></a>
-    <a href="#" data-ra target="_blank" rel="noopener" class="social-icon social-txt" aria-label="Resident Advisor" hidden><span>RA</span></a>
+    <a href="#" data-bc target="_blank" rel="noopener" class="social-icon" aria-label="Bandcamp" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 16.5L9 7.5h11.5l-5.5 9z"/></svg></a>
+    <a href="#" data-bp target="_blank" rel="noopener" class="social-icon" aria-label="Beatport" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="14.5" r="4.5"/><circle cx="16.5" cy="8.5" r="2.6"/></svg></a>
+    <a href="#" data-dg target="_blank" rel="noopener" class="social-icon" aria-label="Discogs" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+    <a href="#" data-ra target="_blank" rel="noopener" class="social-icon" aria-label="Resident Advisor" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/></svg></a>
   </div>
 </footer>
 
