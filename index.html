@@ -1553,6 +1553,15 @@ window.__DECKIT_CONFIG = null;
           }
           setF(slot, b ? b.text : '');
         });
+        {
+          const dl = q('.gfiche');
+          if (dl) {
+            const vis = Array.from(dl.children).filter(d => getComputedStyle(d).display !== 'none');
+            dl.style.setProperty('--fiche-cols', String(Math.max(1, vis.length)));
+            Array.from(dl.children).forEach(d => d.classList.remove('gf-last'));
+            if (vis.length) vis[vis.length - 1].classList.add('gf-last');
+          }
+        }
         const fiche = q('#fiche');
         if (fiche && !fiche.querySelector('.gfiche > div:not([style*="none"])')) fiche.style.display = 'none';
       }
@@ -2604,9 +2613,11 @@ window.__DECKIT_CONFIG = null;
   #themeToggle:hover{ color:var(--fg); border-color:var(--fg); }
   /* grafts share look with old DA */
   section.block.graft{ padding:64px 0; }
-  .gfiche{ display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line-strong); }
+  .gfiche{ display:grid; grid-template-columns:repeat(var(--fiche-cols,4),1fr); border-top:1px solid var(--line-strong); }
   .gfiche div{ padding:22px 26px 26px 0; border-right:1px solid var(--line); margin-right:26px; }
   .gfiche div:last-child{ border-right:none; }
+  /* the real last column may be a hidden row, so the JS tags the last VISIBLE one */
+  .gfiche div.gf-last{ border-right:none; }
   .gfiche dt{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; color:var(--muted); text-transform:uppercase; margin-bottom:11px; }
   .gfiche dd{ font-family:'Inter Tight',sans-serif; font-size:20px; font-weight:600; letter-spacing:-.015em; }
   .gfiche dd small{ display:block; font-weight:400; color:var(--muted); font-size:13px; margin-top:5px; }
