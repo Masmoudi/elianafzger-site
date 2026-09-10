@@ -50,6 +50,10 @@
     --line: rgba(239, 236, 228, 0.08);
     --line-strong: rgba(239, 236, 228, 0.16);
     --accent: #c98060;
+    /* Text drawn ON TOP of the accent. Recomputed from the accent's luminance by the
+       loader, because artists pick their own accent in the Studio: a light accent
+       (Elia's #efece4) with cream text made the filled buttons invisible. */
+    --accent-ink: #f1ede4;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1416,6 +1420,23 @@
 
 <!-- ============= DECKIT CMS CONTENT LOADER (dynamic content from /content/*.json) ============= -->
 <script>
+  // One place decides what colour text sits on the accent. Relative luminance per WCAG:
+  // above ~0.45 the accent is light, so the ink must be the dark page colour instead of cream.
+  window.__dkSetAccent = function (hex) {
+    var rs = document.documentElement.style;
+    rs.setProperty('--accent', hex);
+    try {
+      var h = String(hex).trim().replace('#', '');
+      if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+      var n = parseInt(h, 16);
+      var c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(function (v) {
+        v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      var L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+      rs.setProperty('--accent-ink', L > 0.45 ? '#16130f' : '#f1ede4');
+    } catch (e) { rs.setProperty('--accent-ink', '#f1ede4'); }
+  };
+
 // ============= DECKIT CONFIG (per-client, loaded from deckit.config.json) =============
 // This file centralizes all client-specific vars. When creating a new Deckit site,
 // only this file needs to change (the code is identical across all sites).
@@ -1436,7 +1457,7 @@ window.__DECKIT_CONFIG = null;
     window.__DECKIT_CONFIG = cfg;
     // Apply brand colors dynamically
     if (cfg.brand && cfg.brand.accent_color) {
-      document.documentElement.style.setProperty('--accent', cfg.brand.accent_color);
+      window.__dkSetAccent(cfg.brand.accent_color);
     }
     if (cfg.brand && cfg.brand.accent_hover) {
       document.documentElement.style.setProperty('--accent-hover', cfg.brand.accent_hover);
@@ -1506,7 +1527,7 @@ window.__DECKIT_CONFIG = null;
         if (profile.tagline) { const el = q('.hero-tagline'); if (el) el.textContent = profile.tagline; }
         if (profile.hero_image) { const img = q('.hero-bg img'); if (img) img.src = profile.hero_image; }
         if (profile.hero_position) { const img = q('.hero-bg img'); if (img) img.style.objectPosition = profile.hero_position; }
-        if (profile.accent_color) { const _a = profile.accent_color; const rs = document.documentElement.style; rs.setProperty('--accent', _a); try { const n = parseInt(_a.replace('#',''),16); const r=Math.min(255,(n>>16)+22), g=Math.min(255,((n>>8)&255)+22), b=Math.min(255,(n&255)+22); rs.setProperty('--accent-hover', '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)); } catch(e){ rs.setProperty('--accent-hover', _a); } }
+        if (profile.accent_color) { const _a = profile.accent_color; const rs = document.documentElement.style; window.__dkSetAccent(_a); try { const n = parseInt(_a.replace('#',''),16); const r=Math.min(255,(n>>16)+22), g=Math.min(255,((n>>8)&255)+22), b=Math.min(255,(n&255)+22); rs.setProperty('--accent-hover', '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)); } catch(e){ rs.setProperty('--accent-hover', _a); } }
         if (profile.display_font) { const _f = profile.display_font; const _l = document.createElement('link'); _l.rel='stylesheet'; _l.href='https://fonts.googleapis.com/css2?family='+_f.replace(/ /g,'+')+':wght@400;500;600;700&display=swap'; document.head.appendChild(_l); document.documentElement.style.setProperty('--display-font', "'"+_f+"'"); }
         { const avatar = profile.hero_as_avatar ? profile.hero_image : (profile.profile_image || profile.hero_image);
           if (avatar) qa('[data-avatar], .avatar img, img.avatar').forEach(el => { if (el.tagName === 'IMG') el.src = avatar; else el.style.backgroundImage = 'url(' + avatar + ')'; }); }
@@ -2872,7 +2893,7 @@ window.__DECKIT_CONFIG = null;
   .cm-e{ color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.06em; min-height:16px; margin-bottom:14px; }
   .cm-a{ display:flex; gap:10px; justify-content:flex-end; }
   .cm-btn{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; padding:11px 20px; border:1px solid var(--line-strong); background:transparent; color:var(--fg); cursor:pointer; border-radius:2px; }
-  .cm-p{ background:var(--accent); border-color:var(--accent); color:#f1ede4; }
+  .cm-p{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
 </style>
 <div id="cm" class="cm" hidden>
   <div class="cm-box">
@@ -2922,7 +2943,7 @@ window.__DECKIT_CONFIG = null;
   #booking .bk-conf-line{ font-size:14px; line-height:1.55; color:var(--fg-dim); margin:0; }
   #booking .bk-conf-mail{ color:var(--fg); border-bottom:1px solid var(--accent); }
   #booking .bk-conf .pk-btn{ border:1px solid var(--fg); }
-  #booking .pk-zip{ background:var(--accent); border-color:var(--accent); color:#f1ede4; }
+  #booking .pk-zip{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
   #booking .pk-zip:hover{ background:var(--fg); border-color:var(--fg); color:var(--bg); }
   @media(max-width:820px){ #booking .bk{ grid-template-columns:1fr; gap:32px; } #booking .bk-row{ grid-template-columns:1fr; } }
 </style>
@@ -2930,7 +2951,7 @@ window.__DECKIT_CONFIG = null;
   .press-cta{ display:flex; gap:14px; flex-wrap:wrap; margin-top:4px; }
   .pk-btn{ display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; padding:15px 30px; border:1px solid var(--fg); color:var(--fg); cursor:pointer; transition:background .15s,color .15s,border-color .15s; }
   .pk-btn:hover{ background:var(--fg); color:var(--bg); }
-  .pk-zip{ background:var(--accent); border-color:var(--accent); color:#f1ede4; }
+  .pk-zip{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
   .pk-zip:hover{ background:var(--fg); border-color:var(--fg); color:var(--bg); }
   .dk-mark em{ font-style:normal; color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em; margin-left:11px; vertical-align:middle; }
 </style>
