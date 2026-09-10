@@ -2930,7 +2930,11 @@ window.__DECKIT_CONFIG = null;
   #booking .bk{ display:grid; grid-template-columns:1fr 1.4fr; gap:48px; max-width:980px; }
   #booking .bk-lead{ font-size:clamp(17px,1.4vw,20px); font-weight:300; color:var(--fg-dim); line-height:1.55; margin-bottom:22px; max-width:34ch; }
   #booking .bk-col .pk-btn{ display:inline-flex; margin:0 10px 10px 0; }
-  #booking button.pk-btn{ background:transparent; }
+  /* :not(.pk-zip) — this rule exists to keep "Copy short bio" outlined, but it also caught
+     the form's submit button, which IS the filled accent button. Same specificity as
+     #booking .pk-zip but one element more, so it won the background and left the submit
+     with accent-ink text on the page background. */
+  #booking button.pk-btn:not(.pk-zip){ background:transparent; }
   #booking .bk-form{ display:flex; flex-direction:column; gap:14px; border:1px solid var(--line-strong); padding:26px; }
   #booking .bk-form-title{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin-bottom:4px; }
   #booking .bk-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
