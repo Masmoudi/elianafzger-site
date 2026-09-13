@@ -1482,7 +1482,7 @@ window.__DECKIT_CONFIG = null;
   const safeFetch = (name) => fetch(WORKER + name + v, { headers: { 'X-Deckit-Site': siteSlug } }).then(r => r.ok ? r.json() : null).catch(() => null);
 
   try {
-    const [profile, contact, mixes, sound, venues, photos, videos, pressKit, productions, articles, integrations, watch, native_player] = await Promise.all([
+    const [profile, contact, mixes, sound, venues, photos, videos, pressKit, productions, articles, integrations, watch, native_player, customLinks] = await Promise.all([
       safeFetch('profile.json'),
       safeFetch('contact.json'),
       safeFetch('mixes.json'),
@@ -1495,10 +1495,11 @@ window.__DECKIT_CONFIG = null;
       safeFetch('articles.json'),
       safeFetch('integrations.json'),
       safeFetch('watch.json'),
-      safeFetch('native_player.json')
+      safeFetch('native_player.json'),
+      safeFetch('custom_links.json')
     ]);
 
-    window.__DECKIT_CONTENT = { profile, contact, mixes, sound, venues, photos, videos, pressKit, productions, articles, integrations, watch, native_player };
+    window.__DECKIT_CONTENT = { profile, contact, mixes, sound, venues, photos, videos, pressKit, productions, articles, integrations, watch, native_player, customLinks };
     window.__DECKIT_EMAIL = (contact && contact.email) || '';
     window.__DECKIT_PRESS_CODE = (contact && contact.press_kit_code) || 'change-me-please';
 
@@ -1771,6 +1772,33 @@ window.__DECKIT_CONFIG = null;
         setRow('[data-c-bandcamp-row]', '[data-c-bandcamp]', c.bandcamp, gen);
         setRow('[data-c-beatport-row]', '[data-c-beatport]', c.beatport, gen);
         setRow('[data-c-discogs-row]', '[data-c-discogs]', c.discogs, gen);
+
+        // ---- Liens libres, édités depuis le Studio (content/custom_links.json) ----
+        // Les six réseaux ci-dessus sont des lignes fixes du gabarit. Tout le reste
+        // vivait en dur dans le HTML : l'artiste voyait le lien sur son site sans
+        // pouvoir le corriger. Les lignes sont créées ici, même structure.
+        {
+          const wrap = q('#contact .contact');
+          const extra = (customLinks && (customLinks.list || customLinks.links)) || [];
+          if (wrap && Array.isArray(extra)) {
+            wrap.querySelectorAll('[data-c-custom]').forEach(el => el.remove());
+            extra.forEach(item => {
+              if (!item || item.featured === false) return;
+              const label = String(item.label || '').trim();
+              const url = String(item.url || '').trim();
+              if (!label || !url) return;
+              const a = document.createElement('a');
+              a.className = 'contact-row';
+              a.setAttribute('data-c-custom', '');
+              a.href = url; a.target = '_blank'; a.rel = 'noopener';
+              a.innerHTML = '<span class="contact-label">' + esc(label) + '</span>'
+                          + '<span class="contact-value">' + esc(gen(url)) + '</span>';
+              wrap.appendChild(a);
+            });
+            // Le poseur d'icônes tourne au chargement : ces lignes arrivent après.
+            if (window.__dkContactIcons) window.__dkContactIcons();
+          }
+        }
       }
 
       // ---- BOOKING (data-driven: copy bio, ZIP, rider, request form) ----
@@ -3037,6 +3065,7 @@ window.__DECKIT_CONFIG = null;
       r.insertBefore(sp, r.firstChild);
     });
   }
+  window.__dkContactIcons = run;
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
 })();
 </script>
