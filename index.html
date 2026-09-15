@@ -1821,6 +1821,16 @@ window.__DECKIT_CONFIG = null;
           }
           const zb = q('#bk-zip');
           if (zb) { if (zip) { zb.href = zip; zb.setAttribute('data-target', zip); zb.hidden = false; } else zb.hidden = true; }
+          // Le ZIP vidéos était renseigné dans press_kit.json et téléversé, mais
+          // aucun bouton ne pointait dessus : la donnée existait, l'interface non.
+          // Quand les deux existent, on nomme explicitement lequel est lequel.
+          const vzip = (pk.videos_zip || '').toString().trim();
+          const vb = q('#bk-videos');
+          if (vb) {
+            if (vzip) { vb.href = vzip; vb.setAttribute('data-target', vzip); vb.hidden = false; }
+            else vb.hidden = true;
+          }
+          if (zb && zip && vzip) zb.innerHTML = '\u2193 Photos ZIP';
           const rb = q('#bk-rider');
           if (rb) { if (rider) { rb.href = rider; rb.hidden = false; } else rb.hidden = true; }
           const bf = q('#bk-form');
@@ -2251,6 +2261,7 @@ window.__DECKIT_CONFIG = null;
         <p class="bk-lead">Short bio, photos and rider — everything a booker needs, one click away.</p>
         <button type="button" class="pk-btn" id="bk-copybio">Copy short bio</button>
         <a class="pk-btn pk-zip" id="bk-zip" href="#" hidden>&#8595; Press kit ZIP</a>
+        <a class="pk-btn" id="bk-videos" href="#" hidden>&#8595; Videos ZIP</a>
         <a class="pk-btn" id="bk-rider" href="#" target="_blank" rel="noopener" hidden>Technical rider — PDF</a>
       </div>
       <form class="bk-form" id="bk-form">
