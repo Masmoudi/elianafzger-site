@@ -1482,7 +1482,7 @@ window.__DECKIT_CONFIG = null;
   const safeFetch = (name) => fetch(WORKER + name + v, { headers: { 'X-Deckit-Site': siteSlug } }).then(r => r.ok ? r.json() : null).catch(() => null);
 
   try {
-    const [profile, contact, mixes, sound, venues, photos, videos, pressKit, productions, articles, integrations, watch, native_player, customLinks] = await Promise.all([
+    const [profile, contact, mixes, sound, venues, photos, videos, pressKit, productions, articles, integrations, watch, native_player, customLinks, riders] = await Promise.all([
       safeFetch('profile.json'),
       safeFetch('contact.json'),
       safeFetch('mixes.json'),
@@ -1496,10 +1496,11 @@ window.__DECKIT_CONFIG = null;
       safeFetch('integrations.json'),
       safeFetch('watch.json'),
       safeFetch('native_player.json'),
-      safeFetch('custom_links.json')
+      safeFetch('custom_links.json'),
+      safeFetch('riders.json')
     ]);
 
-    window.__DECKIT_CONTENT = { profile, contact, mixes, sound, venues, photos, videos, pressKit, productions, articles, integrations, watch, native_player, customLinks };
+    window.__DECKIT_CONTENT = { profile, contact, mixes, sound, venues, photos, videos, pressKit, productions, articles, integrations, watch, native_player, customLinks, riders };
     window.__DECKIT_EMAIL = (contact && contact.email) || '';
     window.__DECKIT_PRESS_CODE = (contact && contact.press_kit_code) || 'change-me-please';
 
@@ -1831,6 +1832,34 @@ window.__DECKIT_CONFIG = null;
             else vb.hidden = true;
           }
           if (zb && zip && vzip) zb.innerHTML = '\u2193 Photos ZIP';
+          // Le rider s'affiche DANS la page : un promoteur doit savoir s'il a le
+          // bon matériel sans rien télécharger. Le PDF reste, pour ceux qui impriment.
+          {
+            const box = q('#bk-riders');
+            const lines = (riders && (riders.list || riders.lines)) || [];
+            if (box && Array.isArray(lines) && lines.length) {
+              const groups = {};
+              lines.forEach(l => {
+                if (!l) return;
+                const gear = String(l.gear || '').trim();
+                if (!gear) return;
+                const setup = String(l.setup || 'Technical rider').trim() || 'Technical rider';
+                (groups[setup] = groups[setup] || []).push(l);
+              });
+              const names = Object.keys(groups);
+              if (names.length) {
+                box.innerHTML = names.map(n => '<div class="bk-rider-set">'
+                  + '<p class="bk-rider-h">' + esc(n) + '</p><ul class="bk-rider-l">'
+                  + groups[n].map(l => '<li>'
+                      + (l.qty ? '<b>' + esc(String(l.qty).trim()) + '</b> ' : '')
+                      + esc(String(l.gear).trim())
+                      + (l.note ? ' <span>' + esc(String(l.note).trim()) + '</span>' : '')
+                      + '</li>').join('')
+                  + '</ul></div>').join('');
+                box.hidden = false;
+              }
+            }
+          }
           const rb = q('#bk-rider');
           if (rb) { if (rider) { rb.href = rider; rb.hidden = false; } else rb.hidden = true; }
           const bf = q('#bk-form');
@@ -2263,6 +2292,7 @@ window.__DECKIT_CONFIG = null;
         <a class="pk-btn pk-zip" id="bk-zip" href="#" hidden>&#8595; Press kit ZIP</a>
         <a class="pk-btn" id="bk-videos" href="#" hidden>&#8595; Videos ZIP</a>
         <a class="pk-btn" id="bk-rider" href="#" target="_blank" rel="noopener" hidden>Technical rider — PDF</a>
+        <div class="bk-riders" id="bk-riders" hidden></div>
       </div>
       <form class="bk-form" id="bk-form">
         <span class="bk-form-title">Booking request</span>
@@ -2992,6 +3022,13 @@ window.__DECKIT_CONFIG = null;
 </style>
 <style id="graft8">
   .press-cta{ display:flex; gap:14px; flex-wrap:wrap; margin-top:4px; }
+  .bk-riders{ margin:22px 0 4px; display:flex; flex-direction:column; gap:20px; }
+  .bk-rider-h{ font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin:0 0 8px; }
+  .bk-rider-l{ list-style:none; margin:0; padding:0; }
+  .bk-rider-l li{ padding:7px 0; border-bottom:1px solid var(--line); font-size:15px; }
+  .bk-rider-l li:last-child{ border-bottom:0; }
+  .bk-rider-l b{ font-weight:600; margin-right:2px; }
+  .bk-rider-l span{ color:var(--muted); font-size:13px; }
   .pk-btn{ display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; padding:15px 30px; border:1px solid var(--fg); color:var(--fg); cursor:pointer; transition:background .15s,color .15s,border-color .15s; }
   .pk-btn:hover{ background:var(--fg); color:var(--bg); }
   .pk-zip{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
