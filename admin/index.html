@@ -11,13 +11,13 @@
   <!-- Deckit Studio: this page is only a shell. The Studio itself (CSS + app) is hosted once
        and shared by every artist site, so a fix ships in one deploy instead of one per site.
        Netlify Identity still runs on THIS domain, so each artist logs into their own account. -->
-  <link rel="stylesheet" href="https://pub-c6bf98a8fcaf4d52a4b90e6e1f210f1e.r2.dev/Studio/app.css" />
+  <script>(function(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://pub-c6bf98a8fcaf4d52a4b90e6e1f210f1e.r2.dev/Studio/app.css?v='+Date.now();document.head.appendChild(l);})();</script>
 </head>
 <body>
 <script>(function(){var h=location.hash||'';var m=/(recovery_token|invite_token)=([^&]+)/.exec(h);if(m){window.__DK_PW={kind:m[1]==='invite_token'?'invite':'recovery',token:m[2]};try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}})();</script>
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <!-- charset is stated explicitly: R2 serves the file without one, and the app contains
      em-dashes and arrows that must not be mangled. -->
-<script src="https://pub-c6bf98a8fcaf4d52a4b90e6e1f210f1e.r2.dev/Studio/app.js" charset="utf-8"></script>
+<script>(function(){var s=document.createElement('script');s.src='https://pub-c6bf98a8fcaf4d52a4b90e6e1f210f1e.r2.dev/Studio/app.js?v='+Date.now();s.charset='utf-8';document.body.appendChild(s);})();</script>
 </body>
 </html>
