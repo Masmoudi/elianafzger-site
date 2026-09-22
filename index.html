@@ -1809,7 +1809,15 @@ window.__DECKIT_CONFIG = null;
           const c = contact || {}; const pcfg = (window.__DECKIT_CONFIG || {}); const pk = pressKit || {};
           const bioShort = (profile && (profile.bio_short || profile.bio_long)) || bioEn || '';
           const zip = pk.photos_zip || pk.zip || '';
-          const rider = (pcfg.press && (pcfg.press.rider || pcfg.press.rider_url)) || pk.rider_url || pk.rider || '';
+          // Chaîne de repli du rider : un PDF fait main s'il est déclaré, sinon
+          // celui que le worker génère depuis riders.json. Inerte tant que
+          // press.rider est renseigné — et reprend la main si le champ est vidé,
+          // pour qu'un bouton ne redevienne jamais mort.
+          const riderFile = (pcfg.press && (pcfg.press.rider || pcfg.press.rider_url)) || pk.rider_url || pk.rider || '';
+          const riderRows = (riders && (riders.list || riders.lines)) || [];
+          const riderSlug = (pcfg.client && pcfg.client.slug) || '';
+          const riderWorker = (pcfg.infra && pcfg.infra.worker_url) || 'https://deckit-media-uploader.nadimmasmoudi93.workers.dev';
+          const rider = riderFile || ((riderRows.length && riderSlug) ? (riderWorker + '/rider-pdf?site=' + encodeURIComponent(riderSlug)) : '');
           const cb = q('#bk-copybio');
           if (cb) {
             if (bioShort) {
@@ -2610,6 +2618,40 @@ window.__DECKIT_CONFIG = null;
     var prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
+    // ── Ancre profonde conservée à travers le splash ─────────────────────────
+    // Un lien <domaine>/#press envoyé à un booker arrivait sur l'écran ENTER et
+    // l'ancre était perdue : le navigateur a déjà sauté avant que le contenu ne
+    // soit rendu, et le splash verrouille le défilement. On mémorise le hash à
+    // l'ouverture, on le réapplique une fois l'entrée terminée.
+    //
+    // ⚠ Les jetons Netlify Identity ne doivent JAMAIS passer par ici : ils sont
+    // renvoyés vers /admin/ par le script de haut de page, qui reste prioritaire.
+    // Le test ci-dessous les écarte une seconde fois, au cas où cette page serait
+    // atteinte sans que la redirection ait eu lieu.
+    var IDENTITY_TOKEN = /(?:recovery|invite|confirmation|email_change)_token=/;
+    var rawHash = location.hash || '';
+    var pendingId = (rawHash.length > 1 && !IDENTITY_TOKEN.test(rawHash)) ? rawHash.slice(1) : '';
+
+    // getElementById et non querySelector : un hash arbitraire ne doit pas
+    // pouvoir lever une exception de sélecteur invalide.
+    var applyPendingHash = function(tries) {
+      if (!pendingId) return;
+      var el = null;
+      try { el = document.getElementById(pendingId); } catch (e) { el = null; }
+      if (el) {
+        pendingId = '';
+        try { el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); }
+        catch (e) { try { el.scrollIntoView(); } catch (e2) {} }
+        return;
+      }
+      // Le contenu vient du worker : une section peut n'être rendue qu'un peu
+      // plus tard. On réessaie brièvement, puis on abandonne en laissant la page
+      // en haut — une ancre inconnue ne doit produire aucune erreur visible.
+      if (tries > 0) setTimeout(function() { applyPendingHash(tries - 1); }, 300);
+      else pendingId = '';
+    };
+
+
     var runType = function() {
       word = overlay.dataset.word || word;
       if (typeTimer) { clearTimeout(typeTimer); typeTimer = null; }
@@ -2644,6 +2686,10 @@ window.__DECKIT_CONFIG = null;
       overlay.classList.add('is-hidden');
       overlay.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = prevOverflow;
+      // Après la transition d'opacité (0,8 s) et une fois le défilement rendu
+      // au visiteur : sans ce délai, le scroll se ferait sous un overlay encore
+      // opaque et body.overflow encore verrouillé.
+      setTimeout(function() { applyPendingHash(10); }, 850);
       setTimeout(function() {
         if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
       }, 900);
